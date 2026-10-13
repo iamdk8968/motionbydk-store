@@ -1,0 +1,15 @@
+{
+  "latestVersion": "3.6.0",
+  "releaseDate": "2026-10-13",
+  "title": "MotionByDk Pro Suite Released!",
+  "message": "Complete suite with 3D Carousel, macOS Mouse Dock, Graph Bezier Editor, and Shape Tools.",
+  "downloadUrl": "https://motionbydk.in",
+  "minAEVersion": "15.0",
+  "changelog": [
+    "Added 3D Carousel Suite with 5 visual layouts & live preview",
+    "Added macOS Mouse Dock magnification effect",
+    "Added full Shape Tools with Trim Paths, Dashes & Taper",
+    "Enhanced Bezier Graph Editor curve library",
+    "Optimized high-contrast orange & black theme"
+  ]
+}
