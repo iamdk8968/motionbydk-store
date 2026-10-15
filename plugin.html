@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Motion by DK | Professional AE Workflow Tools & 50GB Editing Vault</title>
+    <meta name="description" content="Elevate your video editing and motion graphics workflow. Official MotionByDk AE Workflow Pro extension suite & Dhananjay's 50GB Private Video Editing Vault.">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Gumroad Overlay Script -->
+    <script src="https://gumroad.com/js/gumroad.js"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            DEFAULT: '#ff7a00',
+                            hover: '#ff8c1a',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            dark: '#9a3412'
+                        },
+                        dark: {
+                            base: '#07080b',
+                            surface: '#0d0f17',
+                            card: '#121522',
+                            elevated: '#181b2c',
+                            border: '#1f2438',
+                            hover: '#1a1f32'
+                        }
+                    },
+                    boxShadow: {
+                        'brand': '0 0 25px -4px rgba(255, 122, 0, 0.35)',
+                        'brand-sm': '0 0 15px -2px rgba(255, 122, 0, 0.25)',
+                        'clean-card': '0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Clean Studio Styles -->
+    <style>
+        /* Sleek Minimalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07080b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2438;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff7a00;
+        }
+
+        /* Subtle Geometric Tech Grid (Ultra-clean, single tone) */
+        .bg-studio-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        /* Mobile Fit-to-screen & Anti-Wobble Reset */
+        html {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            -webkit-text-size-adjust: 100% !important;
+            touch-action: pan-y !important;
+            scroll-behavior: smooth;
+        }
+        body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+            touch-action: pan-y !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+        main, section, header, footer {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        .page-view {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            animation: fadeInView 0.25s ease-out;
+        }
+        @keyframes fadeInView {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Clean Studio Cards */
+        .studio-card {
+            background: #0d0f17;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .studio-card:hover {
+            border-color: rgba(255, 122, 0, 0.35);
+            box-shadow: 0 12px 35px -10px rgba(255, 122, 0, 0.15);
+        }
+
+        /* Ambient Glow Spot (Warm Orange only) */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 122, 0, 0.12) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events-none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-dark-base text-gray-100 font-sans antialiased overflow-x-hidden bg-studio-grid selection:bg-brand selection:text-black">
+
+    <!-- Top Ambient Lights (Clipped inside viewport container) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0 max-w-full">
+        <div class="ambient-glow top-0 left-1/2 -translate-x-1/2"></div>
+        <div class="ambient-glow top-[40%] right-[-150px]"></div>
+    </div>
+
+    <!-- 0. TOP ANNOUNCEMENT BAR -->
+    <div class="bg-[#0e111a] border-b border-brand/20 text-gray-300 text-xs py-2 px-4 text-center flex items-center justify-center gap-3 relative z-50">
+        <span class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+            <span>NEW RELEASE: <strong class="text-white">MotionByDk AE Workflow Pro v3.6</strong> — 3D Carousel, Mouse Dock &amp; Bezier Suite</span>
+        </span>
+        <button onclick="navigateTo('plugin')" class="bg-brand hover:bg-brand-hover text-black px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-colors inline-flex items-center gap-1 cursor-pointer">
+            <span>Explore Plugin</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+        </button>
+    </div>
+
+    <!-- 1. ENHANCED RESPONSIVE NAVBAR -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-dark-base/85 border-b border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <button onclick="navigateTo('home')" class="flex items-center gap-3 group text-left cursor-pointer bg-transparent border-0 p-0">
+                <div class="w-11 h-11 rounded-xl bg-dark-surface border border-brand/40 p-2 shadow-brand-sm group-hover:border-brand transition-all flex items-center justify-center">
+                    <img src="assets/icon.svg" alt="Motion by DK Icon" class="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(255,122,0,0.6)]">
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading font-black text-xl sm:text-2xl tracking-tight text-white group-hover:text-brand transition-colors">
+                        MOTION<span class="text-brand">BY DK</span>
+                    </span>
+                    <span class="text-[10px] text-gray-400 font-medium tracking-widest uppercase flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span>Official Studio &amp; Tools Store</span>
+                    </span>
+                </div>
+            </button>
+
+            <!-- Desktop Nav Links (SPA View Switching) -->
+            <nav class="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-semibold text-gray-300">
+                <button onclick="navigateTo('home')" data-nav-page="home" class="nav-link-btn text-gray-300 hover:text-brand transition-colors cursor-pointer pb-0.5">Home</button>
+                <button onclick="navigateTo('plugin')" data-nav-page="plugin" class="nav-link-btn text-brand border-b-2 border-brand pb-0.5 font-bold transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <span>AE Plugin</span>
+                    <span class="text-[9px] bg-brand/15 text-brand border border-brand/30 px-1.5 py-0.2 rounded font-mono font-bold">PRO v3.6</span>
+                </button>
+                <button onclick="navigateTo('vault')" data-nav-page="vault" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5">
+                    <span>50GB Vault</span>
+                    <span class="text-[9px] bg-amber-400/15 text-amber-400 border border-amber-400/30 px-1.5 py-0.2 rounded font-mono font-bold">4K ASSETS</span>
+                </button>
+                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">About DK</button>
+                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">FAQ</button>
+            </nav>
+
+            <!-- Right Actions -->
+            <div class="hidden md:flex items-center gap-3">
+                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('products')?.scrollIntoView({behavior:'smooth'}); }, 100);" class="px-3.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-bold text-gray-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="layers" class="w-3.5 h-3.5 text-brand"></i>
+                    <span>All Products</span>
+                </button>
+                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="px-4 py-2 rounded-xl bg-brand hover:bg-brand-hover text-black text-xs font-black shadow-brand-sm transition-all flex items-center gap-1.5">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
+                    <span>Get Pro ($15)</span>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <div class="flex md:hidden items-center gap-2">
+                <button onclick="navigateTo('home')" class="px-3 py-1.5 rounded-lg bg-brand text-black font-extrabold text-xs cursor-pointer">Store</button>
+                <button id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle Menu" class="p-2 rounded-xl bg-dark-card border border-white/10 text-gray-300 hover:text-white focus:outline-none">
+                    <i id="menuIcon" data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu (Direct Multi-Page Navigation) -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-dark-surface/98 backdrop-blur-2xl px-6 py-6 space-y-4 transition-all duration-300">
+            <div class="space-y-3">
+                <button onclick="navigateTo('home'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
+                    <span>🏠 Home (Product Catalog)</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
+                </button>
+                <button onclick="navigateTo('plugin'); toggleMobileMenu();" class="w-full text-left block text-sm font-bold text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
+                    <span>⚡ AE Workflow Pro Plugin</span>
+                    <span class="text-[10px] bg-brand text-black px-2 py-0.5 rounded font-black">$15 / ₹499</span>
+                </button>
+                <button onclick="navigateTo('vault'); toggleMobileMenu();" class="w-full text-left block text-sm font-bold text-amber-400 py-2.5 border-b border-white/5 flex items-center justify-between">
+                    <span>🗂️ 50GB Private Editing Vault</span>
+                    <span class="text-[10px] bg-amber-400 text-black px-2 py-0.5 rounded font-black">₹199</span>
+                </button>
+                <button onclick="navigateTo('home'); toggleMobileMenu(); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
+                    👤 About Dhananjay Kumar
+                </button>
+                <button onclick="navigateTo('home'); toggleMobileMenu(); setTimeout(function(){ document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
+                    ❓ Frequently Asked Questions
+                </button>
+            </div>
+            <div class="pt-4 flex flex-col gap-2.5">
+                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="w-full text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl">Buy AE Plugin ($15)</a>
+                <button onclick="openUpiModal(); toggleMobileMenu();" class="w-full text-center py-3 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-sm rounded-xl">Pay via UPI (₹499)</button>
+                <a href="https://superprofile.bio/vp/6aafdb72f7b0c700131df4f6" class="w-full text-center py-3 bg-dark-card border border-white/10 text-white font-semibold text-sm rounded-xl">Get 50GB Vault (₹199)</a>
+            </div>
+        </div>
+    </header>
+
+    
+<main class="w-full max-w-full overflow-hidden min-h-screen">
+        <!-- ============================================================== -->
+        <!-- VIEW 1: HOME PAGE (Clean Studio Portal & Category Hub)        -->
+        <!-- ============================================================== -->
+        <div id="view-home" class="page-view" style="display:none;">
+<!-- 2. CLEAN HERO SECTION -->
+        <section id="home" class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                
+                <!-- Tagline Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-dark-card border border-brand/30 text-brand text-xs sm:text-sm font-medium mb-8 shadow-brand-sm backdrop-blur-md">
+                    <span class="px-2 py-0.5 rounded-full bg-brand text-black text-[10px] font-black uppercase tracking-wider">MOTIONBYDK 2027</span>
+                    <span class="text-gray-300">Curated After Effects Scripts &amp; Cinematic Editing Vault</span>
+                </div>
+
+                <!-- Main Clean Headline -->
+                <h1 class="font-heading font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.1] mb-6 max-w-5xl mx-auto">
+                    High-Performance Tools &amp; Assets for <br class="hidden sm:inline" />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand via-amber-300 to-white">Modern Motion Designers</span>
+                </h1>
+
+                <!-- Subheadline -->
+                <p class="text-gray-400 text-base sm:text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+                    Built by <span class="text-white font-semibold underline decoration-brand decoration-2 underline-offset-4">Dhananjay Kumar</span>. Eliminate repetitive keyframing, automate 3D spatial carousels, and accelerate your edit timeline with battle-tested assets.
+                </p>
+
+                <!-- Dual Action Hero Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                    <button onclick="navigateTo('plugin')" class="w-full sm:w-auto px-8 py-4 bg-brand hover:bg-brand-hover text-black font-heading font-black text-base sm:text-lg rounded-2xl shadow-brand transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="zap" class="w-5 h-5 fill-black"></i>
+                        <span>Explore AE Plugin PRO (v3.6)</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="navigateTo('vault')" class="w-full sm:w-auto px-8 py-4 bg-dark-surface hover:bg-dark-card border border-white/15 hover:border-white/30 text-white font-heading font-bold text-base sm:text-lg rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="film" class="w-5 h-5 text-brand"></i>
+                        <span>50GB Editing Vault (₹199)</span>
+                    </button>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-400 mb-14">
+                    <div class="flex items-center gap-1.5 bg-dark-surface px-3 py-1.5 rounded-full border border-white/10">
+                        <div class="flex text-amber-400">
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i>
+                        </div>
+                        <span class="font-bold text-white">5.0 Rating (1,400+ Editors)</span>
+                    </div>
+                    <div class="hidden sm:block text-gray-600">•</div>
+                    <div class="flex items-center gap-1.5 text-gray-300">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Instant Automated Delivery</span>
+                    </div>
+                    <div class="hidden sm:block text-gray-600">•</div>
+                    <div class="flex items-center gap-1.5 text-gray-300">
+                        <i data-lucide="cpu" class="w-4 h-4 text-brand"></i>
+                        <span>AE CC 2019–2026+ Ready</span>
+                    </div>
+                </div>
+
+                <!-- Hero Mockup Frame -->
+                <div class="relative max-w-4xl mx-auto rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-dark-surface p-2 sm:p-3">
+                    <div class="flex items-center justify-between pb-3 px-3 border-b border-white/10 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                            <span class="text-[11px] text-gray-400 font-mono ml-2">MotionByDk_Studio_Overview.aep</span>
+                        </div>
+                        <span class="text-[10px] text-brand font-mono font-bold bg-brand/10 px-2 py-0.5 rounded border border-brand/30">4K UHD ASSETS</span>
+                    </div>
+                    <div class="relative aspect-video rounded-xl overflow-hidden bg-black flex items-center justify-center">
+                        <video class="w-full h-full object-cover" autoplay loop muted playsinline poster="assets/vault_hero_mockup.png">
+                            <source src="assets/videos/plugin_hero.mp4" type="video/mp4">
+                            <source src="assets/videos/vault_demo.mp4" type="video/mp4">
+                            <img src="assets/vault_hero_mockup.png" alt="Motion by DK Studio Suite" class="w-full h-full object-cover">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-base via-transparent to-transparent pointer-events-none"></div>
+                        <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+                            <span class="px-3 py-1 rounded-lg bg-dark-base/85 backdrop-blur-md border border-white/10 text-xs font-semibold text-brand flex items-center gap-1.5 shadow-lg">
+                                <i data-lucide="zap" class="w-3.5 h-3.5"></i> 3D Carousel Automation
+                            </span>
+                            <span class="px-3 py-1 rounded-lg bg-dark-base/85 backdrop-blur-md border border-white/10 text-xs font-semibold text-emerald-400 flex items-center gap-1.5 shadow-lg">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> 50GB Uncompressed Assets
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        
+<section id="products" class="py-24 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-bold uppercase tracking-wider mb-4">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                        <span>Digital Products Catalog</span>
+                    </div>
+                    <h2 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-4">
+                        Choose Your Creative Weapon
+                    </h2>
+                    <p class="text-gray-400 text-sm sm:text-base leading-relaxed">
+                        Filter our specialized software tools, asset vaults, and free starter kits. Built for speed and precision.
+                    </p>
+
+                    <!-- Interactive Category Filter Tabs -->
+                    <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-8" id="categoryTabContainer">
+                        <button onclick="filterProducts('all')" id="filter-all" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-brand text-black shadow-brand-sm transition-all">
+                            All Products (3)
+                        </button>
+                        <button onclick="filterProducts('plugins')" id="filter-plugins" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-dark-card border border-white/10 text-gray-300 hover:text-white transition-all">
+                            AE Scripts &amp; Plugins
+                        </button>
+                        <button onclick="filterProducts('vaults')" id="filter-vaults" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-dark-card border border-white/10 text-gray-300 hover:text-white transition-all">
+                            Asset Vaults &amp; Packs
+                        </button>
+                        <button onclick="filterProducts('free')" id="filter-free" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-dark-card border border-white/10 text-gray-300 hover:text-white transition-all">
+                            Free Community Tools
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch" id="productsGrid">
+                    
+                    <!-- PRODUCT CARD 1: AE WORKFLOW PRO PLUGIN -->
+                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border-2 border-brand/40 shadow-brand-sm" data-category="plugins">
+                        <div class="absolute -top-3 right-6 bg-brand text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md">
+                            FLAGSHIP SOFTWARE
+                        </div>
+                        <div>
+                            <!-- Thumbnail -->
+                            <div class="aspect-video rounded-xl overflow-hidden bg-black mb-5 border border-white/10 relative">
+                                <img src="assets/ae_script_preview.png" alt="MotionByDk AE Workflow Pro Preview" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[10px] font-mono text-brand border border-brand/30">
+                                    v3.6.0 Suite
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[11px] font-bold text-brand uppercase tracking-wider">After Effects Extension</span>
+                                <span class="text-gray-600">•</span>
+                                <span class="text-[11px] text-gray-400 font-mono">Win &amp; Mac</span>
+                            </div>
+
+                            <h3 class="font-heading font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-brand transition-colors">
+                                MotionByDk AE Workflow Pro
+                            </h3>
+
+                            <p class="text-xs sm:text-sm text-gray-400 mb-5 leading-relaxed">
+                                4-in-1 procedural workflow plugin. Generate 3D spatial carousels, macOS mouse dock magnification, and smooth kinetic bezier curve ramps in 1-click.
+                            </p>
+
+                            <!-- Feature Tags -->
+                            <div class="space-y-2 mb-6 text-xs text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand flex-shrink-0"></i>
+                                    <span>3D Carousel Studio (5 Layouts)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand flex-shrink-0"></i>
+                                    <span>macOS Mouse Dock with Spring Physics</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand flex-shrink-0"></i>
+                                    <span>Kinetic Bezier Curve Speed Ramps</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-brand flex-shrink-0"></i>
+                                    <span>Docked Shape Tools &amp; Trim Paths</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & CTA -->
+                        <div class="pt-4 border-t border-white/10">
+                            <div class="flex items-baseline justify-between mb-4">
+                                <div>
+                                    <span class="text-xs text-gray-400 block">Lifetime License</span>
+                                    <span class="font-heading font-black text-2xl text-white">$15 <span class="text-xs text-gray-400 font-normal">USD</span> / ₹499 <span class="text-xs text-emerald-400 font-normal">UPI</span></span>
+                                </div>
+                                <span class="text-[11px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">2 PCs Activation</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <button onclick="navigateTo('plugin')" class="w-full py-3 px-4 bg-brand hover:bg-brand-hover text-black font-extrabold text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-brand-sm cursor-pointer">
+                                    <i data-lucide="zap" class="w-4 h-4 fill-black"></i>
+                                    <span>Explore AE Plugin &amp; Live Demos &rarr;</span>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
+                                    <span>Gumroad ($15)</span>
+                                </a>
+                                <button onclick="openUpiModal()" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>UPI (₹499)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT CARD 2: 50GB PRIVATE VAULT -->
+                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border border-white/15" data-category="vaults">
+                        <div class="absolute -top-3 right-6 bg-white/10 text-white font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider border border-white/20">
+                            BESTSELLER BUNDLE
+                        </div>
+                        <div>
+                            <!-- Thumbnail (Plays video if vault_demo.mp4 exists, otherwise falls back to poster image) -->
+                            <div class="aspect-video rounded-xl overflow-hidden bg-black mb-5 border border-white/10 relative">
+                                <video class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoplay loop muted playsinline poster="assets/vault_hero_mockup.png">
+                                    <source src="assets/videos/vault_demo.mp4" type="video/mp4">
+                                    <img src="assets/vault_hero_mockup.png" alt="50GB Private Editing Vault Preview" class="w-full h-full object-cover">
+                                </video>
+                                <div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/80 backdrop-blur-md text-[10px] font-mono text-amber-400 border border-amber-400/30">
+                                    50GB Uncompressed
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider">Asset Library &amp; MOGRTs</span>
+                                <span class="text-gray-600">•</span>
+                                <span class="text-[11px] text-gray-400 font-mono">AE, PR, DaVinci</span>
+                            </div>
+
+                            <h3 class="font-heading font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-amber-400 transition-colors">
+                                50GB Private Editing Vault
+                            </h3>
+
+                            <p class="text-xs sm:text-sm text-gray-400 mb-5 leading-relaxed">
+                                Hand-curated collection of 4K cinematic overlays, 1,500+ sound design WAVs, lower thirds, Hollywood LUTs, plus free bonus carousel JSX script.
+                            </p>
+
+                            <!-- Feature Tags -->
+                            <div class="space-y-2 mb-6 text-xs text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0"></i>
+                                    <span>4K Light Leaks, Film Burns &amp; CRT Glitches</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0"></i>
+                                    <span>1,500+ Uncompressed 24-bit Audio SFX</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0"></i>
+                                    <span>50+ Hollywood Cinematic LUTs</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0"></i>
+                                    <span>High-Speed Google Drive Direct Link</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & CTA -->
+                        <div class="pt-4 border-t border-white/10">
+                            <div class="flex items-baseline justify-between mb-4">
+                                <div>
+                                    <span class="text-xs text-gray-400 block">Special Promo Price</span>
+                                    <span class="font-heading font-black text-2xl text-white">₹199 <span class="text-xs text-gray-500 line-through">₹999</span></span>
+                                </div>
+                                <span class="text-[11px] text-brand bg-brand/10 px-2 py-0.5 rounded border border-brand/30">Lifetime Access</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <button onclick="navigateTo('vault')" class="w-full py-3 px-4 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                                    <i data-lucide="folder-archive" class="w-4 h-4 text-black"></i>
+                                    <span>Explore 50GB Vault Assets &rarr;</span>
+                                </button>
+                            </div>
+                            <a href="https://superprofile.bio/vp/6aafdb72f7b0c700131df4f6" class="w-full py-2.5 px-4 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Instant Checkout – ₹199</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCT CARD 3: FREE STARTER KIT -->
+                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border border-white/15" data-category="free">
+                        <div class="absolute -top-3 right-6 bg-emerald-500 text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider">
+                            100% FREE
+                        </div>
+                        <div>
+                            <!-- Icon Graphic Box -->
+                            <div class="aspect-video rounded-xl overflow-hidden bg-[#0c1017] mb-5 border border-white/10 flex flex-col items-center justify-center text-center p-4 relative">
+                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-2">
+                                    <i data-lucide="gift" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-mono font-bold text-white">Community Starter Pack</span>
+                                <span class="text-[10px] text-gray-400">Instant Free Download</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Free Creator Kit</span>
+                                <span class="text-gray-600">•</span>
+                                <span class="text-[11px] text-gray-400 font-mono">No Credit Card</span>
+                            </div>
+
+                            <h3 class="font-heading font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                                MotionByDk Free Starter Kit
+                            </h3>
+
+                            <p class="text-xs sm:text-sm text-gray-400 mb-5 leading-relaxed">
+                                Get Dhananjay's signature 3D Carousel automation script, Scale &amp; Fade motion plugin, curated SFX pack, and step-by-step setup guide.
+                            </p>
+
+                            <!-- Feature Tags -->
+                            <div class="space-y-2 mb-6 text-xs text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0"></i>
+                                    <span><strong>3D Carousel Script (.jsx)</strong> — Rotating layers in 1-click</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0"></i>
+                                    <span><strong>Scale &amp; Fade Plugin (.jsx)</strong> — Instant in/out animators</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0"></i>
+                                    <span><strong>Cinematic SFX Pack</strong> — High-impact whooshes &amp; hits (WAV)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0"></i>
+                                    <span><strong>Quick Setup PDF Guide</strong> — Win &amp; Mac installation</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0"></i>
+                                    <span>Commercial Rights for YouTube &amp; Client Reels</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & CTA -->
+                        <div class="pt-4 border-t border-white/10">
+                            <div class="flex items-baseline justify-between mb-4">
+                                <div>
+                                    <span class="text-xs text-gray-400 block">Community License</span>
+                                    <span class="font-heading font-black text-2xl text-emerald-400">FREE <span class="text-xs text-gray-400 font-normal">(₹0)</span></span>
+                                </div>
+                                <span class="text-[11px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">Instant Link</span>
+                            </div>
+
+                            <button onclick="openFreeKitModal()" class="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs rounded-xl text-center transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md">
+                                <i data-lucide="download" class="w-3.5 h-3.5 text-black"></i>
+                                <span>Get Free Starter Kit</span>
+                            </button>
+                            <span class="block text-center text-xs text-gray-500 mt-2.5">
+                                Direct Download via Google Drive
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        
+<!-- 3. STATS STRIP -->
+        <section class="py-10 border-y border-white/10 bg-dark-surface/60 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-4">
+                        <div class="font-heading font-black text-3xl sm:text-4xl text-brand mb-1">100+ Hours</div>
+                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Saved Per Month</div>
+                    </div>
+                    <div class="p-4">
+                        <div class="font-heading font-black text-3xl sm:text-4xl text-white mb-1">1,400+</div>
+                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Active Editors</div>
+                    </div>
+                    <div class="p-4">
+                        <div class="font-heading font-black text-3xl sm:text-4xl text-brand mb-1">50 GB+</div>
+                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Curated Assets</div>
+                    </div>
+                    <div class="p-4">
+                        <div class="font-heading font-black text-3xl sm:text-4xl text-emerald-400 mb-1">4.9 / 5</div>
+                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Average Rating</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. NEW: PRODUCT CATEGORIES & CATALOG SECTION -->
+        
+<!-- 7. NEW: ABOUT DHANANJAY & MOTION BY DK SECTION -->
+        <section id="about" class="py-24 relative bg-dark-surface/50 border-t border-white/10">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Left: Story & Mission (7 Cols) -->
+                    <div class="lg:col-span-7">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-bold uppercase tracking-wider mb-5">
+                            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                            <span>The Story Behind The Tools</span>
+                        </div>
+
+                        <h2 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-6 leading-tight">
+                            Built by an Editor. <br />
+                            <span class="text-brand">Engineered for Speed.</span>
+                        </h2>
+
+                        <div class="space-y-4 text-gray-300 text-sm sm:text-base leading-relaxed">
+                            <p>
+                                Hey, I'm <strong class="text-white">Dhananjay Kumar (DK)</strong> — a Motion Designer and Video Editor with years of commercial production experience in Adobe After Effects and Premiere Pro.
+                            </p>
+                            <p>
+                                Like every motion artist, I wasted countless late nights wrestling with the same repetitive bottlenecks: writing circular trigonometry math just to arrange layers in a 3D carousel, constantly nudging graph editor handles, and digging through messy hard drives for clean sound effects.
+                            </p>
+                            <p>
+                                I originally created <strong>MotionByDk AE Workflow</strong> as an internal script to save my own sanity on tight commercial deadlines. Once I saw that it cut my rigging time from 45 minutes down to 10 seconds, I decided to package and release it so fellow creators never have to struggle with manual grunt work again.
+                            </p>
+                        </div>
+
+                        <!-- Core Studio Values -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-8 border-t border-white/10">
+                            <div>
+                                <span class="font-heading font-bold text-white text-base block mb-1">⚡ Zero Bloat</span>
+                                <span class="text-xs text-gray-400">Native JSX scripts. Zero heavy memory footprints or background daemons.</span>
+                            </div>
+                            <div>
+                                <span class="font-heading font-bold text-white text-base block mb-1">🎯 Battle Tested</span>
+                                <span class="text-xs text-gray-400">Tested and verified on real commercial YouTube and brand client deliverables.</span>
+                            </div>
+                            <div>
+                                <span class="font-heading font-bold text-white text-base block mb-1">🤝 Direct Support</span>
+                                <span class="text-xs text-gray-400">When you email us, you talk directly with Dhananjay, not a support bot.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Founder Card & Social Proof (5 Cols) -->
+                    <div class="lg:col-span-5">
+                        <div class="studio-card p-6 sm:p-8 border-2 border-brand/30 relative">
+                            <!-- Monogram & Badge -->
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-dark-card border border-brand/40 flex items-center justify-center p-3 text-brand shadow-brand-sm">
+                                    <span class="font-heading font-black text-2xl text-brand">DK</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-heading font-black text-xl text-white">Dhananjay Kumar</h3>
+                                    <span class="text-xs text-brand font-medium">Founder &amp; Motion Designer</span>
+                                    <div class="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
+                                        <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-400"></i>
+                                        <span>Verified Creator</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Founder Quote -->
+                            <blockquote class="p-4 rounded-xl bg-dark-base/80 border border-white/10 text-xs sm:text-sm text-gray-300 italic mb-6 leading-relaxed">
+                                &ldquo;My goal is simple: give you your time back so you can charge higher rates and focus on storytelling instead of tedious keyframing.&rdquo;
+                            </blockquote>
+
+                            <!-- Direct Support Details -->
+                            <div class="space-y-3 text-xs text-gray-400 mb-6">
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
+                                    <span>Direct Email Support:</span>
+                                    <span class="text-white font-mono font-bold">motionbydk@gmail.com</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
+                                    <span>Response Time:</span>
+                                    <span class="text-emerald-400 font-bold">&lt; 15 Minutes</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
+                                    <span>Location:</span>
+                                    <span class="text-white font-medium">India 🇮🇳 (Global Delivery)</span>
+                                </div>
+                            </div>
+
+                            <a href="mailto:motionbydk@gmail.com?subject=Question%20about%20MotionByDk%20Tools" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl text-center transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                                <span>Send Direct Question to Dhananjay</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        
+<!-- 8. REVIEWS & TESTIMONIALS -->
+        <section class="py-20 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading font-black text-2xl sm:text-4xl text-white mb-3">
+                        Loved by 1,400+ Editors &amp; Creators
+                    </h2>
+                    <p class="text-gray-400 text-sm sm:text-base">
+                        Here's what fellow video editors are saying about the Motion by DK Suite.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="studio-card p-6">
+                        <div class="flex text-amber-400 mb-3">
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                            "The AE Carousel automation script alone saved me 5 hours on my last client project. Absolutely insane value for ₹199!"
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-xs border border-brand/30">
+                                AR
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Aman Roy</div>
+                                <div class="text-[11px] text-gray-400">Freelance Video Editor</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="studio-card p-6">
+                        <div class="flex text-amber-400 mb-3">
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                            "The SFX pack is super crisp. No filler trash sounds. Every single WAV file is actually usable for YouTube reels."
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-xs border border-brand/30">
+                                VK
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Vikram K.</div>
+                                <div class="text-[11px] text-gray-400">Reels Content Creator</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="studio-card p-6">
+                        <div class="flex text-amber-400 mb-3">
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                            "Direct Google Drive download was instant after payment. Dhananjay really put together a goldmine here."
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-xs border border-brand/30">
+                                PS
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">Priya Sharma</div>
+                                <div class="text-[11px] text-gray-400">Motion Designer</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+<!-- 9. INTERACTIVE FAQ ACCORDION -->
+        <section id="faq" class="py-20 relative bg-dark-surface/40 border-t border-white/10">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading font-black text-2xl sm:text-4xl text-white mb-2">
+                        Frequently Asked Questions
+                    </h2>
+                    <p class="text-gray-400 text-sm">Everything you need to know before joining.</p>
+                </div>
+
+                <div class="space-y-4" id="faqAccordion">
+                    <!-- FAQ 1 -->
+                    <div class="studio-card overflow-hidden">
+                        <button onclick="toggleFaq(1)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none">
+                            <span>How does the AE Workflow Pro license work?</span>
+                            <i id="faqIcon-1" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="faqAns-1" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+                            Each license includes 2 computer activations (Windows or Mac). You receive a personal license key that activates your extension directly inside Adobe After Effects. Updates are completely free for life.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="studio-card overflow-hidden">
+                        <button onclick="toggleFaq(2)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none">
+                            <span>How do I pay via UPI and receive my license?</span>
+                            <i id="faqIcon-2" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="faqAns-2" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+                            For Indian creators without international credit cards, simply click 'Pay with UPI (₹499)'. Pay ₹499 to our official UPI ID <strong>motionbydk@ybl</strong> (or scan the QR code in the popup), email your transaction screenshot to <strong>motionbydk@gmail.com</strong>, and your personal license key + download link will be delivered within 15 minutes!
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="studio-card overflow-hidden">
+                        <button onclick="toggleFaq(3)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none">
+                            <span>Which After Effects versions and OS are supported?</span>
+                            <i id="faqIcon-3" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="faqAns-3" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+                            The tools support Adobe After Effects CC 2019 through 2026+ on both macOS (Apple Silicon M1/M2/M3 &amp; Intel) and Windows 10/11. Automated 1-click install scripts are included for both platforms.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="studio-card overflow-hidden">
+                        <button onclick="toggleFaq(4)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none">
+                            <span>How do I access the 50GB Editing Vault after paying ₹199?</span>
+                            <i id="faqIcon-4" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="faqAns-4" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+                            Immediately after completing the ₹199 payment on SuperProfile, you are redirected to the private Google Drive folder link, and a permanent copy is sent straight to your email. You can download individual folders or the entire vault anytime.
+                        </div>
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="studio-card overflow-hidden">
+                        <button onclick="toggleFaq(5)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none">
+                            <span>Can I use these assets and scripts for commercial client work?</span>
+                            <i id="faqIcon-5" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div id="faqAns-5" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+                            Yes! Both the AE Workflow Pro plugin and the 50GB Vault assets come with a full commercial license. You can use them in client videos, YouTube channels, advertisements, and freelance projects without paying royalties.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 2: DEDICATED AE WORKFLOW PRO PLUGIN SUITE PAGE           -->
+        <!-- ============================================================== -->
+        <div id="view-plugin" class="page-view" style="display:block;">
+            <!-- Top Breadcrumb Bar -->
+            <div class="border-b border-white/10 bg-dark-surface/40 py-2.5 sm:py-3 mb-1">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-3">
+                    <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 text-xs font-bold text-gray-300 hover:text-brand bg-dark-card border border-white/10 hover:border-brand/40 px-4 py-2 rounded-xl transition-all cursor-pointer">
+                        <i data-lucide="arrow-left" class="w-4 h-4 text-brand"></i>
+                        <span>Back to All Products</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-mono font-bold text-brand bg-brand/15 border border-brand/30 px-3 py-1 rounded-full uppercase">AE Extension Suite</span>
+                        <button onclick="navigateTo('vault')" class="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1">
+                            <span>Switch to 50GB Vault</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+<!-- 5. FLAGSHIP SOFTWARE: MOTIONBYDK AE WORKFLOW PRO EXTENSION -->
+        <section id="ae-workflow-plugin" class="pt-6 pb-20 md:pt-8 md:pb-24 relative overflow-hidden bg-[#0a0b12] border-y border-brand/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-8 md:mb-12">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand/15 border border-brand/40 text-brand text-xs font-bold uppercase tracking-widest mb-3">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
+                        <span>Official Adobe After Effects Extension</span>
+                    </div>
+                    <h2 class="font-heading font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-3 sm:mb-4">
+                        MotionByDk AE Workflow <span class="text-brand">PRO v3.6</span>
+                    </h2>
+                    <p class="text-gray-300 text-sm sm:text-base md:text-lg leading-relaxed">
+                        Say goodbye to tedious manual rigging. Build stunning 3D Carousels, procedural macOS Mouse Dock hovers, and kinetic Bezier speed ramps in seconds.
+                    </p>
+                </div>
+
+                <!-- MAIN SHOWCASE WITH VIDEO FALLBACK SYSTEM & FEATURE TAB SWITCHER -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
+                    
+                    <!-- Left Column: Video/Mockup Media Player Container (7 Cols) -->
+                    <div class="lg:col-span-7">
+                        <div class="relative rounded-2xl overflow-hidden border border-brand/35 shadow-2xl bg-[#08080a] p-2 sm:p-3">
+                            <!-- Mac Traffic Light Header -->
+                            <div class="flex items-center justify-between pb-3 px-2 border-b border-white/10 mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                                    <span id="tabMediaTitle" class="text-[11px] text-gray-400 font-mono ml-2">MotionByDk_AE_Workflow_Studio.jsx</span>
+                                </div>
+                                <span class="text-[10px] text-brand font-mono font-bold bg-brand/10 px-2 py-0.5 rounded border border-brand/30">AE 2018–2026+</span>
+                            </div>
+
+                            <!-- Media Frame with Video Fallback -->
+                            <div class="relative aspect-video rounded-xl overflow-hidden bg-black flex items-center justify-center group">
+                                <!-- Dynamic Video Element (Plays when video is added into assets/videos/, otherwise shows poster image) -->
+                                <video id="pluginMediaVideo" class="w-full h-full object-cover" autoplay loop muted playsinline poster="assets/ae_workflow_preview.png">
+                                    <source src="assets/videos/workflow_demo.mp4" type="video/mp4">
+                                    <img id="pluginMediaFallback" src="assets/ae_workflow_preview.png" alt="MotionByDk AE Workflow UI" class="w-full h-full object-cover">
+                                </video>
+
+                                <!-- Gradient Overlay -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none"></div>
+
+                                <!-- Overlay Badge -->
+                                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono text-gray-300 bg-[#0a0a0c]/85 backdrop-blur-md p-2.5 rounded-lg border border-white/10">
+                                    <span class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                        <span id="tabMediaSub">Active: 1-Click Align, 9-Point Anchor &amp; Instant FX</span>
+                                    </span>
+                                    <span class="text-brand font-bold text-[11px]">1-Click Win &amp; Mac</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Feature Badges Under Video -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 text-center">
+                            <div class="p-2.5 rounded-xl bg-dark-card border border-white/5 text-xs">
+                                <span class="text-brand font-bold block mb-0.5">⚡ Essential</span>
+                                <span class="text-[11px] text-gray-400">Workflow Studio</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-dark-card border border-white/5 text-xs">
+                                <span class="text-brand font-bold block mb-0.5">5 Modes</span>
+                                <span class="text-[11px] text-gray-400">3D Carousel</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-dark-card border border-white/5 text-xs">
+                                <span class="text-brand font-bold block mb-0.5">Spring Physics</span>
+                                <span class="text-[11px] text-gray-400">Mouse Dock</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-dark-card border border-white/5 text-xs">
+                                <span class="text-brand font-bold block mb-0.5">Kinetic Presets</span>
+                                <span class="text-[11px] text-gray-400">Bezier Graph</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Feature Tab Switcher (5 Cols) -->
+                    <div class="lg:col-span-5 space-y-2.5">
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span>Interactive Feature Explorer</span>
+                            <span class="text-brand">Click tab to preview</span>
+                        </div>
+
+                        <!-- Tab 1: Workflow Studio (Active by default) -->
+                        <button onclick="switchPluginFeature('workflow')" id="tabBtn-workflow" class="plugin-feature-tab w-full text-left p-3.5 rounded-xl bg-[#141624] border-2 border-brand transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 mb-1 font-heading font-bold text-white text-sm sm:text-base">
+                                <span class="w-7 h-7 rounded-lg bg-brand text-black flex items-center justify-center text-xs font-black">⚡</span>
+                                <span>Essential Workflow Studio</span>
+                            </div>
+                            <p class="text-xs text-gray-300 pl-10 leading-relaxed">
+                                6-Way Align, 9-Point Anchor Repositioner, Precomp/Unprecomp, Animated Number Counter &amp; 20+ Instant Layer FX.
+                            </p>
+                        </button>
+
+                        <!-- Tab 2: 3D Carousel -->
+                        <button onclick="switchPluginFeature('carousel')" id="tabBtn-carousel" class="plugin-feature-tab w-full text-left p-3.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 mb-1 font-heading font-bold text-white text-sm sm:text-base">
+                                <span class="w-7 h-7 rounded-lg bg-brand/20 text-brand flex items-center justify-center text-xs font-black">3D</span>
+                                <span>3D Carousel Studio (5 Layouts)</span>
+                            </div>
+                            <p class="text-xs text-gray-400 pl-10 leading-relaxed">
+                                Flat, Cylinder, Sphere, Wave &amp; Circle. Procedural depth, drop shadows &amp; auto-rotation with live AE preview.
+                            </p>
+                        </button>
+
+                        <!-- Tab 3: Mouse Dock -->
+                        <button onclick="switchPluginFeature('dock')" id="tabBtn-dock" class="plugin-feature-tab w-full text-left p-3.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 mb-1 font-heading font-bold text-white text-sm sm:text-base">
+                                <span class="w-7 h-7 rounded-lg bg-brand/20 text-brand flex items-center justify-center text-xs font-black">🍏</span>
+                                <span>macOS Mouse Dock Magnifier</span>
+                            </div>
+                            <p class="text-xs text-gray-400 pl-10 leading-relaxed">
+                                Procedural distance-based cursor spring scaling, baseline alignment &amp; auto-fitting background tabs.
+                            </p>
+                        </button>
+
+                        <!-- Tab 4: Bezier Curves -->
+                        <button onclick="switchPluginFeature('graph')" id="tabBtn-graph" class="plugin-feature-tab w-full text-left p-3.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 mb-1 font-heading font-bold text-white text-sm sm:text-base">
+                                <span class="w-7 h-7 rounded-lg bg-brand/20 text-brand flex items-center justify-center text-xs font-black">📈</span>
+                                <span>Kinetic Bezier Curve Editor</span>
+                            </div>
+                            <p class="text-xs text-gray-400 pl-10 leading-relaxed">
+                                Visual curve presets with 1-click Ease-In, Ease-Out, Pop, Bounce &amp; Elastic speed ramps on selected keyframes.
+                            </p>
+                        </button>
+
+                        <!-- Tab 5: Shape Tools -->
+                        <button onclick="switchPluginFeature('shape')" id="tabBtn-shape" class="plugin-feature-tab w-full text-left p-3.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+                            <div class="flex items-center gap-3 mb-1 font-heading font-bold text-white text-sm sm:text-base">
+                                <span class="w-7 h-7 rounded-lg bg-brand/20 text-brand flex items-center justify-center text-xs font-black">✏️</span>
+                                <span>Shape Tools &amp; Trim Paths</span>
+                            </div>
+                            <p class="text-xs text-gray-400 pl-10 leading-relaxed">
+                                Zero deep-menu clicking. Complete Start, End, Offset Trim sliders + precision Dashes, Gaps &amp; Taper stroke controls.
+                            </p>
+                        </button>
+
+                        <!-- Dual Action Buttons -->
+                        <div class="pt-3 flex flex-col sm:flex-row gap-3">
+                            <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="flex-1 bg-brand hover:bg-brand-hover text-black font-extrabold text-sm py-3 px-4 rounded-xl shadow-brand-sm transition-all text-center flex items-center justify-center gap-2">
+                                <span>Buy on Gumroad – $15</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                            <button onclick="openUpiModal()" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm py-3 px-4 rounded-xl transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                                <span>🇮🇳 Pay UPI – ₹499</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BEFORE VS AFTER COMPARISON TABLE -->
+                <div id="workflow-comparison" class="pt-12 border-t border-white/10">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <span class="text-xs font-bold text-brand uppercase tracking-widest">Workflow Efficiency</span>
+                        <h3 class="font-heading font-black text-2xl sm:text-4xl text-white mt-1">Manual AE vs MotionByDk Pro</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-2">See how much time you save on every client project.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                        <!-- Old Way (Pain Points) -->
+                        <div class="p-6 sm:p-8 rounded-2xl bg-[#140b0b] border border-rose-900/40 relative">
+                            <div class="flex items-center gap-2 font-bold text-rose-400 text-sm uppercase tracking-wider mb-6">
+                                <span class="w-6 h-6 rounded-full bg-rose-500/20 flex items-center justify-center text-xs">✕</span>
+                                <span>Old Manual Workflow</span>
+                            </div>
+                            <ul class="space-y-4 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-rose-400 font-bold">✕</span>
+                                    <span>Spending <strong>45+ minutes</strong> manually calculating 3D trigonometry expressions for carousels.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-rose-400 font-bold">✕</span>
+                                    <span>Struggling with the AE Graph Editor trying to pull bezier handles for kinetic pop speed ramps.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-rose-400 font-bold">✕</span>
+                                    <span>Drilling into 8 layers of nested shape layer twisty menus just to adjust dashes, gap, or trim paths.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-rose-400 font-bold">✕</span>
+                                    <span>Re-rigging layer hierarchies from scratch every time a client asks for a quick layout tweak.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- MotionByDk Pro Way (Efficiency) -->
+                        <div class="p-6 sm:p-8 rounded-2xl bg-[#0b1411] border-2 border-emerald-500/40 relative shadow-2xl">
+                            <div class="flex items-center gap-2 font-bold text-emerald-400 text-sm uppercase tracking-wider mb-6">
+                                <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs">✔</span>
+                                <span>With MotionByDk AE Workflow</span>
+                            </div>
+                            <ul class="space-y-4 text-xs sm:text-sm text-gray-200">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-emerald-400 font-bold">✔</span>
+                                    <span><strong>1-Click generation</strong> of 5 distinct 3D carousel spatial layouts with auto-rotation.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-emerald-400 font-bold">✔</span>
+                                    <span>Instant <strong>Handcrafted Kinetic Bezier Presets</strong> (Ease, Pop, Bounce) with live handle previews.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-emerald-400 font-bold">✔</span>
+                                    <span>All Trim Paths, Dashes &amp; Taper controls directly in your <strong>docked panel sliders</strong>.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-emerald-400 font-bold">✔</span>
+                                    <span><strong>Live Preview Toggle:</strong> Move sliders and watch After Effects update the composition instantly.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DUAL PRICING: GUMROAD USD VS INDIA UPI -->
+                <div id="plugin-pricing" class="pt-16 max-w-5xl mx-auto">
+                    <div class="text-center mb-10">
+                        <span class="text-xs font-bold text-brand uppercase tracking-widest">Choose Your License</span>
+                        <h3 class="font-heading font-black text-2xl sm:text-4xl text-white mt-1">Simple Lifetime Pricing</h3>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-2">Pay once, own forever. 2 machine activations included.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                        <!-- Option 1: International / Gumroad -->
+                        <div class="p-6 sm:p-8 rounded-3xl bg-dark-card border border-white/10 flex flex-col justify-between hover:border-brand/40 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-xs font-bold font-mono text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">INTERNATIONAL</span>
+                                    <span class="text-xs text-gray-400">Cards &amp; PayPal</span>
+                                </div>
+                                <h4 class="font-heading font-black text-2xl text-white mb-2">Global Commercial</h4>
+                                <div class="flex items-baseline gap-2 mb-4">
+                                    <span class="font-heading font-black text-4xl sm:text-5xl text-white">$15</span>
+                                    <span class="text-xs text-gray-400">USD • Lifetime Access</span>
+                                </div>
+                                <ul class="space-y-3 text-xs sm:text-sm text-gray-300 mb-8">
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Instant automated license key</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Credit/Debit Cards &amp; PayPal supported</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Windows &amp; Mac 1-Click Installers</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Free lifetime updates directly in AE</li>
+                                </ul>
+                            </div>
+                            <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="w-full bg-brand hover:bg-brand-hover text-black font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-xl shadow-brand-sm transition-all text-center flex items-center justify-center gap-2">
+                                <span>Buy via Gumroad – $15</span>
+                            </a>
+                        </div>
+
+                        <!-- Option 2: India Special / UPI -->
+                        <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#0e1713] to-dark-card border-2 border-emerald-500/40 flex flex-col justify-between shadow-2xl relative">
+                            <div class="absolute -top-3 right-6 bg-emerald-500 text-black text-[10px] font-extrabold uppercase px-3 py-0.5 rounded-full tracking-wider">
+                                🇮🇳 INDIA SPECIAL (UPI)
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-xs font-bold font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">DIRECT UPI</span>
+                                    <span class="text-xs text-emerald-400 font-semibold">GPay • PhonePe • Paytm</span>
+                                </div>
+                                <h4 class="font-heading font-black text-2xl text-white mb-2">Indian Creator Edition</h4>
+                                <div class="flex items-baseline gap-2 mb-4">
+                                    <span class="font-heading font-black text-4xl sm:text-5xl text-emerald-400">₹499</span>
+                                    <span class="text-xs text-gray-400">INR • Lifetime Access</span>
+                                </div>
+                                <ul class="space-y-3 text-xs sm:text-sm text-gray-200 mb-8">
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Direct UPI ID: <strong class="text-white">motionbydk@ybl</strong></li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> No international card required</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> License key sent to your Email within 15 mins</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Windows &amp; Mac 1-Click Installers</li>
+                                </ul>
+                            </div>
+                            <button onclick="openUpiModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                                <span>Pay with UPI – ₹499</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 3: DEDICATED 50GB PRIVATE VIDEO EDITING VAULT PAGE       -->
+        <!-- ============================================================== -->
+        <div id="view-vault" class="page-view" style="display:none;">
+            <!-- Top Breadcrumb Bar -->
+            <div class="border-b border-white/10 bg-dark-surface/40 py-2.5 sm:py-3 mb-1">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-3">
+                    <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 text-xs font-bold text-gray-300 hover:text-brand bg-dark-card border border-white/10 hover:border-brand/40 px-4 py-2 rounded-xl transition-all cursor-pointer">
+                        <i data-lucide="arrow-left" class="w-4 h-4 text-brand"></i>
+                        <span>Back to All Products</span>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-mono font-bold text-amber-400 bg-amber-400/15 border border-amber-400/30 px-3 py-1 rounded-full uppercase">50GB Asset Library</span>
+                        <button onclick="navigateTo('plugin')" class="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1">
+                            <span>Switch to AE Plugin</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+<!-- 6. THE 50GB PRIVATE EDITING VAULT (Clean Studio Theme) -->
+        <section id="vault-contents" class="pt-6 pb-20 md:pt-8 md:pb-24 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-8 md:mb-12">
+                    <h2 class="text-xs font-bold text-brand uppercase tracking-widest mb-3 flex items-center justify-center gap-2">
+                        <i data-lucide="layers" class="w-4 h-4"></i> Complete Asset Inventory
+                    </h2>
+                    <h3 class="font-heading font-black text-3xl sm:text-4xl md:text-5xl text-white tracking-tight mb-3">
+                        What's Inside The <span class="text-brand">50GB Vault?</span>
+                    </h3>
+                    <p class="text-gray-400 text-sm sm:text-base md:text-lg">
+                        Everything you need to produce viral, high-budget client videos without starting from scratch.
+                    </p>
+                </div>
+
+                <!-- Showcase Video Player Frame (Auto-plays vault_demo.mp4 with poster fallback) -->
+                <div class="max-w-4xl mx-auto mb-12">
+                    <div class="relative aspect-video rounded-2xl overflow-hidden bg-black border border-white/15 shadow-2xl">
+                        <video class="w-full h-full object-cover" autoplay loop muted playsinline poster="assets/vault_hero_mockup.png">
+                            <source src="assets/videos/vault_demo.mp4" type="video/mp4">
+                            <img src="assets/vault_hero_mockup.png" alt="50GB Private Editing Vault Preview" class="w-full h-full object-cover">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-base via-transparent to-transparent pointer-events-none"></div>
+                        <div class="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between text-xs font-mono text-gray-300 bg-dark-base/85 backdrop-blur-md p-2.5 rounded-lg border border-white/10">
+                            <span class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                                <span>50GB Private Vault Showcase (4K Overlays, SFX &amp; LUTs)</span>
+                            </span>
+                            <span class="text-amber-400 font-bold text-[11px]">Instant G-Drive Link</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bento Box Grid (Clean Design) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Card 1 -->
+                    <div class="studio-card p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">01</span>
+                                <div class="w-12 h-12 rounded-xl bg-dark-card border border-white/10 flex items-center justify-center text-brand group-hover:scale-110 transition-transform">
+                                    <i data-lucide="film" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-heading font-bold text-xl sm:text-2xl text-white mb-3 group-hover:text-brand transition-colors">
+                                Video Editing Assets
+                            </h4>
+                            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                Professional overlay elements engineered to instantly add cinematic depth and grit to any video timeline.
+                            </p>
+                            <ul class="space-y-2.5 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>4K Light Leaks &amp; Lens Flares</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Realistic Film Burns &amp; Light Rays</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Retro CRT &amp; Glitch Overlays</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>50+ Hollywood Cinematic LUTs</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400 font-mono">
+                            <span>Format: MP4, CUBE</span>
+                            <span class="text-brand">Drag &amp; Drop</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="studio-card p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">02</span>
+                                <div class="w-12 h-12 rounded-xl bg-dark-card border border-white/10 flex items-center justify-center text-brand group-hover:scale-110 transition-transform">
+                                    <i data-lucide="layout" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-heading font-bold text-xl sm:text-2xl text-white mb-3 group-hover:text-brand transition-colors">
+                                Motion Graphics Kit
+                            </h4>
+                            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                Fully customizable graphics templates that keep viewers hooked and boost retention rates.
+                            </p>
+                            <ul class="space-y-2.5 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Premiere Pro .mogrt Templates</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Minimal &amp; Modern Lower Thirds</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Looping Animated Backgrounds</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Callout Badges &amp; Progress Bars</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400 font-mono">
+                            <span>Format: .mogrt, .aep</span>
+                            <span class="text-brand">100% Customizable</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="studio-card p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">03</span>
+                                <div class="w-12 h-12 rounded-xl bg-dark-card border border-white/10 flex items-center justify-center text-brand group-hover:scale-110 transition-transform">
+                                    <i data-lucide="volume-2" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-heading font-bold text-xl sm:text-2xl text-white mb-3 group-hover:text-brand transition-colors">
+                                Audio &amp; SFX Vault
+                            </h4>
+                            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                Uncompressed 24-bit WAV sound effects to make every cut, transition, and impact feel punchy.
+                            </p>
+                            <ul class="space-y-2.5 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Cinematic Whooshes &amp; Swooshes</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Tension Risers &amp; Sub-Bass Hits</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Viral Reel Meme SFX Pack</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>UI Clicks, Pops &amp; Keyboard Taps</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400 font-mono">
+                            <span>Format: WAV (24-bit/48kHz)</span>
+                            <span class="text-brand">Royalty Free</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="studio-card p-6 sm:p-8 flex flex-col justify-between group relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">04</span>
+                                <div class="w-12 h-12 rounded-xl bg-dark-card border border-white/10 flex items-center justify-center text-brand group-hover:scale-110 transition-transform">
+                                    <i data-lucide="palette" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <h4 class="font-heading font-bold text-xl sm:text-2xl text-white mb-3 group-hover:text-brand transition-colors">
+                                Design &amp; Thumbnails
+                            </h4>
+                            <p class="text-gray-400 text-sm mb-6 leading-relaxed">
+                                High-CTR thumbnail building blocks and graphic design assets to convert casual scrollers.
+                            </p>
+                            <ul class="space-y-2.5 text-xs sm:text-sm text-gray-300">
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Layered YouTube PSD Templates</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>3D Vector Icons &amp; Arrow Assets</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Curated Creator Font Suite</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Glow &amp; Paper Texture Elements</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-8 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400 font-mono">
+                            <span>Format: PSD, PNG, OTF</span>
+                            <span class="text-brand">High Resolution</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 (Spans 2 Columns on Desktop) -->
+                    <div class="studio-card p-6 sm:p-8 md:col-span-2 flex flex-col lg:flex-row justify-between items-center gap-8 group relative overflow-hidden border-2 border-brand/30">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30">05 • BONUS INCLUDED</span>
+                                <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2.5 py-0.5 rounded-md border border-emerald-500/40">WORTH ₹2,000</span>
+                            </div>
+                            <h4 class="font-heading font-black text-2xl sm:text-3xl text-white mb-3 group-hover:text-brand transition-colors">
+                                Free 2D/3D Carousel JSX Automation Script
+                            </h4>
+                            <p class="text-gray-300 text-sm sm:text-base mb-6 leading-relaxed">
+                                Automate repetitive carousel animation inside After Effects with Dhananjay's custom ExtendScript (.jsx) tool. Construct smooth rotating product rings in under 10 seconds.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                                <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-200 bg-dark-card p-2.5 rounded-lg border border-white/10">
+                                    <i data-lucide="terminal" class="w-4 h-4 text-brand"></i>
+                                    <span>2D/3D Carousel Automation</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-200 bg-dark-card p-2.5 rounded-lg border border-white/10">
+                                    <i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>AE CC 2019–2026 Compatible</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Graphic Preview Image -->
+                        <div class="w-full lg:w-72 aspect-square rounded-xl overflow-hidden border border-white/20 shadow-2xl relative group-hover:scale-105 transition-transform duration-500">
+                            <img src="assets/ae_script_preview.png" alt="AE Script UI Preview" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark-base via-transparent to-transparent"></div>
+                            <div class="absolute bottom-3 left-3 right-3 bg-dark-card/90 backdrop-blur-md p-2 rounded-lg border border-white/10 text-[11px] text-gray-300 font-mono flex items-center justify-between">
+                                <span>Carousel_Automation.jsx</span>
+                                <span class="text-brand">Included Free</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Vault Checkout Box -->
+                <div class="mt-16 max-w-3xl mx-auto studio-card p-8 sm:p-12 text-center border-2 border-brand/40 shadow-brand-sm">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/80 border border-red-500/40 text-red-400 text-xs sm:text-sm font-semibold mb-6">
+                        <i data-lucide="clock" class="w-4 h-4 text-red-400 animate-spin"></i>
+                        <span>LIMITED PROMO EXPIRES IN: <span id="countdownTimer" class="font-mono text-white font-extrabold">14:59</span></span>
+                    </div>
+
+                    <h3 class="font-heading font-black text-2xl sm:text-4xl text-white mb-2">
+                        Get The 50GB Private Vault for Just ₹199
+                    </h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-6">
+                        Pay once via UPI/Cards and receive instant, unlimited Google Drive download access.
+                    </p>
+
+                    <div class="flex items-baseline justify-center gap-3 mb-8">
+                        <span class="text-gray-500 line-through text-xl">₹999</span>
+                        <span class="font-heading font-black text-5xl text-brand">₹199</span>
+                        <span class="text-xs text-gray-400">One-time / Lifetime</span>
+                    </div>
+
+                    <a href="https://superprofile.bio/vp/6aafdb72f7b0c700131df4f6" class="inline-flex items-center justify-center px-10 py-4 bg-brand hover:bg-brand-hover text-black font-heading font-extrabold text-lg rounded-xl shadow-brand transition-all gap-2">
+                        <i data-lucide="download" class="w-5 h-5 fill-black"></i>
+                        <span>Unlock Vault for ₹199</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        
+        </div>
+
+    </main>
+
+    <!-- 10. CLEAN MINIMALIST FOOTER -->
+    <footer class="border-t border-white/10 bg-dark-base py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+                
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-dark-card border border-brand/40 p-1.5 flex items-center justify-center">
+                        <img src="assets/icon.svg" alt="Motion by DK Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="font-heading font-black text-lg text-white">MOTION<span class="text-brand">BY DK</span></span>
+                        <span class="text-xs text-gray-500 block">Speed &amp; Precision for Video Editors</span>
+                    </div>
+                </div>
+
+                <!-- Footer Nav Links -->
+                <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400">
+                    <button onclick="navigateTo('home')" class="hover:text-white transition-colors cursor-pointer">Home</button>
+                    <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('products')?.scrollIntoView({behavior:'smooth'}); }, 100);" class="hover:text-white transition-colors cursor-pointer">Categories</button>
+                    <button onclick="navigateTo('plugin')" class="hover:text-white transition-colors cursor-pointer">AE Plugin</button>
+                    <button onclick="navigateTo('vault')" class="hover:text-white transition-colors cursor-pointer">50GB Vault</button>
+                    <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 100);" class="hover:text-white transition-colors cursor-pointer">About</button>
+                    <button id="contactBtn" class="hover:text-white transition-colors cursor-pointer">Contact Support</button>
+                    <button id="privacyBtn" class="hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
+                    <button id="termsBtn" class="hover:text-white transition-colors cursor-pointer">Terms of Service</button>
+                </div>
+
+                <div class="text-xs text-gray-500 font-mono">
+                    &copy; 2027 MotionByDk. All Rights Reserved.
+                </div>
+            </div>
+
+            <div class="text-center text-[11px] text-gray-600 border-t border-white/5 pt-6">
+                Disclaimer: Adobe, After Effects, and Premiere Pro are registered trademarks of Adobe Inc. MotionByDk is an independent developer studio and is not affiliated with Adobe Inc.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 11. SOCIAL PROOF LIVE TOAST -->
+    <div id="salesToast" class="fixed bottom-5 left-5 z-40 transform translate-y-24 opacity-0 transition-all duration-500 max-w-xs bg-dark-surface border border-brand/40 rounded-xl p-3 shadow-2xl flex items-center gap-3 pointer-events-none">
+        <div class="w-8 h-8 rounded-lg bg-brand/20 text-brand flex items-center justify-center flex-shrink-0">
+            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        </div>
+        <div class="min-w-0">
+            <div id="toastTitle" class="text-xs font-bold text-white truncate">Rahul S. from Mumbai</div>
+            <div id="toastDesc" class="text-[10px] text-gray-400">Unlocked AE Workflow Pro (₹499)</div>
+        </div>
+    </div>
+
+    <!-- 12. INDIA SPECIAL UPI MODAL -->
+    <div id="upiModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-lg bg-dark-card border-2 border-emerald-500/40 rounded-2xl shadow-2xl p-6 sm:p-8 transform scale-95 transition-transform duration-300 max-h-[92vh] overflow-y-auto">
+            <button onclick="closeUpiModal()" class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-xl font-bold border border-emerald-500/30">
+                    🇮🇳
+                </div>
+                <h3 class="font-heading font-black text-2xl text-white">Instant UPI Activation</h3>
+                <p class="text-xs text-gray-300 mt-1">Get your MotionByDk AE Workflow Pro License via UPI</p>
+                <div class="inline-block mt-2.5 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 font-extrabold text-lg">
+                    ₹499 <span class="text-xs text-gray-400 font-normal">One-time / Lifetime Access</span>
+                </div>
+            </div>
+
+            <!-- UPI Payment Details & QR Code Box -->
+            <div class="space-y-3.5 mb-6">
+                <!-- 1. Official UPI ID with Copy -->
+                <div class="p-3.5 rounded-xl bg-[#08080a] border border-emerald-500/30 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider block">Official UPI ID:</span>
+                        <span class="text-base sm:text-lg font-mono font-black text-white selection:bg-emerald-500 selection:text-black truncate block">motionbydk@ybl</span>
+                    </div>
+                    <button onclick="navigator.clipboard.writeText('motionbydk@ybl'); alert('UPI ID copied: motionbydk@ybl');" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black rounded-lg text-xs font-black flex items-center gap-1.5 flex-shrink-0 cursor-pointer shadow-md">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span>Copy UPI</span>
+                    </button>
+                </div>
+
+                <!-- 2. Scannable QR Code -->
+                <div class="p-3.5 rounded-xl bg-[#08080a] border border-white/10 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                    <div class="w-32 h-32 bg-white p-2 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotion%20by%20DK%26am%3D499%26cu%3DINR" alt="UPI QR Code - motionbydk@ybl" class="w-full h-full object-contain">
+                    </div>
+                    <div class="space-y-1.5 min-w-0">
+                        <div class="text-xs font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Scan with any UPI App</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 leading-snug">
+                            Open Google Pay, PhonePe, or Paytm &rarr; Scan this QR code. Amount <strong>₹499</strong> will be filled automatically.
+                        </p>
+                        <div class="pt-1">
+                            <a href="upi://pay?pa=motionbydk@ybl&pn=Motion%20by%20DK&am=499&cu=INR" class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 hover:text-emerald-300 underline">
+                                <span>Tap to Open UPI App on Phone</span>
+                                <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Steps -->
+                <div class="p-3.5 rounded-xl bg-emerald-950/25 border border-emerald-500/20 text-xs text-gray-300 space-y-2">
+                    <div class="flex items-start gap-2">
+                        <span class="text-emerald-400 font-bold">1.</span>
+                        <span>Pay <strong>₹499</strong> to <strong>motionbydk@ybl</strong> (or scan the QR code above).</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-emerald-400 font-bold">2.</span>
+                        <span>Send payment screenshot / UTR number to <strong>motionbydk@gmail.com</strong>.</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-emerald-400 font-bold">3.</span>
+                        <span>Receive your <strong>Personal License Key &amp; Download Link</strong> in your email within 15 minutes!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <a href="mailto:motionbydk@gmail.com?subject=MotionByDk%20AE%20Workflow%20Pro%20UPI%20Payment&body=Hi%20Dhananjay,%0A%0AI%20have%20sent%20the%20UPI%20payment%20of%20Rs.%20499%20to%20motionbydk@ybl%20for%20MotionByDk%20AE%20Workflow%20Pro.%0APlease%20find%20my%20screenshot%20attached.%0A%0AMy%20Email:%20" class="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm text-center transition-all flex items-center justify-center gap-2">
+                    <span>Send Email Proof</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <button onclick="closeUpiModal()" class="py-3 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm transition-all cursor-pointer">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 13. FREE STARTER KIT MODAL -->
+    <div id="freeKitModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-md bg-dark-card border-2 border-emerald-500/40 rounded-2xl shadow-2xl p-6 sm:p-8 transform scale-95 transition-transform duration-300 text-center">
+            <button onclick="closeFreeKitModal()" class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="gift" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-black text-2xl text-white">Free Starter Pack</h3>
+            <p class="text-xs text-gray-300 mt-1 mb-6">3D Carousel + Scale &amp; Fade Plugin + SFX Pack + Setup PDF</p>
+
+            <div class="p-4 rounded-xl bg-[#08080a] border border-white/10 text-xs text-gray-300 text-left space-y-2.5 mb-6">
+                <div class="flex items-center gap-2 text-white font-semibold">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                    <span>3D Carousel Automation Script (.jsx)</span>
+                </div>
+                <div class="flex items-center gap-2 text-white font-semibold">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                    <span>Scale &amp; Fade Motion Plugin (.jsx)</span>
+                </div>
+                <div class="flex items-center gap-2 text-white font-semibold">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                    <span>Curated Audio SFX Pack (24-bit WAV)</span>
+                </div>
+                <div class="flex items-center gap-2 text-white font-semibold">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                    <span>Quick Setup Installation PDF Guide</span>
+                </div>
+                <div class="flex items-center gap-2 text-white font-semibold">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 flex-shrink-0"></i>
+                    <span>100% Free Commercial Rights</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <a href="mailto:motionbydk@gmail.com?subject=MotionByDk%20Free%20Starter%20Kit%20Request&body=Hi%20Dhananjay,%0A%0APlease%20send%20me%20the%20MotionByDk%20Free%20Starter%20Kit%20(3D%20Carousel,%20Scale%20%26%20Fade%20Plugin,%20SFX%20Pack,%20and%20Quick%20Setup%20PDF).%0A%0AMy%20Name:%20" class="w-full py-3.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2">
+                    <span>Get Free Download Link via Email</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <button onclick="closeFreeKitModal()" class="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 14. CONTACT MODAL -->
+    <div id="contactModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-lg bg-dark-card border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 transform scale-95 transition-transform duration-300">
+            <button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div class="mb-6">
+                <h3 class="font-heading font-black text-2xl text-white">Contact Studio Support</h3>
+                <p class="text-xs text-gray-400 mt-1">Reach Dhananjay Kumar directly for licensing and inquiries.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-dark-base border border-white/10 mb-6">
+                <span class="text-[11px] text-gray-400 block mb-1">Official Direct Email:</span>
+                <span class="text-sm font-mono font-bold text-brand select-all">motionbydk@gmail.com</span>
+                <span class="text-[11px] text-gray-400 block mt-2">Typical response time: Under 15 minutes.</span>
+            </div>
+            <div class="flex gap-3">
+                <a href="mailto:motionbydk@gmail.com" class="flex-1 py-3 bg-brand hover:bg-brand-hover text-black font-extrabold text-sm rounded-xl text-center flex items-center justify-center gap-2">
+                    <span>Open Email Client</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <button class="modal-close-btn py-3 px-5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 15. PRIVACY POLICY MODAL -->
+    <div id="privacyModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-2xl bg-dark-card border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 class="font-heading font-black text-2xl text-white mb-4">Privacy Policy</h3>
+            <div class="space-y-4 text-xs sm:text-sm text-gray-300 leading-relaxed">
+                <p>At <strong>Motion by DK</strong>, we respect your privacy. We only collect the minimal information necessary (name, email address) to deliver your digital purchases, activation keys, and customer support.</p>
+                <p>We do not sell, rent, or trade your personal data. Payments are processed securely via Gumroad and SuperProfile/UPI. We do not store card or banking information on our servers.</p>
+                <p>For questions regarding your data, contact us at <strong>motionbydk@gmail.com</strong>.</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 text-right">
+                <button class="modal-close-btn py-2 px-5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 16. TERMS OF SERVICE MODAL -->
+    <div id="termsModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-2xl bg-dark-card border border-white/10 rounded-2xl shadow-2xl p-6 sm:p-8 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <button class="modal-close-btn absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 class="font-heading font-black text-2xl text-white mb-4">Terms of Service &amp; Licensing</h3>
+            <div class="space-y-4 text-xs sm:text-sm text-gray-300 leading-relaxed">
+                <p>By purchasing or using products from <strong>Motion by DK</strong>, you agree to the following terms:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Commercial License:</strong> You may use all assets and scripts in personal and commercial client deliverables without royalty fees.</li>
+                    <li><strong>Prohibited Actions:</strong> Reselling, redistributing, leasing, or uploading these raw project files, scripts, or assets to public torrent/sharing websites is strictly prohibited.</li>
+                    <li><strong>Refunds:</strong> Due to the immediate irrevocable nature of digital downloads and software activation keys, purchases are generally non-refundable once accessed.</li>
+                </ul>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10 text-right">
+                <button class="modal-close-btn py-2 px-5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 17. FLOATING MOBILE/DESKTOP STICKY BUY BAR -->
+    <div id="stickyBuyBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-2xl bg-[#0a0a0c]/90 backdrop-blur-xl border border-brand/40 rounded-2xl shadow-2xl p-3 flex items-center justify-between gap-3 transform translate-y-24 opacity-0 transition-all duration-500 ease-out">
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-xl bg-brand/20 text-brand font-black text-xs flex items-center justify-center flex-shrink-0 border border-brand/30">
+                DK
+            </div>
+            <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">MotionByDk AE Workflow Pro</div>
+                <div class="text-[10px] text-gray-400">3D Carousel, Mouse Dock &amp; Bezier Suite</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="px-3.5 py-2 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl shadow-brand-sm flex items-center gap-1.5 whitespace-nowrap">
+                <span>Buy $15</span>
+            </a>
+            <button onclick="openUpiModal()" class="hidden sm:inline-flex px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                <span>₹499 UPI</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+
+        // Disable browser automatic scroll restoration to prevent view swap jumps
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        // =========================================================================
+        // 0. MULTI-PAGE VIEW ROUTER (SPA HASH ROUTING & INSTANT ISOLATION)
+        // =========================================================================
+        function navigateTo(pageId, updateHash) {
+            if (updateHash === undefined) updateHash = true;
+            var validPages = ['home', 'plugin', 'vault'];
+            if (validPages.indexOf(pageId) === -1) pageId = 'home';
+
+            // Instant scroll to top before layout swap
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(function(el) {
+                el.style.display = 'none';
+            });
+
+            // Show target view
+            var target = document.getElementById('view-' + pageId);
+            if (target) {
+                target.style.display = 'block';
+            }
+
+            // Lock scroll to top immediately after layout swap
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            requestAnimationFrame(function() {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            });
+
+            // Update desktop nav buttons
+            document.querySelectorAll('.nav-link-btn').forEach(function(btn) {
+                var p = btn.getAttribute('data-nav-page');
+                if (p === pageId) {
+                    btn.classList.add('text-brand', 'border-b-2', 'border-brand', 'font-bold');
+                    btn.classList.remove('text-gray-300');
+                } else {
+                    btn.classList.remove('text-brand', 'border-b-2', 'border-brand', 'font-bold');
+                    btn.classList.add('text-gray-300');
+                }
+            });
+
+            // Update Sticky Bottom Bar content dynamically
+            var stickyBar = document.getElementById('stickyBuyBar');
+            if (stickyBar) {
+                if (pageId === 'plugin') {
+                    stickyBar.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl bg-brand/20 text-brand font-black text-xs flex items-center justify-center flex-shrink-0 border border-brand/30">
+                                AE
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-bold text-white truncate">MotionByDk AE Workflow Pro</div>
+                                <div class="text-[10px] text-gray-400">3D Carousel, Mouse Dock &amp; Bezier Suite</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="px-3.5 py-2 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl shadow-brand-sm flex items-center gap-1.5 whitespace-nowrap">
+                                <span>Buy $15</span>
+                            </a>
+                            <button onclick="openUpiModal()" class="px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                                <span>₹499 UPI</span>
+                            </button>
+                        </div>
+                    `;
+                } else if (pageId === 'vault') {
+                    stickyBar.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl bg-amber-400/20 text-amber-400 font-black text-xs flex items-center justify-center flex-shrink-0 border border-amber-400/30">
+                                50G
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-bold text-white truncate">50GB Private Editing Vault</div>
+                                <div class="text-[10px] text-gray-400">4K Overlays, 1,500+ SFX &amp; MOGRTs</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <a href="https://superprofile.bio/vp/6aafdb72f7b0c700131df4f6" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                                <span>Get Vault (₹199)</span>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    stickyBar.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl bg-brand/20 text-brand font-black text-xs flex items-center justify-center flex-shrink-0 border border-brand/30">
+                                DK
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-bold text-white truncate">Motion by DK Official Store</div>
+                                <div class="text-[10px] text-gray-400">Select a category below to explore</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <button onclick="navigateTo('plugin')" class="px-3 py-2 bg-brand text-black font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                                <span>AE Plugin</span>
+                            </button>
+                            <button onclick="navigateTo('vault')" class="px-3 py-2 bg-amber-400 text-black font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                                <span>50GB Vault</span>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            // Update URL hash without jumping
+            if (updateHash && window.location.hash !== '#' + pageId) {
+                try {
+                    window.history.pushState(null, '', '#' + pageId);
+                } catch(e) {
+                    window.location.hash = pageId;
+                }
+            }
+
+
+            // Refresh icons
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                setTimeout(function() { lucide.createIcons(); }, 50);
+            }
+        }
+
+        // Listen for browser Back/Forward navigation
+        window.addEventListener('hashchange', function() {
+            var hash = (window.location.hash || '').replace('#', '') || 'plugin';
+            if (hash === 'plugin' || hash === 'ae-workflow-plugin') {
+                navigateTo('plugin', false);
+            } else if (hash === 'vault' || hash === 'vault-contents') {
+                navigateTo('vault', false);
+            } else {
+                navigateTo('home', false);
+            }
+        });
+
+        // Initial Route on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            var hash = (window.location.hash || '').replace('#', '') || 'plugin';
+            if (hash === 'plugin' || hash === 'ae-workflow-plugin') {
+                navigateTo('plugin', false);
+            } else if (hash === 'vault' || hash === 'vault-contents') {
+                navigateTo('vault', false);
+            } else {
+                navigateTo('home', false);
+            }
+        });
+
+        // Initialize Lucide Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // 1. MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            var menu = document.getElementById('mobileMenu');
+            var icon = document.getElementById('menuIcon');
+            if (!menu) return;
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.setAttribute('data-lucide', 'menu');
+            } else {
+                icon.setAttribute('data-lucide', 'x');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 2. INTERACTIVE PRODUCT CATEGORY FILTER
+        function filterProducts(category) {
+            // Update filter tabs active state
+            document.querySelectorAll('.category-filter-btn').forEach(function(btn) {
+                btn.classList.remove('bg-brand', 'text-black', 'shadow-brand-sm');
+                btn.classList.add('bg-dark-card', 'text-gray-300', 'border', 'border-white/10');
+            });
+            var activeBtn = document.getElementById('filter-' + category);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-dark-card', 'text-gray-300', 'border', 'border-white/10');
+                activeBtn.classList.add('bg-brand', 'text-black', 'shadow-brand-sm');
+            }
+
+            // Filter cards
+            var items = document.querySelectorAll('.product-item');
+            items.forEach(function(item) {
+                var cat = item.getAttribute('data-category') || '';
+                if (category === 'all' || cat.indexOf(category) !== -1) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 3. INTERACTIVE FEATURE SWITCHER (AE PLUGIN)
+        var pluginFeatures = {
+            workflow: {
+                title: "MotionByDk_AE_Workflow_Studio.jsx",
+                sub: "Active: 1-Click Align, 9-Point Anchor & Instant FX",
+                video: "assets/videos/workflow_demo.mp4",
+                poster: "assets/ae_workflow_preview.png"
+            },
+            carousel: {
+                title: "MotionByDk_3D_Carousel_Studio.jsx",
+                sub: "Active: 3D Spatial Carousel Studio (5 Layouts)",
+                video: "assets/videos/carousel_demo.mp4",
+                poster: "assets/ae_script_preview.png"
+            },
+            dock: {
+                title: "MotionByDk_macOS_Mouse_Dock.jsx",
+                sub: "Active: macOS Mouse Dock Magnifier with Spring Physics",
+                video: "assets/videos/mousedock_demo.mp4",
+                poster: "assets/ae_script_preview.png"
+            },
+            graph: {
+                title: "MotionByDk_Bezier_Graph_Editor.jsx",
+                sub: "Active: Kinetic Bezier Graph Speed Ramps & Curve Presets",
+                video: "assets/videos/graph_demo.mp4",
+                poster: "assets/ae_script_preview.png"
+            },
+            shape: {
+                title: "MotionByDk_Shape_Tools_Engine.jsx",
+                sub: "Active: Precision Shape Tools, Dashes, Gaps & Trim Paths",
+                video: "assets/videos/shape_demo.mp4",
+                poster: "assets/ae_script_preview.png"
+            }
+        };
+
+        function switchPluginFeature(key) {
+            var data = pluginFeatures[key];
+            if (!data) return;
+
+            // Update UI Tab active states
+            document.querySelectorAll('.plugin-feature-tab').forEach(function(el) {
+                el.classList.remove('border-brand', 'bg-[#141624]', 'border-2');
+                el.classList.add('border-white/10', 'bg-dark-card');
+                var badge = el.querySelector('span:first-child');
+                if (badge) {
+                    badge.classList.remove('bg-brand', 'text-black');
+                    badge.classList.add('bg-brand/20', 'text-brand');
+                }
+            });
+
+            var activeBtn = document.getElementById('tabBtn-' + key);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-white/10', 'bg-dark-card');
+                activeBtn.classList.add('border-brand', 'bg-[#141624]', 'border-2');
+                var badge = activeBtn.querySelector('span:first-child');
+                if (badge) {
+                    badge.classList.remove('bg-brand/20', 'text-brand');
+                    badge.classList.add('bg-brand', 'text-black');
+                }
+            }
+
+            // Update Header and Overlay Text
+            var titleEl = document.getElementById('tabMediaTitle');
+            var subEl = document.getElementById('tabMediaSub');
+            if (titleEl) titleEl.innerText = data.title;
+            if (subEl) subEl.innerText = data.sub;
+
+            // Update Video Element with Poster Fallback
+            var videoEl = document.getElementById('pluginMediaVideo');
+            if (videoEl) {
+                videoEl.poster = data.poster;
+                var source = videoEl.querySelector('source');
+                if (source) {
+                    source.src = data.video;
+                    videoEl.load();
+                    videoEl.play().catch(function() {});
+                }
+            }
+        }
+
+        // 4. FAQ ACCORDION HANDLER
+        function toggleFaq(id) {
+            var ans = document.getElementById('faqAns-' + id);
+            var icon = document.getElementById('faqIcon-' + id);
+            if (!ans) return;
+
+            var isHidden = ans.classList.contains('hidden');
+            // Close other FAQs
+            for (var i = 1; i <= 5; i++) {
+                var otherAns = document.getElementById('faqAns-' + i);
+                var otherIcon = document.getElementById('faqIcon-' + i);
+                if (otherAns) otherAns.classList.add('hidden');
+                if (otherIcon) otherIcon.classList.remove('rotate-180');
+            }
+
+            if (isHidden) {
+                ans.classList.remove('hidden');
+                if (icon) icon.classList.add('rotate-180');
+            }
+        }
+
+        // 5. UPI MODAL HANDLERS
+        function openUpiModal() {
+            var modal = document.getElementById('upiModal');
+            if (!modal) return;
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeUpiModal() {
+            var modal = document.getElementById('upiModal');
+            if (!modal) return;
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-100'); box.classList.add('scale-95'); }
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // 6. FREE STARTER KIT MODAL HANDLERS
+        function openFreeKitModal() {
+            var modal = document.getElementById('freeKitModal');
+            if (!modal) return;
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeFreeKitModal() {
+            var modal = document.getElementById('freeKitModal');
+            if (!modal) return;
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-100'); box.classList.add('scale-95'); }
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // 7. GENERIC MODAL CONTROLLER (Contact, Privacy, Terms)
+        document.addEventListener('DOMContentLoaded', function() {
+            var contactModal = document.getElementById('contactModal');
+            var privacyModal = document.getElementById('privacyModal');
+            var termsModal = document.getElementById('termsModal');
+
+            function openModal(modalEl) {
+                if (!modalEl) return;
+                modalEl.classList.remove('opacity-0', 'pointer-events-none');
+                var box = modalEl.querySelector('.modal-box');
+                if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function closeModal(modalEl) {
+                if (!modalEl) return;
+                var box = modalEl.querySelector('.modal-box');
+                if (box) { box.classList.remove('scale-100'); box.classList.add('scale-95'); }
+                modalEl.classList.add('opacity-0', 'pointer-events-none');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            document.getElementById('contactBtn')?.addEventListener('click', function() { openModal(contactModal); });
+            document.getElementById('privacyBtn')?.addEventListener('click', function() { openModal(privacyModal); });
+            document.getElementById('termsBtn')?.addEventListener('click', function() { openModal(termsModal); });
+
+            [contactModal, privacyModal, termsModal].forEach(function(m) {
+                if (!m) return;
+                m.querySelectorAll('.modal-close-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() { closeModal(m); });
+                });
+                m.addEventListener('click', function(e) {
+                    if (e.target === m) closeModal(m);
+                });
+            });
+
+            document.getElementById('upiModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeUpiModal();
+            });
+
+            document.getElementById('freeKitModal')?.addEventListener('click', function(e) {
+                if (e.target === this) closeFreeKitModal();
+            });
+
+            // Escape key closes modals
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeUpiModal();
+                    closeFreeKitModal();
+                    [contactModal, privacyModal, termsModal].forEach(function(m) { closeModal(m); });
+                }
+            });
+
+            // Sticky Buy Bar scroll trigger
+            window.addEventListener('scroll', function() {
+                var bar = document.getElementById('stickyBuyBar');
+                if (!bar) return;
+                if (window.scrollY > 400) {
+                    bar.classList.remove('translate-y-24', 'opacity-0');
+                    bar.classList.add('translate-y-0', 'opacity-100');
+                } else {
+                    bar.classList.remove('translate-y-0', 'opacity-100');
+                    bar.classList.add('translate-y-24', 'opacity-0');
+                }
+            });
+
+            // Social Proof Sales Toast cycle
+            var buyers = [
+                { name: 'Rahul S. from Mumbai', prod: 'Unlocked AE Workflow Pro (₹499)' },
+                { name: 'David M. from London', prod: 'Purchased Global Commercial ($15)' },
+                { name: 'Karthik N. from Bangalore', prod: 'Claimed 50GB Private Vault (₹199)' },
+                { name: 'Sneha P. from Delhi', prod: 'Unlocked AE Workflow Pro (₹499)' },
+                { name: 'Alex B. from New York', prod: 'Purchased Global Commercial ($15)' }
+            ];
+            var buyerIndex = 0;
+            var toastEl = document.getElementById('salesToast');
+            var toastTitle = document.getElementById('toastTitle');
+            var toastDesc = document.getElementById('toastDesc');
+
+            function showToast() {
+                if (!toastEl) return;
+                var b = buyers[buyerIndex];
+                if (toastTitle) toastTitle.innerText = b.name;
+                if (toastDesc) toastDesc.innerText = b.prod;
+                toastEl.classList.remove('translate-y-24', 'opacity-0');
+                toastEl.classList.add('translate-y-0', 'opacity-100');
+                setTimeout(function() {
+                    toastEl.classList.remove('translate-y-0', 'opacity-100');
+                    toastEl.classList.add('translate-y-24', 'opacity-0');
+                }, 4000);
+                buyerIndex = (buyerIndex + 1) % buyers.length;
+            }
+            setTimeout(showToast, 5000);
+            setInterval(showToast, 18000);
+
+            // 15-Minute Countdown Timer
+            var timerMinutes = 14;
+            var timerSeconds = 59;
+            var countdownEl = document.getElementById('countdownTimer');
+            setInterval(function() {
+                if (timerSeconds === 0) {
+                    if (timerMinutes === 0) {
+                        timerMinutes = 14;
+                        timerSeconds = 59;
+                    } else {
+                        timerMinutes--;
+                        timerSeconds = 59;
+                    }
+                } else {
+                    timerSeconds--;
+                }
+                if (countdownEl) {
+                    countdownEl.innerText = (timerMinutes < 10 ? '0' : '') + timerMinutes + ':' + (timerSeconds < 10 ? '0' : '') + timerSeconds;
+                }
+            }, 1000);
+
+            // Refresh icons after full load
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
