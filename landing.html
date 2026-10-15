@@ -6,6 +6,9 @@
     <title data-gumroad-field="name">MotionByDk AE Workflow Pro — Ultimate After Effects Animation Suite</title>
     <meta name="description" content="Supercharge your After Effects animation speed by 10x. 3D Carousel Studio, macOS Mouse Dock Magnifier, Bezier Curves, and Precision Shape Tools in one unified panel.">
 
+    <!-- Gumroad Overlay Script (Enables in-page popup checkout) -->
+    <script src="https://gumroad.com/js/gumroad.js"></script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -155,14 +158,14 @@
                     <span>Instant License Delivery</span>
                 </div>
 
-                <!-- Live Buy Button (Gumroad Delegated) -->
-                <button data-gumroad-action="buy" class="relative group overflow-hidden rounded-xl p-[1px] font-bold text-xs sm:text-sm shadow-neon-orange transition-transform active:scale-95 cursor-pointer">
+                <!-- Live Buy Button (Gumroad Delegated + Direct Link Fallback) -->
+                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="relative group overflow-hidden rounded-xl p-[1px] font-bold text-xs sm:text-sm shadow-neon-orange transition-transform active:scale-95 cursor-pointer inline-block">
                     <span class="absolute inset-0 bg-gradient-to-r from-[#ff7a00] via-[#ff9500] to-[#ffaa00]"></span>
                     <span class="relative block px-4 py-2 sm:px-6 sm:py-2.5 bg-[#0a0a0c] rounded-[11px] text-white group-hover:bg-transparent transition-colors flex items-center gap-2 font-bold">
                         <span>Get Pro License</span>
-                        <span class="text-[#ff7a00] group-hover:text-black font-extrabold" data-gumroad-field="price">$29</span>
+                        <span class="text-[#ff7a00] group-hover:text-black font-extrabold" data-gumroad-field="price">$15</span>
                     </span>
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -208,10 +211,10 @@
 
             <!-- Big Primary Buy CTA -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto mb-16">
-                <button data-gumroad-action="buy" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff881a] hover:to-[#ffa11a] text-black font-extrabold text-base sm:text-lg py-4 px-8 rounded-2xl shadow-neon-orange transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3 cursor-pointer">
+                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff881a] hover:to-[#ffa11a] text-black font-extrabold text-base sm:text-lg py-4 px-8 rounded-2xl shadow-neon-orange transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3 cursor-pointer">
                     <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span>Instant Download – <span data-gumroad-field="price">$29</span></span>
-                </button>
+                    <span>Instant Download – <span data-gumroad-field="price">$15</span></span>
+                </a>
             </div>
 
             <!-- Trust Guarantees -->
@@ -420,9 +423,9 @@
 
                 <!-- Final Purchase Button -->
                 <div class="text-center">
-                    <button data-gumroad-action="buy" class="w-full sm:w-auto bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff881a] hover:to-[#ffa11a] text-black font-extrabold text-lg py-4 px-12 rounded-2xl shadow-neon-orange transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
-                        Get MotionByDk AE Workflow Pro – <span data-gumroad-field="price">$29</span>
-                    </button>
+                    <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="w-full sm:w-auto inline-block bg-gradient-to-r from-[#ff7a00] to-[#ff9500] hover:from-[#ff881a] hover:to-[#ffa11a] text-black font-extrabold text-lg py-4 px-12 rounded-2xl shadow-neon-orange transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+                        Get MotionByDk AE Workflow Pro – <span data-gumroad-field="price">$15</span>
+                    </a>
                     <div class="text-[11px] text-slate-400 mt-3 font-mono">Secure 256-bit SSL encrypted Gumroad checkout</div>
                 </div>
             </div>
@@ -489,10 +492,24 @@
             <div class="flex items-center gap-4">
                 <a href="mailto:motionbydk@gmail.com" class="hover:text-[#ff7a00] transition-colors">Support: motionbydk@gmail.com</a>
                 <span>•</span>
-                <button data-gumroad-action="buy" class="text-[#ff7a00] hover:underline font-bold cursor-pointer">Buy Pro License</button>
+                <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="text-[#ff7a00] hover:underline font-bold cursor-pointer">Buy Pro License</a>
             </div>
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var buyEls = document.querySelectorAll('[data-gumroad-action="buy"]');
+            buyEls.forEach(function (el) {
+                el.addEventListener('click', function (e) {
+                    if (window.parent && window.parent !== window) {
+                        try {
+                            window.parent.postMessage({ type: 'gumroad:checkout', params: {} }, '*');
+                        } catch (err) {}
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
