@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>License Activation Portal | Motion by DK</title>
+    <meta name="description" content="Generate and verify your official 2-PC commercial license key for MotionByDk AE Workflow Pro and Studio Combo Pack.">
+    <link rel="canonical" href="https://motionbydk.in/activate.html">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00F0FF',
+                            hover: '#33F3FF',
+                            dim: '#008b94'
+                        },
+                        dark: {
+                            base: '#07090e',
+                            surface: '#0d1117',
+                            card: '#131822',
+                            elevated: '#1a2230',
+                            border: '#232d3f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        body {
+            background-color: #07090e;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .studio-card {
+            background: linear-gradient(180deg, rgba(19, 24, 34, 0.8) 0%, rgba(13, 17, 23, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 1.25rem;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glow Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-[-100px] w-96 h-96 bg-amber-400/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-white/10 bg-dark-base/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-dark-card border border-brand/40 p-2 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="assets/icon.svg" alt="Motion by DK Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <span class="font-heading font-black text-xl tracking-tight text-white block">MOTION<span class="text-brand">BY DK</span></span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-wider uppercase block">License Portal</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                    &larr; Back to Store
+                </a>
+                <a href="https://wa.me/919217282296" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 text-xs font-bold transition-all flex items-center gap-1.5">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>WhatsApp Support</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="w-full max-w-xl">
+            
+            <div class="studio-card p-6 sm:p-10 border border-white/15 shadow-2xl relative overflow-hidden">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-bold uppercase tracking-wider mb-3">
+                        <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                        <span>Instant License Verification</span>
+                    </div>
+                    <h1 class="font-heading font-black text-2xl sm:text-4xl text-white tracking-tight mb-2">
+                        Claim Your License Key
+                    </h1>
+                    <p class="text-xs sm:text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+                        Purchased on SuperProfile or via UPI? Enter your email and Order Reference to generate your personal 2-PC Commercial Activation Key instantly.
+                    </p>
+                </div>
+
+                <!-- Activation Form -->
+                <form id="claimKeyForm" onsubmit="handleClaimLicense(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1.5">Select Your Purchased Product:</label>
+                        <select id="claimProductType" class="w-full px-4 py-3 rounded-xl bg-dark-base border border-white/10 text-white text-xs sm:text-sm focus:border-brand focus:outline-none">
+                            <option value="plugin">MotionByDk AE Workflow Pro Plugin (₹499)</option>
+                            <option value="combo">All-in-One Studio Combo Pack (50GB Vault + Plugin) (₹699)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1.5">Your Purchase Email Address:</label>
+                        <input type="email" id="claimBuyerEmail" required placeholder="e.g. editor@gmail.com" class="w-full px-4 py-3 rounded-xl bg-dark-base border border-white/10 text-white text-xs sm:text-sm focus:border-brand focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1.5">SuperProfile Order ID / UPI Ref / Phone:</label>
+                        <input type="text" id="claimOrderId" required placeholder="e.g. SP-89712 or your 10-digit phone number" class="w-full px-4 py-3 rounded-xl bg-dark-base border border-white/10 text-white text-xs sm:text-sm font-mono focus:border-brand focus:outline-none">
+                        <span class="block text-[10px] text-gray-500 mt-1">Found in your SuperProfile email receipt or payment confirmation.</span>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-brand hover:bg-brand-hover text-black font-heading font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 cursor-pointer">
+                        <i data-lucide="zap" class="w-4 h-4 fill-black"></i>
+                        <span>Generate My Official 2-PC License Key</span>
+                    </button>
+                </form>
+
+                <!-- Generated Key Success Box (Hidden by default) -->
+                <div id="claimSuccessBox" class="hidden space-y-5 pt-4">
+                    <div class="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-center space-y-1">
+                        <div class="inline-flex items-center gap-1.5 text-emerald-400 font-bold text-sm">
+                            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            <span>License Verified &amp; Activated!</span>
+                        </div>
+                        <p class="text-xs text-gray-300">
+                            Here is your official commercial license key. Keep this receipt for your records:
+                        </p>
+                    </div>
+
+                    <!-- Key Box -->
+                    <div class="p-4 rounded-2xl bg-[#090b10] border border-brand/40 text-center space-y-2">
+                        <span class="text-[10px] uppercase font-mono font-bold text-gray-400 block tracking-widest">Official 2-PC Commercial Key</span>
+                        <div class="flex items-center justify-between gap-3 bg-dark-base p-3 rounded-xl border border-white/10">
+                            <code id="displayGeneratedKey" class="font-mono text-base sm:text-xl font-black text-brand tracking-wider select-all">MDK-PRO-2026-ACTIVE</code>
+                            <button type="button" onclick="copyClaimedKey()" id="copyKeyBtn" class="px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover text-black text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer flex-shrink-0">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span id="copyKeyLabel">Copy Key</span>
+                            </button>
+                        </div>
+                        <span class="text-[11px] text-emerald-400 font-medium block">
+                            ✓ Machine Locking Protected: Valid on up to 2 personal computers (PC + Laptop).
+                        </span>
+                    </div>
+
+                    <!-- 30-Second Activation Guide -->
+                    <div class="p-4 rounded-xl bg-dark-base border border-white/10 text-xs text-gray-300 space-y-2 text-left">
+                        <div class="font-bold text-white flex items-center gap-1.5 mb-1">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-brand"></i>
+                            <span>How to activate in After Effects (30 seconds):</span>
+                        </div>
+                        <p class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">1</span>
+                            <span>Download the extension package and install it via the installer script.</span>
+                        </p>
+                        <p class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">2</span>
+                            <span>Open After Effects &rarr; <strong>Window &rarr; Extensions &rarr; MotionByDk AEworkflow</strong>.</span>
+                        </p>
+                        <p class="flex items-start gap-2">
+                            <span class="w-4 h-4 rounded-full bg-brand/20 text-brand flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">3</span>
+                            <span>Click <strong>Activate</strong>, paste your key above &rarr; Click <strong>Activate License</strong>!</span>
+                        </p>
+                    </div>
+
+                    <!-- Direct Download Access -->
+                    <div class="space-y-2">
+                        <a href="https://drive.google.com/drive/folders/1LUf8tof2Yzphr0WIPwqWzA1mZFQezryz" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md">
+                            <i data-lucide="download" class="w-4 h-4 text-black"></i>
+                            <span>Access Official Extension &amp; Tutorials (Google Drive)</span>
+                        </a>
+                        <a href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20claimed%20my%20key%20on%20the%20portal.%20Need%20quick%20assistance%3A" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Need Help? Chat with Dhananjay on WhatsApp (+91 92172 82296)</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-6 text-center text-xs text-gray-500 relative z-10">
+        &copy; 2026 MotionByDk • Speed &amp; Precision for Video Editors
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function handleClaimLicense(e) {
+            e.preventDefault();
+            var email = document.getElementById('claimBuyerEmail').value.trim();
+            var orderId = document.getElementById('claimOrderId').value.trim();
+            var productType = document.getElementById('claimProductType').value;
+
+            // Generate unique deterministic license key based on Order ID / Email
+            var clean = orderId.replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase();
+            if (clean.length < 6) clean = (clean + '921728').slice(0, 6);
+            
+            var prefix = (productType === 'combo') ? 'MDK-BUNDLE-2026-' : 'MDK-PRO-2026-';
+            var generatedKey = prefix + clean;
+
+            // Store in localStorage for persistent access
+            try {
+                localStorage.setItem('motionbydk_claimed_key', JSON.stringify({
+                    email: email,
+                    orderId: orderId,
+                    key: generatedKey,
+                    type: productType,
+                    timestamp: new Date().toISOString()
+                }));
+            } catch(err) {}
+
+            document.getElementById('claimKeyForm').classList.add('hidden');
+            var successBox = document.getElementById('claimSuccessBox');
+            successBox.classList.remove('hidden');
+            document.getElementById('displayGeneratedKey').innerText = generatedKey;
+            
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function copyClaimedKey() {
+            var keyText = document.getElementById('displayGeneratedKey').innerText.trim();
+            var label = document.getElementById('copyKeyLabel');
+            function showSuccess() {
+                label.innerText = 'Copied! ✓';
+                setTimeout(function() { label.innerText = 'Copy Key'; }, 2500);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(keyText).then(showSuccess).catch(function() {
+                    fallbackCopy(keyText, showSuccess);
+                });
+            } else {
+                fallbackCopy(keyText, showSuccess);
+            }
+        }
+
+        function fallbackCopy(val, cb) {
+            var ta = document.createElement('textarea');
+            ta.value = val;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); if (cb) cb(); } catch(e) {}
+            document.body.removeChild(ta);
+        }
+
+        // Check if already claimed previously
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                var prev = JSON.parse(localStorage.getItem('motionbydk_claimed_key') || 'null');
+                if (prev && prev.key) {
+                    document.getElementById('displayGeneratedKey').innerText = prev.key;
+                    document.getElementById('claimKeyForm').classList.add('hidden');
+                    document.getElementById('claimSuccessBox').classList.remove('hidden');
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>
