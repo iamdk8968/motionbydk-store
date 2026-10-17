@@ -22,5 +22,605 @@
     "createdAt": "2026-10-13",
     "active": true,
     "note": "Sample customer key"
+  },
+  "MDK-PRO-2026-D486G5": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-L2ZKLW": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-FGGYYZ": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-BSWZ2S": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-HCB232": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-4JAUWQ": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-EXT6HK": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-DDHWYU": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-G5SNW3": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-RR9E7Q": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-ZEUY7G": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-UNC8V2": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-U4YBZ6": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-VNEG7K": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-FQ3CMS": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-J7P59Y": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-JTZ3SN": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-7TH74Y": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-EQVRY4": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-3EGZTS": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-MMNS3Y": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-Q2BJVC": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-MG5W6M": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-LN7KVV": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-RK5C4N": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-J57EYR": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-7MHTH3": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-D46BD4": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-7V3RU5": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-DN945R": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-NPYMDU": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-L6UFJG": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-Q69VMA": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-3AUCP4": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-LVFP5A": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-R9KLHZ": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-CQ9RN7": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-5LT83K": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-T4UHDE": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-AA8MMD": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-5X3R8N": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-XASKCM": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-5Y5BLQ": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-8PCLY8": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-5QSR56": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-QPB568": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-STZQF5": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-TK4H6A": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-YVMR6B": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-PRO-2026-W4ZLDU": {
+    "type": "AE Workflow Pro (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-YB9RK9": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-L5PPPG": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-LN54MT": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-936V2E": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-FH9KQ8": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-ZQADHT": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-KS9KUX": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-ZD5V6E": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-JPKNQJ": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-XS2HM8": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-PFSKAT": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-D96AXX": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-DMK9FW": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-3T6LGH": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-XQ4AQW": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-5FEJGW": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-RX77S7": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-AGMCQA": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-ACUDPZ": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-AWY3AP": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-PXW3PW": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-E4WRZF": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-9447V4": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-V73R38": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-67F7KN": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-D2JTL6": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-HCV44Z": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-M92MGH": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-5YH6WM": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-Z7SST6": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-BUNFR5": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-4MBS3Z": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-XD9YUV": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-GGTVJB": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-6ARF4U": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-AEEZG9": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-WHHQZM": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-36W3SC": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-FSHCZE": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-P8334U": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-A9VKCW": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-BYENMV": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-WS7BVD": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-BPG7RB": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-HV7C76": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-ZYPG87": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-7B6B74": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-BT74TP": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-SC6YDD": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
+  },
+  "MDK-BUNDLE-2026-CMLDYJ": {
+    "type": "Studio Bundle (2-PC Commercial)",
+    "maxDevices": 2,
+    "devices": [],
+    "active": true
   }
 }
