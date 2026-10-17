@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion By DK - Order Confirmation & Access Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0b0e14;
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .page-container {
+            width: 100%;
+            max-width: 794px; /* A4 width */
+            background-color: #0b0e14;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 44px 50px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .header .sub-header {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #00F0FF;
+            text-transform: uppercase;
+        }
+        .divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00F0FF, transparent);
+            margin: 18px 0 24px 0;
+        }
+        .welcome-section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .welcome-section p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #94a3b8;
+            margin-bottom: 22px;
+        }
+        /* Plugin Box */
+        .plugin-box {
+            background: #0d121c;
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            border-radius: 14px;
+            padding: 20px 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.15);
+        }
+        .plugin-box-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #00F0FF;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .plugin-buttons-row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+        .btn-cyan {
+            flex: 1;
+            background: linear-gradient(135deg, #00F0FF 0%, #00b4d8 100%);
+            color: #000000;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12.5px;
+            font-weight: 800;
+            padding: 13px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 14px rgba(0, 240, 255, 0.3);
+        }
+        .btn-gold {
+            flex: 1;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #000000;
+            font-family: 'Outfit', sans-serif;
+            font-size: 12.5px;
+            font-weight: 800;
+            padding: 13px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+        }
+        .btn-cyan:hover, .btn-gold:hover {
+            transform: translateY(-2px);
+        }
+        /* Two Columns */
+        .two-cols {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .info-card {
+            flex: 1;
+            background: #0f131d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3.5px;
+        }
+        .info-card.blue::before { background: #00F0FF; }
+        .info-card.red::before { background: #ef4444; }
+        .info-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .info-card p {
+            font-size: 10.5px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        /* Checklist */
+        .checklist-section {
+            margin-bottom: 22px;
+        }
+        .checklist-section h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .checklist-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist-section li {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .checklist-section li::before {
+            content: "•";
+            color: #00F0FF;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 1;
+        }
+        /* Support Box */
+        .support-box {
+            background: #0c1418;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .support-box h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+        .support-box p {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+        .btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #10b981;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 9px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-whatsapp:hover {
+            transform: translateY(-2px);
+            background: #059669;
+        }
+        /* Footer */
+        .footer-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 9.5px;
+            color: #64748b;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Floating Print Button for Dhananjay */
+        .print-floating-bar {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .print-btn {
+            background: #00F0FF;
+            color: #000;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        @media print {
+            body {
+                background: #0b0e14 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .print-floating-bar {
+                display: none !important;
+            }
+            .page-container {
+                border: none !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 30px 40px !important;
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Top Bar to Save as PDF -->
+    <div class="print-floating-bar">
+        <span style="font-size: 11px; color: #94a3b8;">MotionByDk Template:</span>
+        <button onclick="window.print()" class="print-btn">📥 Print / Save as PDF</button>
+    </div>
+
+    <div class="page-container">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>MOTION BY DK</h1>
+            <div class="sub-header">Order Confirmation & Access Portal</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Welcome -->
+        <div class="welcome-section">
+            <h2>Welcome to MotionByDK AE Workflow Pro</h2>
+            <p>
+                Thank you for purchasing MotionByDK AE Workflow Pro for Adobe After Effects. Use the links below to download the extension and claim your 2-PC Pro license key.
+            </p>
+        </div>
+
+        <!-- Box 2: AE Workflow Pro Plugin & License Key -->
+        <div class="plugin-box">
+            <div class="plugin-box-title">MOTIONBYDK AE WORKFLOW PRO v3.6.0 EXTENSION & LICENSE</div>
+            <div class="plugin-buttons-row">
+                <a href="https://drive.google.com/drive/folders/1LUf8tof2Yzphr0WIPwqWzA1mZFQezryz" target="_blank" class="btn-cyan">
+                    DOWNLOAD AE WORKFLOW PLUGIN
+                </a>
+                <a href="https://motionbydk.in/activate.html" target="_blank" class="btn-gold">
+                    CLAIM 2-PC PRO LICENSE KEY
+                </a>
+            </div>
+            <div class="caption-text" style="color: #94a3b8; text-align: center;">
+                Download the extension package on left & claim your 2-PC key at <span style="color:#00F0FF;">motionbydk.in/activate.html</span>
+            </div>
+        </div>
+
+        <!-- Two Guidance Columns -->
+        <div class="two-cols">
+<div class="info-card red">
+                <h3>Commercial License & Policy</h3>
+                <p>
+                    Your purchase includes full commercial rights for client projects & YouTube videos. License keys are hardware-locked to 2 personal machines. Sharing or re-distributing files will result in key revocation.
+                </p>
+            </div>
+        </div>
+
+        <!-- Checklist -->
+        <div class="checklist-section">
+            <h3>AE Workflow Pro Features:</h3>
+            <ul>
+                <li><strong>AE Workflow Pro Plugin:</strong> 3D spatial carousels (5 layouts), macOS mouse dock & bezier speed curves.</li>
+            </ul>
+        </div>
+
+        <!-- Support Box -->
+        <div class="support-box">
+            <h4>Need Help With Installation Or License Activation?</h4>
+            <p>Chat directly with Dhananjay on WhatsApp for instant 1-on-1 assistance:</p>
+            <a href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20purchased%20and%20need%20quick%20assistance%3A" target="_blank" class="btn-whatsapp">
+                WhatsApp Support: +91 92172 82296 | Click to Chat
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-line">
+            <span>Motion by DK &copy; 2026 | Official Plugin Delivery</span>
+            <span>Page 1 of 1 | Secure Document</span>
+        </div>
+
+    </div>
+
+</body>
+</html>
