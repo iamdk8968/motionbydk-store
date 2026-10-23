@@ -4,8 +4,8 @@
   "title": "MotionByDk Pro Suite Released!",
   "message": "Complete suite with 3D Carousel, macOS Mouse Dock, Graph Bezier Editor, and Shape Tools.",
   "downloadUrl": "https://motionbydk.in/updates.html",
-  "githubUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip",
-  "gdriveUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip",
+  "githubUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.7.0.zip",
+  "gdriveUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.7.0.zip",
   "minAEVersion": "15.0",
   "changelog": [
     "Speed Graph vs Value Graph Dual-Overlay engine with velocity ghost curve",
