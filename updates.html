@@ -150,7 +150,7 @@
                 <div class="py-8 text-center space-y-3">
                     <a id="gdriveDownloadBtn" href="https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-brand to-cyan-300 hover:from-brand-hover hover:to-cyan-200 text-black font-heading font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-brand/20 transition-all cursor-pointer group">
                         <i data-lucide="download" class="w-5 h-5 group-hover:translate-y-0.5 transition-transform"></i>
-                        <span>Download Latest Update (v3.6.0) &rarr;</span>
+                        <span id="btnText">Download Latest Update (v3.6.0) &rarr;</span>
                     </a>
                     <span class="block text-xs text-gray-400">
                         ⚡ Direct high-speed download • Includes zip package, 1-click Mac/Win installers &amp; setup PDF
@@ -240,24 +240,64 @@
     <script>
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
-        // Fetch updates/version.json dynamically
-        fetch('updates/version.json?t=' + Date.now())
-            .then(function(res) { return res.json(); })
+        // Fetch updates/version.json dynamically with cache busting
+        var jsonEndpoint = (window.location.pathname.indexOf('/updates') !== -1 && window.location.pathname.indexOf('.html') === -1)
+            ? 'version.json?t=' + Date.now()
+            : 'updates/version.json?t=' + Date.now();
+
+        fetch(jsonEndpoint)
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
             .then(function(data) {
                 if (data && data.latestVersion) {
+                    var ver = data.latestVersion;
                     var pill = document.getElementById('versionPill');
                     var title = document.getElementById('versionTitle');
                     var date = document.getElementById('releaseDate');
                     var btn = document.getElementById('gdriveDownloadBtn');
+                    var btnText = document.getElementById('btnText');
                     
-                    if (pill) pill.innerText = 'v' + data.latestVersion + ' Stable (Latest)';
-                    if (title) title.innerText = 'MotionByDk AE Workflow Pro v' + data.latestVersion;
-                    if (date && data.releaseDate) date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
-                    if (btn && data.gdriveUrl) btn.href = data.gdriveUrl;
+                    // 1. Update Version Badges & Titles
+                    if (pill) pill.innerText = 'v' + ver + ' Stable (Latest)';
+                    if (title) title.innerText = 'MotionByDk AE Workflow Pro v' + ver;
+                    if (date && data.releaseDate) {
+                        date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
+                    }
+
+                    // 2. Automatically Update Button Text with Latest Version
+                    if (btnText) {
+                        btnText.innerHTML = 'Download Latest Update (v' + ver + ') &rarr;';
+                    }
+
+                    // 3. Automatically Update Button Download URL
+                    if (btn) {
+                        if (data.githubUrl) {
+                            btn.href = data.githubUrl;
+                        } else {
+                            btn.href = 'https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v' + ver + '.zip';
+                        }
+                    }
+
+                    // 4. Dynamically Render Changelog if provided
+                    if (data.changelog && Array.isArray(data.changelog) && data.changelog.length > 0) {
+                        var changelogList = document.getElementById('changelogList');
+                        if (changelogList) {
+                            changelogList.innerHTML = '';
+                            data.changelog.forEach(function(item) {
+                                var li = document.createElement('li');
+                                li.className = 'flex items-start gap-2.5';
+                                li.innerHTML = '<i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i><span>' + item + '</span>';
+                                changelogList.appendChild(li);
+                            });
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
                 }
             })
             .catch(function() {
-                // Static defaults stay active seamlessly
+                // Static defaults stay active seamlessly if offline or local file:// preview
             });
     </script>
 </body>
