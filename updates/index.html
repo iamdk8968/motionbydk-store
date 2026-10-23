@@ -60,7 +60,38 @@
             backdrop-filter: blur(12px);
             border-radius: 1.25rem;
         }
+
+        /* Light Mode Theme Overrides */
+        html:not(.dark) { color-scheme: light; }
+        html:not(.dark) body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) header {
+            background-color: rgba(255, 255, 255, 0.94) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+        html:not(.dark) .studio-card, html:not(.dark) .bg-dark-card {
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
+        }
+        html:not(.dark) .bg-dark-base { background-color: #f8fafc !important; }
+        html:not(.dark) .text-white { color: #0f172a !important; }
+        html:not(.dark) .text-gray-300, html:not(.dark) .text-gray-400 { color: #475569 !important; }
+        html:not(.dark) .border-white\/10 { border-color: rgba(0, 0, 0, 0.08) !important; }
     </style>
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('motionbydk_theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
 <body class="flex flex-col min-h-screen relative overflow-x-hidden">
 
@@ -84,6 +115,13 @@
             </a>
 
             <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light / Dark Theme" aria-label="Toggle Theme" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
+                    <i id="themeIconSun" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 hidden"></i>
+                    <i id="themeIconMoon" data-lucide="moon" class="w-3.5 h-3.5 text-brand"></i>
+                    <span id="themeLabel" class="text-[11px] font-bold">Dark</span>
+                </button>
+
                 <a href="index.html" class="text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
                     &larr; Back to Store
                 </a>
@@ -166,6 +204,22 @@
                     <ul id="changelogList" class="space-y-2 text-xs sm:text-sm text-gray-300">
                         <li class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                            <span><strong>Speed Graph vs Value Graph Dual-Overlay:</strong> Real-time ghost velocity curve overlay on value bezier easing with live dynamics &amp; onion skinning.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                            <span><strong>Dynamic UI Theme Switcher:</strong> Switch between 6 aesthetic motion themes (DK Orange, Cyber Cyan, Neon Violet, Emerald, Rose, Titanium).</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                            <span><strong>Detachable Floating Palettes &amp; 1-Click Reset Layout:</strong> Undock any tool into a floating palette or dock back instantly with 1 click.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                            <span><strong>EaseCopy &amp; Invert Curve:</strong> 1-click capture of keyframe easing from AE timeline, paste to selected keyframes &amp; invert curve.</span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>3D Carousel Studio:</strong> Generate 3D spatial carousels across 5 visual layouts with live real-time controls.</span>
                         </li>
                         <li class="flex items-start gap-2.5">
@@ -174,15 +228,7 @@
                         </li>
                         <li class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>Kinetic Bezier Curve Editor:</strong> 9 precision easing speed curves applied to all selected keyframes in 1-click.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>Docked Shape Tools &amp; Trim Paths:</strong> Procedural shape bursts, dashes, and smart 9-point anchor relocator.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>Persistent Hardware Memory:</strong> Existing license keys stay activated automatically upon updating.</span>
                         </li>
                     </ul>
                 </div>
@@ -263,9 +309,9 @@
                         btnText.innerHTML = 'Download Latest Update (v' + ver + ') &rarr;';
                     }
 
-                    // 3. Automatically Update Button Download URL
+                    // 3. Automatically Update Button Download URL matching latestVersion
                     if (btn) {
-                        if (data.githubUrl) {
+                        if (data.githubUrl && data.githubUrl.indexOf(ver) !== -1) {
                             btn.href = data.githubUrl;
                         } else {
                             btn.href = 'https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v' + ver + '.zip';
@@ -291,6 +337,47 @@
             .catch(function() {
                 // Static defaults stay active seamlessly if offline or local file:// preview
             });
+        // Theme Engine
+        function initTheme() {
+            var saved = localStorage.getItem('motionbydk_theme');
+            if (saved === 'light') {
+                document.documentElement.classList.remove('dark');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                updateThemeUI('dark');
+            }
+        }
+
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('motionbydk_theme', 'light');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('motionbydk_theme', 'dark');
+                updateThemeUI('dark');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function updateThemeUI(theme) {
+            var sun = document.getElementById('themeIconSun');
+            var moon = document.getElementById('themeIconMoon');
+            var label = document.getElementById('themeLabel');
+            if (theme === 'light') {
+                if (sun) sun.classList.remove('hidden');
+                if (moon) moon.classList.add('hidden');
+                if (label) label.innerText = 'Light';
+            } else {
+                if (sun) sun.classList.add('hidden');
+                if (moon) moon.classList.remove('hidden');
+                if (label) label.innerText = 'Dark';
+            }
+        }
+        initTheme();
     </script>
 </body>
 </html>
