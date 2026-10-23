@@ -60,7 +60,38 @@
             backdrop-filter: blur(12px);
             border-radius: 1.25rem;
         }
+
+        /* Light Mode Theme Overrides */
+        html:not(.dark) { color-scheme: light; }
+        html:not(.dark) body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) header {
+            background-color: rgba(255, 255, 255, 0.94) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+        html:not(.dark) .studio-card, html:not(.dark) .bg-dark-card {
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08) !important;
+        }
+        html:not(.dark) .bg-dark-base { background-color: #f8fafc !important; }
+        html:not(.dark) .text-white { color: #0f172a !important; }
+        html:not(.dark) .text-gray-300, html:not(.dark) .text-gray-400 { color: #475569 !important; }
+        html:not(.dark) .border-white\/10 { border-color: rgba(0, 0, 0, 0.08) !important; }
     </style>
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('motionbydk_theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
 <body class="flex flex-col min-h-screen relative overflow-x-hidden">
 
@@ -84,6 +115,13 @@
             </a>
 
             <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light / Dark Theme" aria-label="Toggle Theme" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
+                    <i id="themeIconSun" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 hidden"></i>
+                    <i id="themeIconMoon" data-lucide="moon" class="w-3.5 h-3.5 text-brand"></i>
+                    <span id="themeLabel" class="text-[11px] font-bold">Dark</span>
+                </button>
+
                 <a href="index.html" class="text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
                     &larr; Back to Store
                 </a>
@@ -271,9 +309,9 @@
                         btnText.innerHTML = 'Download Latest Update (v' + ver + ') &rarr;';
                     }
 
-                    // 3. Automatically Update Button Download URL
+                    // 3. Automatically Update Button Download URL matching latestVersion
                     if (btn) {
-                        if (data.githubUrl) {
+                        if (data.githubUrl && data.githubUrl.indexOf(ver) !== -1) {
                             btn.href = data.githubUrl;
                         } else {
                             btn.href = 'https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v' + ver + '.zip';
@@ -299,6 +337,47 @@
             .catch(function() {
                 // Static defaults stay active seamlessly if offline or local file:// preview
             });
+        // Theme Engine
+        function initTheme() {
+            var saved = localStorage.getItem('motionbydk_theme');
+            if (saved === 'light') {
+                document.documentElement.classList.remove('dark');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                updateThemeUI('dark');
+            }
+        }
+
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('motionbydk_theme', 'light');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('motionbydk_theme', 'dark');
+                updateThemeUI('dark');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function updateThemeUI(theme) {
+            var sun = document.getElementById('themeIconSun');
+            var moon = document.getElementById('themeIconMoon');
+            var label = document.getElementById('themeLabel');
+            if (theme === 'light') {
+                if (sun) sun.classList.remove('hidden');
+                if (moon) moon.classList.add('hidden');
+                if (label) label.innerText = 'Light';
+            } else {
+                if (sun) sun.classList.add('hidden');
+                if (moon) moon.classList.remove('hidden');
+                if (label) label.innerText = 'Dark';
+            }
+        }
+        initTheme();
     </script>
 </body>
 </html>

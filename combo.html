@@ -158,7 +158,122 @@
             pointer-events-none;
             z-index: 0;
         }
+
+        /* =========================================================================
+           LIGHT / DARK THEME SYSTEM & SMOOTH SWITCHER
+           ========================================================================= */
+        html:not(.dark) {
+            color-scheme: light;
+        }
+
+        html:not(.dark) body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px) !important;
+        }
+
+        html:not(.dark) header {
+            background-color: rgba(255, 255, 255, 0.94) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        html:not(.dark) .studio-card,
+        html:not(.dark) .bg-dark-card {
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        html:not(.dark) .bg-dark-surface {
+            background-color: #f1f5f9 !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html:not(.dark) .bg-dark-elevated {
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html:not(.dark) .bg-dark-base {
+            background-color: #f8fafc !important;
+        }
+
+        html:not(.dark) .text-white {
+            color: #0f172a !important;
+        }
+
+        html:not(.dark) .text-gray-100 {
+            color: #1e293b !important;
+        }
+
+        html:not(.dark) .text-gray-200 {
+            color: #334155 !important;
+        }
+
+        html:not(.dark) .text-gray-300 {
+            color: #475569 !important;
+        }
+
+        html:not(.dark) .text-gray-400 {
+            color: #64748b !important;
+        }
+
+        html:not(.dark) .border-white\/10,
+        html:not(.dark) .border-white\/5,
+        html:not(.dark) .border-white\/15,
+        html:not(.dark) .border-white\/20,
+        html:not(.dark) .border-white\/30 {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html:not(.dark) .bg-white\/5 {
+            background-color: rgba(0, 0, 0, 0.03) !important;
+        }
+
+        html:not(.dark) .bg-white\/10 {
+            background-color: rgba(0, 0, 0, 0.06) !important;
+        }
+
+        html:not(.dark) .modal-box {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        html:not(.dark) #mobileMenu {
+            background-color: rgba(255, 255, 255, 0.98) !important;
+            border-color: rgba(0, 0, 0, 0.08) !important;
+        }
+
+        html:not(.dark) footer {
+            border-color: rgba(0, 0, 0, 0.08) !important;
+            color: #64748b !important;
+        }
+
+        html:not(.dark) .ambient-glow {
+            opacity: 0.12 !important;
+        }
+
+        html:not(.dark) #productsDropdownMenu {
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15) !important;
+        }
     </style>
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('motionbydk_theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
 </head>
 <body class="bg-dark-base text-gray-100 font-sans antialiased overflow-x-hidden bg-studio-grid selection:bg-brand selection:text-black">
 
@@ -203,24 +318,48 @@
             <!-- Desktop Nav Links (SPA View Switching) -->
             <nav class="hidden lg:flex items-center gap-7 text-xs sm:text-sm font-semibold text-gray-300">
                 <button onclick="navigateTo('home')" data-nav-page="home" class="nav-link-btn text-brand border-b-2 border-brand pb-0.5 font-bold transition-colors cursor-pointer">Home</button>
-                <button onclick="navigateTo('plugin')" data-nav-page="plugin" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5">
-                    <span>AE Plugin</span>
-                    <span class="text-[9px] bg-brand/15 text-brand border border-brand/30 px-1.5 py-0.2 rounded font-mono font-bold">PRO v3.6</span>
-                </button>
-                <button onclick="navigateTo('vault')" data-nav-page="vault" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5">
-                    <span>50GB Assets</span>
-                    <span class="text-[9px] bg-sky-400/15 text-sky-400 border border-sky-400/30 px-1.5 py-0.2 rounded font-mono font-bold">ASSETS ONLY</span>
-                </button>
-                <button onclick="navigateTo('combo')" data-nav-page="combo" class="nav-link-btn text-gray-300 hover:text-amber-400 transition-colors flex items-center gap-1.5 cursor-pointer pb-0.5">
-                    <span class="text-amber-400 font-bold">Studio Combo</span>
-                    <span class="text-[9px] bg-amber-400 text-black px-1.5 py-0.2 rounded font-mono font-black">₹100 OFF</span>
-                </button>
+                
+                <!-- Products Dropdown (No badges, clean names only) -->
+                <div class="relative group" id="productsDropdownWrapper">
+                    <button type="button" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 py-1 cursor-pointer font-semibold">
+                        <span>Products</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180"></i>
+                    </button>
+                    <div class="absolute left-0 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1">
+                        <div id="productsDropdownMenu" class="rounded-2xl bg-dark-card border border-white/10 p-2 shadow-2xl backdrop-blur-2xl space-y-1">
+                            <button onclick="navigateTo('combo')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                                <span>Studio Combo</span>
+                            </button>
+                            <button onclick="navigateTo('plugin')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
+                                <i data-lucide="zap" class="w-4 h-4 text-brand"></i>
+                                <span>AE Workflow Plugin</span>
+                            </button>
+                            <button onclick="navigateTo('vault')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
+                                <i data-lucide="folder-archive" class="w-4 h-4 text-sky-400"></i>
+                                <span>50GB Video Assets</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">About DK</button>
                 <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">FAQ</button>
+                <a href="updates.html" class="text-gray-300 hover:text-brand transition-colors cursor-pointer flex items-center gap-1">
+                    <span>Updates</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                </a>
             </nav>
 
             <!-- Right Actions (Currency Switcher & Checkout) -->
             <div class="hidden md:flex items-center gap-3">
+                                <!-- Theme Switcher Toggle Button (Light / Dark) -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light / Dark Theme" aria-label="Toggle Theme" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
+                    <i id="themeIconSun" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 hidden"></i>
+                    <i id="themeIconMoon" data-lucide="moon" class="w-3.5 h-3.5 text-brand"></i>
+                    <span id="themeLabel" class="text-[11px] font-bold">Dark</span>
+                </button>
+
                 <!-- Currency Switcher Toggle -->
                 <button id="currencyToggleBtn" onclick="toggleCurrency()" title="Switch Currency (INR / USD)" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
                     <span id="currSymbol" class="text-brand font-black">₹</span>
@@ -235,7 +374,7 @@
 
                 <a id="headerBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-brand hover:bg-brand-hover text-black text-xs font-black shadow-brand-sm transition-all flex items-center gap-1.5 cursor-pointer">
                     <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
-                    <span id="headerBuyText">Get Pro (₹499)</span>
+                    <span id="headerBuyText">Get Pro (₹299)</span>
                 </a>
             </div>
 
@@ -252,21 +391,33 @@
         <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-dark-surface/98 backdrop-blur-2xl px-6 py-6 space-y-4 transition-all duration-300">
             <div class="space-y-3">
                 <button onclick="navigateTo('home'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
-                    <span>🏠 Home (Product Catalog)</span>
+                    <span>🏠 Home</span>
                     <i data-lucide="chevron-right" class="w-4 h-4 text-gray-500"></i>
                 </button>
-                <button onclick="navigateTo('plugin'); toggleMobileMenu();" class="w-full text-left block text-sm font-bold text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
-                    <span>⚡ AE Workflow Pro Plugin</span>
-                    <span class="text-[10px] bg-brand text-black px-2 py-0.5 rounded font-black">$15 / ₹499</span>
-                </button>
-                <button onclick="navigateTo('vault'); toggleMobileMenu();" class="w-full text-left block text-sm font-bold text-sky-400 py-2.5 border-b border-white/5 flex items-center justify-between">
-                    <span>📁 50GB Video Assets (Assets Only)</span>
-                    <span class="text-[10px] bg-sky-500 text-black px-2 py-0.5 rounded font-black">SEASOVOE</span>
-                </button>
-                <button onclick="navigateTo('combo'); toggleMobileMenu();" class="w-full text-left block text-sm font-bold text-amber-400 py-2.5 border-b border-white/5 flex items-center justify-between">
-                    <span>🔥 Studio Combo Pack (Vault + Plugin)</span>
-                    <span class="text-[10px] bg-amber-400 text-black px-2 py-0.5 rounded font-black">₹699 • FIRST100</span>
-                </button>
+                
+                <!-- Products Group (Clean names only) -->
+                <div class="border-b border-white/5 pb-2">
+                    <span class="text-[11px] font-mono uppercase tracking-wider text-gray-400 block px-1 py-1">Products</span>
+                    <div class="pl-2 space-y-1">
+                        <button onclick="navigateTo('combo'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                            <span>Studio Combo</span>
+                        </button>
+                        <button onclick="navigateTo('plugin'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-brand"></i>
+                            <span>AE Workflow Plugin</span>
+                        </button>
+                        <button onclick="navigateTo('vault'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                            <i data-lucide="folder-archive" class="w-4 h-4 text-sky-400"></i>
+                            <span>50GB Video Assets</span>
+                        </button>
+                    </div>
+                </div>
+
+                <a href="updates.html" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
+                    <span>⚡ Software Updates</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                </a>
                 <button onclick="navigateTo('home'); toggleMobileMenu(); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
                     👤 About Dhananjay Kumar
                 </button>
@@ -276,15 +427,23 @@
             </div>
             <div class="pt-4 flex flex-col gap-2.5">
                 <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
+                                    <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
+                    <span>Theme:</span>
+                    <button onclick="toggleTheme()" class="px-3 py-1 rounded-lg bg-dark-card border border-white/10 text-white font-mono font-bold flex items-center gap-1.5">
+                        <i data-lucide="sun-moon" class="w-3.5 h-3.5 text-brand"></i>
+                        <span id="themeMobileLabel">Toggle Theme</span>
+                    </button>
+                </div>
+                <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
                     <span>Currency:</span>
                     <button onclick="toggleCurrency()" class="px-3 py-1 rounded-lg bg-dark-card border border-white/10 text-white font-mono font-bold flex items-center gap-1">
                         <span id="currMobileLabel">₹ INR (India)</span>
                         <i data-lucide="refresh-cw" class="w-3 h-3 text-brand"></i>
                     </button>
                 </div>
-                <a id="mobileBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" onclick="toggleMobileMenu();" class="w-full block text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl">Buy AE Workflow Pro (₹499)</a>
-                <button onclick="openUpiModal(); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl">Instant UPI Direct Pay (₹499)</button>
-                <a href="https://superprofile.bio/vp/ae-workflow-pro" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl">Get 50GB Vault + Plugin (₹699)</a>
+                <a id="mobileBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" onclick="toggleMobileMenu();" class="w-full block text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl">Buy AE Workflow Pro (₹299)</a>
+                <button onclick="openUpiModal(); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl">Instant UPI Direct Pay (₹299)</button>
+                <a href="https://superprofile.bio/vp/ae-workflow-pro" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl">Get 50GB Vault + Plugin (₹499)</a>
                 <div class="pt-2 flex items-center justify-center gap-4 text-xs text-gray-400">
                     <a href="https://instagram.com/motionbydk" target="_blank" class="hover:text-brand flex items-center gap-1 transition-colors">
                         <i data-lucide="instagram" class="w-3.5 h-3.5 text-brand"></i>
@@ -336,7 +495,7 @@
                     </button>
                     <button onclick="navigateTo('vault')" class="w-full sm:w-auto px-8 py-4 bg-dark-surface hover:bg-dark-card border border-amber-400/30 hover:border-amber-400 text-white font-heading font-bold text-base sm:text-lg rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg">
                         <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
-                        <span>50GB Vault + Pro Plugin Bundle (₹699)</span>
+                        <span>50GB Vault + Pro Plugin Bundle (₹499)</span>
                     </button>
                 </div>
 
@@ -495,7 +654,7 @@
                             <div class="flex items-baseline justify-between mb-4">
                                 <div>
                                     <span class="text-xs text-gray-400 block">Lifetime License</span>
-                                    <span class="font-heading font-black text-2xl text-white">$15 <span class="text-xs text-gray-400 font-normal">USD</span> / ₹499 <span class="text-xs text-emerald-400 font-normal">UPI</span></span>
+                                    <span class="font-heading font-black text-2xl text-white">$10 <span class="text-xs text-gray-400 font-normal">USD</span> / ₹299 <span class="text-xs text-emerald-400 font-normal">UPI</span></span>
                                 </div>
                                 <span class="text-[11px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">2 PCs Activation</span>
                             </div>
@@ -511,7 +670,7 @@
                                     <span>Gumroad ($15)</span>
                                 </a>
                                 <button onclick="openUpiModal('plugin')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI (₹499)</span>
+                                    <span>UPI (₹299)</span>
                                 </button>
                             </div>
                         </div>
@@ -574,7 +733,7 @@
                             <div class="flex items-baseline justify-between mb-4">
                                 <div>
                                     <span class="text-xs text-gray-400 block">Mega Asset Access</span>
-                                    <span class="font-heading font-black text-2xl text-white">Instant Access</span>
+                                    <span class="font-heading font-black text-2xl text-white">₹199 <span class="text-xs text-sky-400 font-normal">Instant Access</span></span>
                                 </div>
                                 <span class="text-[11px] text-sky-400 bg-sky-950 px-2 py-0.5 rounded border border-sky-500/30">Google Drive</span>
                             </div>
@@ -587,10 +746,10 @@
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <a href="https://superprofile.bio/vp/50gb-assets-vault" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
-                                    <span>Checkout Link</span>
+                                    <span>Checkout (₹199)</span>
                                 </a>
                                 <button onclick="openUpiModal('assets')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI / QR</span>
+                                    <span>UPI (₹199)</span>
                                 </button>
                             </div>
                         </div>
@@ -665,7 +824,7 @@
                             <div class="flex items-baseline justify-between mb-4">
                                 <div>
                                     <span class="text-xs text-gray-400 block">Bundle Price</span>
-                                    <span class="font-heading font-black text-2xl text-white">₹699 <span class="text-xs text-emerald-400 font-bold">(₹599 w/ code)</span></span>
+                                    <span class="font-heading font-black text-2xl text-white">₹499 <span class="text-xs text-emerald-400 font-bold">All-in-One</span></span>
                                 </div>
                                 <span class="text-[11px] text-amber-400 bg-amber-950 px-2 py-0.5 rounded border border-amber-500/30">Plugin Included</span>
                             </div>
@@ -678,10 +837,10 @@
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
-                                    <span>Checkout (₹699)</span>
+                                    <span>Checkout (₹499)</span>
                                 </a>
                                 <button onclick="openUpiModal('bundle')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI / QR</span>
+                                    <span>UPI (₹499)</span>
                                 </button>
                             </div>
                         </div>
@@ -1018,7 +1177,7 @@
                             <i id="faqIcon-2" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
                         <div id="faqAns-2" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-                            <strong>For Indian Creators:</strong> Click 'Pay with UPI (₹499)'. You can pay using GPay, PhonePe, Paytm, or any UPI app to <strong>motionbydk@ybl</strong> or scan the QR code. Enter your UTR / Ref number in the verification box for instant on-screen access! You can also use our automated card/netbanking gateway via SuperProfile.<br>
+                            <strong>For Indian Creators:</strong> Click 'Pay with UPI (₹299)'. You can pay using GPay, PhonePe, Paytm, or any UPI app to <strong>motionbydk@ybl</strong> or scan the QR code. Enter your UTR / Ref number in the verification box for instant on-screen access! You can also use our automated card/netbanking gateway via SuperProfile.<br>
                             <strong>For International Creators:</strong> Click 'Buy $15' to checkout securely via Gumroad with any international credit card, debit card, or PayPal.
                         </div>
                     </div>
@@ -1037,11 +1196,11 @@
                     <!-- FAQ 4: Vault Access & Mirror Links -->
                     <div class="studio-card overflow-hidden">
                         <button onclick="toggleFaq(4)" class="w-full p-5 text-left flex items-center justify-between font-bold text-sm sm:text-base text-white hover:text-brand transition-colors focus:outline-none cursor-pointer">
-                            <span>How do I access the 50GB Editing Vault after paying ₹699?</span>
+                            <span>How do I access the 50GB Editing Vault after paying ₹499?</span>
                             <i id="faqIcon-4" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
                         <div id="faqAns-4" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-                            Immediately after completing the ₹699 checkout, you receive instant access to the entire 50GB Google Drive folder link PLUS your personal 2-PC License Key and installer for MotionByDk AE Workflow Pro! Everything is also delivered straight to your email. We also provide high-bandwidth backup mirror links (Mega / Cloudflare R2 backup access on request) so you never get locked out by Google Drive download quotas.
+                            Immediately after completing the ₹499 checkout, you receive instant access to the entire 50GB Google Drive folder link PLUS your personal 2-PC License Key and installer for MotionByDk AE Workflow Pro! Everything is also delivered straight to your email. We also provide high-bandwidth backup mirror links (Mega / Cloudflare R2 backup access on request) so you never get locked out by Google Drive download quotas.
                         </div>
                     </div>
 
@@ -1272,7 +1431,7 @@
                                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
                             </a>
                             <button onclick="openUpiModal()" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm py-3 px-4 rounded-xl transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
-                                <span>🇮🇳 Pay UPI – ₹499</span>
+                                <span>🇮🇳 Pay UPI – ₹299</span>
                             </button>
                         </div>
                     </div>
@@ -1423,7 +1582,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] font-mono font-bold text-sky-400 bg-sky-400/15 border border-sky-400/30 px-3 py-1 rounded-full uppercase">50GB Assets (Only)</span>
                         <button onclick="navigateTo('combo')" class="text-xs font-bold text-amber-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1 bg-amber-400/10 border border-amber-400/30 px-3 py-1 rounded-xl">
-                            <span>Upgrade to Studio Combo (₹699)</span>
+                            <span>Upgrade to Studio Combo (₹499)</span>
                             <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
@@ -1633,13 +1792,13 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="text-xs font-mono font-black text-black bg-brand px-3 py-1 rounded-full uppercase tracking-wider">05 • MAJOR BUNDLE INCLUSION</span>
-                                <span class="text-xs font-bold text-brand bg-brand/10 px-2.5 py-0.5 rounded-md border border-brand/30">₹499 PLUGIN INCLUDED FREE</span>
+                                <span class="text-xs font-bold text-brand bg-brand/10 px-2.5 py-0.5 rounded-md border border-brand/30">₹299 PLUGIN INCLUDED FREE</span>
                             </div>
                             <h4 class="font-heading font-black text-2xl sm:text-3xl text-white mb-3 group-hover:text-brand transition-colors">
                                 Full MotionByDk AE Workflow Pro Extension (v3.6)
                             </h4>
                             <p class="text-gray-300 text-sm sm:text-base mb-6 leading-relaxed">
-                                You don't have to purchase the plugin separately! This ₹699 bundle includes your personal <strong>2-PC License Key</strong> for the full 4-in-1 After Effects Extension: 3D Spatial Carousel Generator (5 layouts), macOS Mouse Dock spring physics, Kinetic Bezier curves, and shape tools.
+                                You don't have to purchase the plugin separately! This ₹499 bundle includes your personal <strong>2-PC License Key</strong> for the full 4-in-1 After Effects Extension: 3D Spatial Carousel Generator (5 layouts), macOS Mouse Dock spring physics, Kinetic Bezier curves, and shape tools.
                             </p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
                                 <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-200 bg-dark-card p-2.5 rounded-lg border border-white/10">
@@ -1695,7 +1854,7 @@
                     <div class="p-4 rounded-xl bg-amber-400/10 border border-amber-400/30 text-left flex flex-col sm:flex-row items-center justify-between gap-3">
                         <div>
                             <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Want the AE Workflow Pro Plugin included?</span>
-                            <p class="text-xs text-gray-300">Upgrade to the <strong class="text-white">Studio Combo Pack for ₹699</strong> (Save ₹500 + use code <code class="text-amber-400 font-mono">FIRST100</code> for ₹100 OFF)!</p>
+                            <p class="text-xs text-gray-300">Upgrade to the <strong class="text-white">Studio Combo Pack for ₹499</strong> (Save ₹500 + use code <code class="text-amber-400 font-mono">FIRST100</code> for ₹100 OFF)!</p>
                         </div>
                         <button onclick="navigateTo('combo')" class="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-lg transition-all whitespace-nowrap cursor-pointer flex items-center gap-1 shadow-sm">
                             <span>Explore Combo &rarr;</span>
@@ -1739,7 +1898,7 @@
                         <div>
                             <span class="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest block">Launch Special Deal</span>
                             <h4 class="text-sm sm:text-base font-heading font-black text-white">Use Coupon Code <code class="bg-black/60 px-2 py-0.5 rounded text-amber-400 font-mono font-black border border-amber-400/30">FIRST100</code> on checkout for ₹100 OFF!</h4>
-                            <p class="text-xs text-gray-300">Get the complete 50GB Vault + AE Workflow Pro Plugin for just <strong class="text-amber-400">₹599</strong> (Regular ₹699).</p>
+                            <p class="text-xs text-gray-300">Get the complete 50GB Vault + AE Workflow Pro Plugin for just <strong class="text-amber-400">₹499</strong>.</p>
                         </div>
                     </div>
                     <button type="button" onclick="copyCouponCode()" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-md flex-shrink-0">
@@ -1804,7 +1963,7 @@
                                 </ul>
                             </div>
                             <div class="pt-4 border-t border-white/10 mt-4 text-xs font-mono text-brand">
-                                Individual Value: ₹499 ($15)
+                                Individual Value: ₹299 ($10)
                             </div>
                         </div>
 
@@ -1861,9 +2020,9 @@
                             <thead class="bg-dark-base text-gray-400 font-mono text-[11px] uppercase border-b border-white/10">
                                 <tr>
                                     <th class="p-4">Package Features</th>
-                                    <th class="p-4 text-center">AE Plugin Only (₹499)</th>
+                                    <th class="p-4 text-center">AE Plugin Only (₹299)</th>
                                     <th class="p-4 text-center">50GB Assets (SEASOVOE)</th>
-                                    <th class="p-4 text-center bg-amber-400/10 text-amber-400 font-black">Studio Combo (₹699)</th>
+                                    <th class="p-4 text-center bg-amber-400/10 text-amber-400 font-black">Studio Combo (₹499)</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5 text-gray-300">
@@ -1923,7 +2082,7 @@
 
                         <div class="flex items-baseline justify-center gap-3 mb-8">
                             <span class="text-gray-500 line-through text-xl">₹1,999</span>
-                            <span class="font-heading font-black text-5xl text-amber-400">₹699</span>
+                            <span class="font-heading font-black text-5xl text-amber-400">₹499</span>
                             <span class="text-xs text-emerald-400 font-bold bg-emerald-950 px-2 py-1 rounded border border-emerald-500/30">₹599 with FIRST100</span>
                         </div>
 
@@ -1933,7 +2092,7 @@
                                 <span>Get Combo on SuperProfile &rarr;</span>
                             </a>
                             <button onclick="openUpiModal('bundle')" class="w-full sm:w-auto px-6 py-4 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                <span>Pay ₹699 UPI</span>
+                                <span>Pay ₹499 UPI</span>
                             </button>
                         </div>
                         <span class="text-[11px] text-gray-400 block">Instant automated Google Drive delivery &amp; official license key.</span>
@@ -2017,7 +2176,7 @@
                 Get <span class="text-amber-400">₹100 OFF</span> Studio Combo!
             </h3>
             <p class="text-xs sm:text-sm text-gray-300 mb-5 leading-relaxed max-w-sm mx-auto">
-                Get Dhananjay's complete <strong class="text-white">50GB Asset Vault + AE Workflow Pro Plugin</strong> together for just <span class="text-amber-400 font-extrabold text-base">₹599</span> <span class="line-through text-gray-500 text-xs">₹699</span>!
+                Get Dhananjay's complete <strong class="text-white">50GB Asset Vault + AE Workflow Pro Plugin</strong> together for just <span class="text-amber-400 font-extrabold text-base">₹499</span>!
             </p>
 
             <!-- Coupon Code Container with 1-Click Copy -->
@@ -2045,7 +2204,7 @@
                 <div class="w-full h-2 bg-dark-base rounded-full overflow-hidden border border-white/10">
                     <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width: 83%"></div>
                 </div>
-                <span class="text-[10px] text-gray-400 block text-center">Urgency: Once 100 coupons are claimed, price returns to ₹699</span>
+                <span class="text-[10px] text-gray-400 block text-center">Urgency: Once 100 coupons are claimed, price returns to ₹499</span>
             </div>
 
             <!-- Action CTA Buttons -->
@@ -2137,7 +2296,7 @@
                 <!-- QR Code & Tap to Pay -->
                 <div class="p-3.5 rounded-xl bg-[#08080a] border border-white/10 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                     <div class="w-32 h-32 bg-white p-2 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                        <img id="upiQrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3DAEWorkflowPro" alt="UPI QR Code - motionbydk@ybl" class="w-full h-full object-contain">
+                        <img id="upiQrCodeImg" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D299%26cu%3DINR%26tn%3DAEWorkflowPro" alt="UPI QR Code - motionbydk@ybl" class="w-full h-full object-contain">
                     </div>
                     <div class="space-y-2 min-w-0">
                         <div class="text-xs font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
@@ -2147,7 +2306,7 @@
                         <p class="text-[11px] text-gray-400 leading-snug">
                             Scan with GPay, PhonePe, Paytm, or BHIM. Or tap below if on mobile:
                         </p>
-                        <a id="upiTapPayLink" href="upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=AEWorkflowPro" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 text-xs font-bold transition-all">
+                        <a id="upiTapPayLink" href="upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=299&cu=INR&tn=AEWorkflowPro" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 text-xs font-bold transition-all">
                             <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
                             <span id="upiTapPayText">Tap to Pay via UPI App (₹499)</span>
                         </a>
@@ -2163,7 +2322,7 @@
                     <p class="text-[11px] text-gray-300 leading-relaxed">
                         To protect against fake transactions, manual direct UPI transfers are verified personally by Dhananjay. After transferring, please tap below to share your transaction screenshot on WhatsApp.
                     </p>
-                    <a id="upiWhatsappVerifyBtn" href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9499%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20payment%20screenshot%3A" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                    <a id="upiWhatsappVerifyBtn" href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9299%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20payment%20screenshot%3A" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
                         <i data-lucide="message-circle" class="w-4 h-4"></i>
                         <span>Send Payment Screenshot on WhatsApp (+91 92172 82296) &rarr;</span>
                     </a>
@@ -2431,13 +2590,13 @@
                                 ⭐
                             </div>
                             <div class="min-w-0">
-                                <div class="text-xs font-bold text-white truncate">Studio Combo Pack (₹699)</div>
+                                <div class="text-xs font-bold text-white truncate">Studio Combo Pack (₹499)</div>
                                 <div class="text-[10px] text-amber-400">50GB Vault + Plugin • Use FIRST100 for ₹100 OFF</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                <span>Get Combo (₹699)</span>
+                                <span>Get Combo (₹499)</span>
                             </a>
                         </div>
                     `;
@@ -2512,7 +2671,56 @@
         });
 
         // Initial Route on page load
+        
+        // =========================================================================
+        // LIGHT / DARK THEME TOGGLE ENGINE
+        // =========================================================================
+        function initTheme() {
+            var saved = localStorage.getItem('motionbydk_theme');
+            if (saved === 'light') {
+                document.documentElement.classList.remove('dark');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                updateThemeUI('dark');
+            }
+        }
+
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('motionbydk_theme', 'light');
+                updateThemeUI('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('motionbydk_theme', 'dark');
+                updateThemeUI('dark');
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function updateThemeUI(theme) {
+            var sun = document.getElementById('themeIconSun');
+            var moon = document.getElementById('themeIconMoon');
+            var label = document.getElementById('themeLabel');
+            var mobileLabel = document.getElementById('themeMobileLabel');
+
+            if (theme === 'light') {
+                if (sun) sun.classList.remove('hidden');
+                if (moon) moon.classList.add('hidden');
+                if (label) label.innerText = 'Light';
+                if (mobileLabel) mobileLabel.innerText = 'Light Theme';
+            } else {
+                if (sun) sun.classList.add('hidden');
+                if (moon) moon.classList.remove('hidden');
+                if (label) label.innerText = 'Dark';
+                if (mobileLabel) mobileLabel.innerText = 'Dark Theme';
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', function() {
+            initTheme();
             applyCurrencyUI();
             var hash = (window.location.hash || '').replace('#', '') || 'combo';
             if (hash === 'plugin' || hash === 'ae-workflow-plugin') {
@@ -2703,13 +2911,13 @@
                 if (currLabel) currLabel.innerText = 'INR';
                 if (currSymbol) currSymbol.innerText = '₹';
                 if (currMobileLabel) currMobileLabel.innerText = '₹ INR (India)';
-                if (headerBuyText) headerBuyText.innerText = 'Get Pro (₹499)';
+                if (headerBuyText) headerBuyText.innerText = 'Get Pro (₹299)';
                 if (headerBuyBtn) headerBuyBtn.href = superprofileUrl;
                 if (mobileBuyBtn) {
-                    mobileBuyBtn.innerText = 'Buy AE Workflow Pro (₹499)';
+                    mobileBuyBtn.innerText = 'Buy AE Workflow Pro (₹299)';
                     mobileBuyBtn.href = superprofileUrl;
                 }
-                if (stickyBuyLabel) stickyBuyLabel.innerText = 'Buy Pro (₹499)';
+                if (stickyBuyLabel) stickyBuyLabel.innerText = 'Buy Pro (₹299)';
                 if (stickyBuyBtn) stickyBuyBtn.href = superprofileUrl;
             } else {
                 if (currLabel) currLabel.innerText = 'USD';
@@ -2763,31 +2971,31 @@
 
             if (currentUpiTier === 'bundle') {
                 if (bundleBtn) bundleBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-amber-400 shadow-sm cursor-pointer relative text-center';
-                if (priceBadge) priceBadge.innerHTML = 'Studio Combo: <span class="text-amber-400 font-black text-sm">₹699</span> (Apply FIRST100 for ₹599)';
+                if (priceBadge) priceBadge.innerHTML = 'Studio Combo: <span class="text-amber-400 font-black text-sm">₹499</span> (All-in-One: Vault + Plugin)';
                 if (directBtn) directBtn.href = 'https://superprofile.bio/vp/studio-combo-pack';
-                if (directText) directText.innerText = 'Pay ₹699 on SuperProfile (Apply Code FIRST100 for ₹100 OFF) →';
-                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D699%26cu%3DINR%26tn%3D50GBVaultAEBundle';
-                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=699&cu=INR&tn=50GBVaultAEBundle';
-                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹699 via UPI App (1-Tap)';
-                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9699%20via%20UPI%20for%2050GB%20Vault%20%2B%20AE%20Plugin%20Combo.%20Here%20is%20my%20screenshot%3A';
+                if (directText) directText.innerText = 'Pay ₹499 on SuperProfile (Instant Key & Vault Access) →';
+                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3D50GBVaultAEBundle';
+                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=50GBVaultAEBundle';
+                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹299 via UPI App (1-Tap)';
+                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9499%20via%20UPI%20for%2050GB%20Vault%20%2B%20AE%20Plugin%20Combo.%20Here%20is%20my%20screenshot%3A';
             } else if (currentUpiTier === 'assets') {
                 if (assetsBtn) assetsBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-sky-500 shadow-sm cursor-pointer text-center';
-                if (priceBadge) priceBadge.innerHTML = '50GB Mega Assets (Only): <span class="text-sky-400 font-black text-sm">Instant Download Access</span>';
+                if (priceBadge) priceBadge.innerHTML = '50GB Mega Assets (Only): <span class="text-sky-400 font-black text-sm">₹199</span> (Instant 50GB Drive Access)';
                 if (directBtn) directBtn.href = 'https://superprofile.bio/vp/50gb-assets-vault';
-                if (directText) directText.innerText = 'Pay via SuperProfile (Instant 50GB Google Drive Access) →';
-                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3D50GBVideoAssets';
-                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=50GBVideoAssets';
-                if (tapPayText) tapPayText.innerText = 'Tap to Pay via UPI App (1-Tap)';
-                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20via%20UPI%20for%2050GB%20Video%20Assets.%20Here%20is%20my%20screenshot%3A';
+                if (directText) directText.innerText = 'Pay ₹199 via SuperProfile (Instant 50GB Google Drive Access) →';
+                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D199%26cu%3DINR%26tn%3D50GBVideoAssets';
+                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=199&cu=INR&tn=50GBVideoAssets';
+                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹199 via UPI App (1-Tap)';
+                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9199%20via%20UPI%20for%2050GB%20Video%20Assets.%20Here%20is%20my%20screenshot%3A';
             } else {
                 if (pluginBtn) pluginBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-brand shadow-sm cursor-pointer text-center';
-                if (priceBadge) priceBadge.innerHTML = 'AE Workflow Pro: <span class="text-brand font-black text-sm">₹499</span> (2-PC Lifetime Commercial)';
+                if (priceBadge) priceBadge.innerHTML = 'AE Workflow Pro: <span class="text-brand font-black text-sm">₹299</span> (2-PC Lifetime Commercial)';
                 if (directBtn) directBtn.href = 'https://superprofile.bio/vp/ae-workflow-pro';
-                if (directText) directText.innerText = 'Pay ₹499 via SuperProfile (Instant Key & Download) →';
-                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3DAEWorkflowPro';
-                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=AEWorkflowPro';
-                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹499 via UPI App (1-Tap)';
-                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9499%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20screenshot%3A';
+                if (directText) directText.innerText = 'Pay ₹299 via SuperProfile (Instant Key & Download) →';
+                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D299%26cu%3DINR%26tn%3DAEWorkflowPro';
+                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=299&cu=INR&tn=AEWorkflowPro';
+                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹299 via UPI App (1-Tap)';
+                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9299%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20screenshot%3A';
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
