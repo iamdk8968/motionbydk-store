@@ -2,6 +2,18 @@
 <html lang="en" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('motionbydk_theme');
+                if (t === 'light') {
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch(e) {}
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Software Updates &amp; Downloads | MotionByDk AE Workflow Pro</title>
     <meta name="description" content="Download the latest version of MotionByDk AE Workflow Pro extension for Adobe After Effects via Google Drive. Lifetime free updates for all license holders.">
@@ -115,11 +127,34 @@
             </a>
 
             <div class="flex items-center gap-3">
-                <!-- Theme Toggle Button -->
-                <button id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light / Dark Theme" aria-label="Toggle Theme" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
-                    <i id="themeIconSun" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 hidden"></i>
-                    <i id="themeIconMoon" data-lucide="moon" class="w-3.5 h-3.5 text-brand"></i>
-                    <span id="themeLabel" class="text-[11px] font-bold">Dark</span>
+                <!-- Exact Image 1 Style Theme Toggle Switch (Active Icon in Brand Orange #ff7a00) -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" type="button" role="switch" aria-label="Toggle Light / Dark Theme" title="Switch Theme (Light / Dark)"
+                    class="relative w-[68px] h-[34px] rounded-full p-0 transition-colors duration-300 cursor-pointer flex items-center justify-between border bg-slate-200 border-slate-300 dark:bg-[#151922] dark:border-white/15 shadow-inner">
+                    <!-- Sliding Circular Knob (100% Circle Shape, Exactly Centered: 2px Top, 2px Bottom, 2px Left/Right) -->
+                    <div id="themeToggleThumb"
+                        style="top: 2px; left: 2px;"
+                        class="absolute w-[28px] h-[28px] rounded-full transition-transform duration-300 ease-in-out bg-white shadow-[0_2px_5px_rgba(0,0,0,0.2)] dark:bg-[#252b3b] dark:border dark:border-white/10">
+                    </div>
+                    <!-- Sun Icon (Left) -->
+                    <div style="margin-left: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                        <svg id="themeSvgSun" class="w-4 h-4 transition-colors duration-300 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2"></path>
+                            <path d="M12 20v2"></path>
+                            <path d="m4.93 4.93 1.41 1.41"></path>
+                            <path d="m17.66 17.66 1.41 1.41"></path>
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                            <path d="m6.34 17.66-1.41 1.41"></path>
+                            <path d="m19.07 4.93-1.41 1.41"></path>
+                        </svg>
+                    </div>
+                    <!-- Moon Icon (Right) -->
+                    <div style="margin-right: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                        <svg id="themeSvgMoon" class="w-4 h-4 transition-colors duration-300 text-slate-400 dark:text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"></path>
+                        </svg>
+                    </div>
                 </button>
 
                 <a href="index.html" class="text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
@@ -364,17 +399,35 @@
         }
 
         function updateThemeUI(theme) {
-            var sun = document.getElementById('themeIconSun');
-            var moon = document.getElementById('themeIconMoon');
-            var label = document.getElementById('themeLabel');
-            if (theme === 'light') {
-                if (sun) sun.classList.remove('hidden');
-                if (moon) moon.classList.add('hidden');
-                if (label) label.innerText = 'Light';
-            } else {
-                if (sun) sun.classList.add('hidden');
-                if (moon) moon.classList.remove('hidden');
-                if (label) label.innerText = 'Dark';
+            var isDark = (theme === 'dark');
+            var thumb = document.getElementById('themeToggleThumb');
+            var sun = document.getElementById('themeSvgSun');
+            var moon = document.getElementById('themeSvgMoon');
+
+            if (thumb) {
+                thumb.style.transform = isDark ? 'translateX(34px)' : 'translateX(0px)';
+            }
+            if (sun) {
+                if (isDark) {
+                    sun.classList.remove('text-brand');
+                    sun.classList.add('text-slate-400');
+                    sun.style.color = '#94a3b8';
+                } else {
+                    sun.classList.remove('text-slate-400');
+                    sun.classList.add('text-brand');
+                    sun.style.color = '#ff7a00';
+                }
+            }
+            if (moon) {
+                if (isDark) {
+                    moon.classList.remove('text-slate-400');
+                    moon.classList.add('text-brand');
+                    moon.style.color = '#ff7a00';
+                } else {
+                    moon.classList.remove('text-brand');
+                    moon.classList.add('text-slate-400');
+                    moon.style.color = '#94a3b8';
+                }
             }
         }
         initTheme();

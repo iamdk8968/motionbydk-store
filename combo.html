@@ -2,6 +2,18 @@
 <html lang="en" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('motionbydk_theme');
+                if (t === 'light') {
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch(e) {}
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>All-in-One Studio Combo Pack | 50GB Vault + AE Workflow Pro | Motion by DK</title>
     <meta name="description" content="Accelerate your After Effects animation with 3D spatial carousels, macOS mouse dock physics &amp; speed ramps. Plus Dhananjay's 50GB+ uncompressed 4K video editing assets.">
@@ -107,6 +119,7 @@
             -webkit-text-size-adjust: 100% !important;
             touch-action: pan-y !important;
             scroll-behavior: smooth;
+            scroll-padding-top: 100px !important;
         }
         body {
             overflow-x: hidden !important;
@@ -120,10 +133,15 @@
         *, *::before, *::after {
             box-sizing: border-box !important;
         }
-        main, section, header, footer {
+        main, section, footer {
             width: 100% !important;
             max-width: 100vw !important;
             overflow-x: hidden !important;
+        }
+        header {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow: visible !important;
         }
         .page-view {
             width: 100%;
@@ -187,8 +205,9 @@
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04) !important;
         }
 
-        html:not(.dark) .bg-dark-surface {
-            background-color: #f1f5f9 !important;
+        html:not(.dark) .bg-dark-surface,
+        html:not(.dark) [class*="bg-dark-surface"] {
+            background-color: #f8fafc !important;
             border-color: rgba(0, 0, 0, 0.08) !important;
         }
 
@@ -197,7 +216,8 @@
             border-color: rgba(0, 0, 0, 0.08) !important;
         }
 
-        html:not(.dark) .bg-dark-base {
+        html:not(.dark) .bg-dark-base,
+        html:not(.dark) [class*="bg-dark-base"] {
             background-color: #f8fafc !important;
         }
 
@@ -254,6 +274,82 @@
             color: #64748b !important;
         }
 
+        /* Products Dropdown Styling */
+        #productsDropdownWrapper {
+            position: relative;
+            overflow: visible !important;
+        }
+        #productsDropdownMenu {
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 122, 0, 0.1) !important;
+        }
+        html:not(.dark) #productsDropdownMenu {
+            background-color: #ffffff !important;
+            border-color: #fed7aa !important;
+            box-shadow: 0 20px 45px -10px rgba(255, 122, 0, 0.18), 0 4px 15px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        /* Top Announcement Bar Light Theme Override */
+        html:not(.dark) #topAnnouncementBar {
+            background: linear-gradient(90deg, #fff7ed 0%, #ffedd5 50%, #fff7ed 100%) !important;
+            border-color: #fed7aa !important;
+            color: #334155 !important;
+        }
+        html:not(.dark) #topAnnouncementBar strong {
+            color: #0f172a !important;
+        }
+
+        /* -------------------------------------------------------------
+           ABOUT DK SECTION: LIGHT THEME OVERRIDES
+           ------------------------------------------------------------- */
+        html:not(.dark) #about {
+            background: linear-gradient(180deg, #ffffff 0%, #fff7ed 50%, #ffffff 100%) !important;
+            border-color: rgba(255, 122, 0, 0.2) !important;
+        }
+
+        /* 3 Value Props Cards (Zero Bloat, Battle Tested, Direct Support) */
+        html:not(.dark) .about-val-card {
+            background-color: #ffffff !important;
+            border: 2px solid #ff7a00 !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 4px 20px -2px rgba(255, 122, 0, 0.1) !important;
+        }
+
+        /* Quote Box: Light Orange in Light Mode */
+        html:not(.dark) .about-quote-box {
+            background-color: #fff7ed !important;
+            border: 1px solid #fed7aa !important;
+            color: #7c2d12 !important;
+        }
+
+        /* -------------------------------------------------------------
+           FAQ SECTION: LIGHT THEME ORANGE/WHITE GRADIENT & CLEAN CARDS
+           ------------------------------------------------------------- */
+        html:not(.dark) #faq {
+            background: linear-gradient(180deg, #ffffff 0%, #fff7ed 50%, #ffffff 100%) !important;
+            border-color: rgba(255, 122, 0, 0.2) !important;
+        }
+
+        html:not(.dark) #faq .studio-card {
+            background-color: #ffffff !important;
+            border: 1px solid rgba(255, 122, 0, 0.25) !important;
+            box-shadow: 0 4px 18px -2px rgba(255, 122, 0, 0.06) !important;
+        }
+
+        html:not(.dark) #faq .studio-card button {
+            color: #0f172a !important;
+        }
+
+        html:not(.dark) #faq .studio-card button:hover {
+            color: #ff7a00 !important;
+        }
+
+        html:not(.dark) #faq .studio-card [id^="faqAns-"] {
+            color: #334155 !important;
+            border-top: 1px solid rgba(255, 122, 0, 0.15) !important;
+        }
+            color: #64748b !important;
+        }
+
         html:not(.dark) .ambient-glow {
             opacity: 0.12 !important;
         }
@@ -284,12 +380,12 @@
     </div>
 
     <!-- 0. TOP ANNOUNCEMENT BAR (Hidden on Phone, Visible on Tablet & PC) -->
-    <div class="hidden md:flex bg-[#0e111a] border-b border-brand/20 text-gray-300 text-xs py-2 px-4 text-center items-center justify-center gap-3 relative z-50">
+    <div id="topAnnouncementBar" class="hidden md:flex bg-orange-50/90 text-slate-800 border-b border-orange-200/80 dark:bg-[#0e111a] dark:text-gray-300 dark:border-brand/20 text-xs py-2 px-4 text-center items-center justify-center gap-3 relative z-50 transition-colors">
         <span class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-            <span>NEW RELEASE: <strong class="text-white">MotionByDk AE Workflow Pro v3.6</strong> — 3D Carousel, Mouse Dock &amp; Bezier Suite</span>
+            <span>NEW RELEASE: <strong class="text-slate-900 dark:text-white font-extrabold">MotionByDk AE Workflow Pro v3.6</strong> — 3D Carousel, Mouse Dock &amp; Bezier Suite</span>
         </span>
-        <button onclick="navigateTo('plugin')" class="bg-brand hover:bg-brand-hover text-black px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-colors inline-flex items-center gap-1 cursor-pointer">
+        <button onclick="navigateTo('plugin')" class="bg-brand hover:bg-brand-hover text-black px-3 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-colors inline-flex items-center gap-1 cursor-pointer shadow-sm">
             <span>Explore Plugin</span>
             <i data-lucide="arrow-right" class="w-3 h-3"></i>
         </button>
@@ -321,43 +417,63 @@
                 
                 <!-- Products Dropdown (No badges, clean names only) -->
                 <div class="relative group" id="productsDropdownWrapper">
-                    <button type="button" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 py-1 cursor-pointer font-semibold">
+                    <button type="button" onclick="scrollToProducts(event)" class="nav-link-btn text-gray-300 hover:text-brand transition-colors flex items-center gap-1.5 py-1 cursor-pointer font-semibold">
                         <span>Products</span>
                         <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180"></i>
                     </button>
-                    <div class="absolute left-0 top-full pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1">
-                        <div id="productsDropdownMenu" class="rounded-2xl bg-dark-card border border-white/10 p-2 shadow-2xl backdrop-blur-2xl space-y-1">
-                            <button onclick="navigateTo('combo')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
-                                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    <div class="absolute left-0 top-full pt-2 w-60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100] transform group-hover:translate-y-0 translate-y-1 pointer-events-none group-hover:pointer-events-auto">
+                        <div id="productsDropdownMenu" class="rounded-2xl bg-white dark:bg-dark-card border border-orange-200/80 dark:border-white/10 p-2 shadow-2xl backdrop-blur-2xl space-y-1">
+                            <button onclick="scrollToProductCard('card-combo')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-orange-500/10 transition-colors flex items-center gap-2.5 text-xs font-bold text-slate-800 dark:text-gray-200 hover:text-brand cursor-pointer">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
                                 <span>Studio Combo</span>
                             </button>
-                            <button onclick="navigateTo('plugin')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
+                            <button onclick="scrollToProductCard('card-plugin')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-orange-500/10 transition-colors flex items-center gap-2.5 text-xs font-bold text-slate-800 dark:text-gray-200 hover:text-brand cursor-pointer">
                                 <i data-lucide="zap" class="w-4 h-4 text-brand"></i>
                                 <span>AE Workflow Plugin</span>
                             </button>
-                            <button onclick="navigateTo('vault')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors flex items-center gap-2.5 text-xs font-bold text-gray-200 hover:text-brand cursor-pointer">
-                                <i data-lucide="folder-archive" class="w-4 h-4 text-sky-400"></i>
+                            <button onclick="scrollToProductCard('card-vault')" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-orange-500/10 transition-colors flex items-center gap-2.5 text-xs font-bold text-slate-800 dark:text-gray-200 hover:text-brand cursor-pointer">
+                                <i data-lucide="folder-archive" class="w-4 h-4 text-sky-500"></i>
                                 <span>50GB Video Assets</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">About DK</button>
-                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">FAQ</button>
-                <a href="updates.html" class="text-gray-300 hover:text-brand transition-colors cursor-pointer flex items-center gap-1">
-                    <span>Updates</span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                </a>
+                <button onclick="scrollToAbout()" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">About DK</button>
+                <button onclick="scrollToFaq()" class="text-gray-300 hover:text-brand transition-colors cursor-pointer">FAQ</button>
+                <!-- Updates removed from navbar as requested to prevent direct navbar downloads -->
             </nav>
 
-            <!-- Right Actions (Currency Switcher & Checkout) -->
+            <!-- Right Actions (Theme Switcher, Currency & Checkout) -->
             <div class="hidden md:flex items-center gap-3">
-                                <!-- Theme Switcher Toggle Button (Light / Dark) -->
-                <button id="themeToggleBtn" onclick="toggleTheme()" title="Switch Light / Dark Theme" aria-label="Toggle Theme" class="px-2.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
-                    <i id="themeIconSun" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400 hidden"></i>
-                    <i id="themeIconMoon" data-lucide="moon" class="w-3.5 h-3.5 text-brand"></i>
-                    <span id="themeLabel" class="text-[11px] font-bold">Dark</span>
+                <!-- Exact Image 1 Style Theme Toggle Switch (Active Icon in Brand Orange #ff7a00) -->
+                <button id="themeToggleBtn" onclick="toggleTheme()" type="button" role="switch" aria-label="Toggle Light / Dark Theme" title="Switch Theme (Light / Dark)"
+                    class="relative w-[68px] h-[34px] rounded-full p-0 transition-colors duration-300 cursor-pointer flex items-center justify-between border bg-slate-200 border-slate-300 dark:bg-[#151922] dark:border-white/15 shadow-inner">
+                    <!-- Sliding Circular Knob (100% Circle Shape, Exactly Centered: 2px Top, 2px Bottom, 2px Left/Right) -->
+                    <div id="themeToggleThumb"
+                        style="top: 2px; left: 2px;"
+                        class="absolute w-[28px] h-[28px] rounded-full transition-transform duration-300 ease-in-out bg-white shadow-[0_2px_5px_rgba(0,0,0,0.2)] dark:bg-[#252b3b] dark:border dark:border-white/10">
+                    </div>
+                    <!-- Sun Icon (Left) -->
+                    <div style="margin-left: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                        <svg id="themeSvgSun" class="w-4 h-4 transition-colors duration-300 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2"></path>
+                            <path d="M12 20v2"></path>
+                            <path d="m4.93 4.93 1.41 1.41"></path>
+                            <path d="m17.66 17.66 1.41 1.41"></path>
+                            <path d="M2 12h2"></path>
+                            <path d="M20 12h2"></path>
+                            <path d="m6.34 17.66-1.41 1.41"></path>
+                            <path d="m19.07 4.93-1.41 1.41"></path>
+                        </svg>
+                    </div>
+                    <!-- Moon Icon (Right) -->
+                    <div style="margin-right: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                        <svg id="themeSvgMoon" class="w-4 h-4 transition-colors duration-300 text-slate-400 dark:text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                        </svg>
+                    </div>
                 </button>
 
                 <!-- Currency Switcher Toggle -->
@@ -365,11 +481,6 @@
                     <span id="currSymbol" class="text-brand font-black">₹</span>
                     <span id="currLabel">INR</span>
                     <i data-lucide="refresh-cw" class="w-3 h-3 text-gray-400"></i>
-                </button>
-
-                <button onclick="navigateTo('home'); setTimeout(function(){ document.getElementById('products')?.scrollIntoView({behavior:'smooth'}); }, 100);" class="px-3.5 py-2 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-bold text-gray-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
-                    <i data-lucide="layers" class="w-3.5 h-3.5 text-brand"></i>
-                    <span>Products</span>
                 </button>
 
                 <a id="headerBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-brand hover:bg-brand-hover text-black text-xs font-black shadow-brand-sm transition-all flex items-center gap-1.5 cursor-pointer">
@@ -399,39 +510,55 @@
                 <div class="border-b border-white/5 pb-2">
                     <span class="text-[11px] font-mono uppercase tracking-wider text-gray-400 block px-1 py-1">Products</span>
                     <div class="pl-2 space-y-1">
-                        <button onclick="navigateTo('combo'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                        <button onclick="scrollToProductCard('card-combo'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
                             <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
                             <span>Studio Combo</span>
                         </button>
-                        <button onclick="navigateTo('plugin'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                        <button onclick="scrollToProductCard('card-plugin'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
                             <i data-lucide="zap" class="w-4 h-4 text-brand"></i>
                             <span>AE Workflow Plugin</span>
                         </button>
-                        <button onclick="navigateTo('vault'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
+                        <button onclick="scrollToProductCard('card-vault'); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-1.5 flex items-center gap-2">
                             <i data-lucide="folder-archive" class="w-4 h-4 text-sky-400"></i>
                             <span>50GB Video Assets</span>
                         </button>
                     </div>
                 </div>
 
-                <a href="updates.html" class="w-full text-left block text-sm font-semibold text-gray-200 hover:text-brand py-2.5 border-b border-white/5 flex items-center justify-between">
-                    <span>⚡ Software Updates</span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                </a>
-                <button onclick="navigateTo('home'); toggleMobileMenu(); setTimeout(function(){ document.getElementById('about')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
-                    👤 About Dhananjay Kumar
+                <button onclick="scrollToAbout(); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
+                    👤 About Dhananjay
                 </button>
-                <button onclick="navigateTo('home'); toggleMobileMenu(); setTimeout(function(){ document.getElementById('faq')?.scrollIntoView({behavior:'smooth'}); }, 150);" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
+                <button onclick="scrollToFaq(); toggleMobileMenu();" class="w-full text-left block text-sm font-semibold text-gray-300 hover:text-brand py-2 border-b border-white/5">
                     ❓ Frequently Asked Questions
                 </button>
             </div>
             <div class="pt-4 flex flex-col gap-2.5">
                 <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
-                                    <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
-                    <span>Theme:</span>
-                    <button onclick="toggleTheme()" class="px-3 py-1 rounded-lg bg-dark-card border border-white/10 text-white font-mono font-bold flex items-center gap-1.5">
-                        <i data-lucide="sun-moon" class="w-3.5 h-3.5 text-brand"></i>
-                        <span id="themeMobileLabel">Toggle Theme</span>
+                    <span class="font-semibold text-gray-300">Theme:</span>
+                    <button id="themeToggleBtnMobile" onclick="toggleTheme()" type="button" role="switch" aria-label="Toggle Light / Dark Theme"
+                        class="relative w-[68px] h-[34px] rounded-full p-0 transition-colors duration-300 cursor-pointer flex items-center justify-between border bg-slate-200 border-slate-300 dark:bg-[#151922] dark:border-white/15 shadow-inner">
+                        <div id="themeToggleThumbMobile"
+                            style="top: 2px; left: 2px;"
+                            class="absolute w-[28px] h-[28px] rounded-full transition-transform duration-300 ease-in-out bg-white shadow-[0_2px_5px_rgba(0,0,0,0.2)] dark:bg-[#252b3b] dark:border dark:border-white/10">
+                        </div>
+                        <div style="margin-left: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                            <svg id="themeSvgSunMobile" class="w-4 h-4 transition-colors duration-300 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="4"></circle>
+                                <path d="M12 2v2"></path>
+                                <path d="M12 20v2"></path>
+                                <path d="m4.93 4.93 1.41 1.41"></path>
+                                <path d="m17.66 17.66 1.41 1.41"></path>
+                                <path d="M2 12h2"></path>
+                                <path d="M20 12h2"></path>
+                                <path d="m6.34 17.66-1.41 1.41"></path>
+                                <path d="m19.07 4.93-1.41 1.41"></path>
+                            </svg>
+                        </div>
+                        <div style="margin-right: 2px;" class="relative z-10 w-[28px] h-[28px] flex items-center justify-center pointer-events-none">
+                            <svg id="themeSvgMoonMobile" class="w-4 h-4 transition-colors duration-300 text-slate-400 dark:text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                            </svg>
+                        </div>
                     </button>
                 </div>
                 <div class="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-gray-400">
@@ -442,8 +569,8 @@
                     </button>
                 </div>
                 <a id="mobileBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" onclick="toggleMobileMenu();" class="w-full block text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl">Buy AE Workflow Pro (₹299)</a>
-                <button onclick="openUpiModal(); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl">Instant UPI Direct Pay (₹299)</button>
-                <a href="https://superprofile.bio/vp/ae-workflow-pro" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl">Get 50GB Vault + Plugin (₹499)</a>
+                <button onclick="openUpiModal('plugin'); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl">Instant UPI Direct Pay (₹299)</button>
+                <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl">Get 50GB Vault + Plugin (₹499)</a>
                 <div class="pt-2 flex items-center justify-center gap-4 text-xs text-gray-400">
                     <a href="https://instagram.com/motionbydk" target="_blank" class="hover:text-brand flex items-center gap-1 transition-colors">
                         <i data-lucide="instagram" class="w-3.5 h-3.5 text-brand"></i>
@@ -483,7 +610,7 @@
 
                 <!-- Subheadline -->
                 <p class="text-gray-400 text-base sm:text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
-                    Built by <span class="text-white font-semibold underline decoration-brand decoration-2 underline-offset-4">Dhananjay Kumar</span>. Eliminate repetitive keyframing, automate 3D spatial carousels, and accelerate your edit timeline with battle-tested assets.
+                    Built by <span class="text-white font-semibold underline decoration-brand decoration-2 underline-offset-4">Dhananjay</span>. Eliminate repetitive keyframing, automate 3D spatial carousels, and accelerate your edit timeline with battle-tested assets.
                 </p>
 
                 <!-- Dual Action Hero Buttons -->
@@ -556,7 +683,7 @@
         </section>
 
         
-<section id="products" class="py-24 relative">
+<section id="products" class="py-24 relative scroll-mt-28" style="scroll-margin-top: 100px;">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
                 <!-- Section Header -->
@@ -601,7 +728,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch" id="productsGrid">
                     
                     <!-- PRODUCT CARD 1: AE WORKFLOW PRO PLUGIN -->
-                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border-2 border-brand/40 shadow-brand-sm" data-category="plugins">
+                    <div id="card-plugin" class="product-item studio-card p-6 flex flex-col justify-between relative group border-2 border-brand/40 shadow-brand-sm scroll-mt-28" style="scroll-margin-top: 100px;" data-category="plugins">
                         <div class="absolute -top-3 right-6 bg-brand text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md">
                             FLAGSHIP SOFTWARE
                         </div>
@@ -677,7 +804,7 @@
                     </div>
 
                     <!-- PRODUCT CARD 2: 50GB MEGA VIDEO ASSETS (ASSETS ONLY) -->
-                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border border-sky-500/30 shadow-sm" data-category="vaults">
+                    <div id="card-vault" class="product-item studio-card p-6 flex flex-col justify-between relative group border border-sky-500/30 shadow-sm scroll-mt-28" style="scroll-margin-top: 100px;" data-category="vaults">
                         <div class="absolute -top-3 right-6 bg-sky-500 text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md">
                             50GB ASSETS ONLY
                         </div>
@@ -756,7 +883,7 @@
                     </div>
 
                     <!-- PRODUCT CARD 3: STUDIO COMBO PACK (VAULT + PLUGIN) -->
-                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border-2 border-amber-400/60 shadow-lg shadow-amber-500/10" data-category="combos">
+                    <div id="card-combo" class="product-item studio-card p-6 flex flex-col justify-between relative group border-2 border-amber-400/60 shadow-lg shadow-amber-500/10 scroll-mt-28" style="scroll-margin-top: 100px;" data-category="combos">
                         <div class="absolute -top-3 right-6 bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md flex items-center gap-1">
                             <i data-lucide="flame" class="w-3 h-3 fill-black"></i>
                             <span>BEST VALUE • SAVE ₹500</span>
@@ -847,7 +974,7 @@
                     </div>
 
                     <!-- PRODUCT CARD 4: FREE STARTER KIT -->
-                    <div class="product-item studio-card p-6 flex flex-col justify-between relative group border border-white/15" data-category="free">
+                    <div id="card-free" class="product-item studio-card p-6 flex flex-col justify-between relative group border border-white/15 scroll-mt-28" style="scroll-margin-top: 100px;" data-category="free">
                         <div class="absolute -top-3 right-6 bg-emerald-500 text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider">
                             100% FREE
                         </div>
@@ -921,25 +1048,55 @@
         </section>
 
         
-<!-- 3. STATS STRIP -->
-        <section class="py-10 border-y border-white/10 bg-dark-surface/60 backdrop-blur-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                    <div class="p-4">
-                        <div class="font-heading font-black text-3xl sm:text-4xl text-brand mb-1">15–30 Min</div>
-                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Saved Per Animation</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="font-heading font-black text-3xl sm:text-4xl text-white mb-1">1,400+</div>
-                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Active Creators</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="font-heading font-black text-3xl sm:text-4xl text-brand mb-1">50 GB+</div>
-                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Curated 4K Assets</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="font-heading font-black text-3xl sm:text-4xl text-emerald-400 mb-1">4.9 / 5</div>
-                        <div class="text-xs sm:text-sm text-gray-400 font-medium uppercase tracking-wider">Average Rating</div>
+        <!-- 3. STATS STRIP (Exact Image 2 Match: Floating Card with Glowing Orange Accent) -->
+        <section class="py-12 relative overflow-hidden bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
+            <!-- Subtle Ambient Glow Spot behind card -->
+            <div class="ambient-glow -top-16 left-1/2 -translate-x-1/2 opacity-25 dark:opacity-10 pointer-events-none"></div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="rounded-3xl p-6 sm:p-8 md:p-10 bg-white dark:bg-dark-card border-2 border-orange-200/90 dark:border-white/10 shadow-[0_12px_45px_-8px_rgba(255,122,0,0.18)] dark:shadow-none transition-all">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 divide-y-2 lg:divide-y-0 lg:divide-x-2 divide-orange-100 dark:divide-white/10 text-center">
+                        
+                        <!-- Col 1: 15-30 Min -->
+                        <div class="pt-4 lg:pt-0 lg:px-6 flex flex-col items-center justify-center">
+                            <div class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-[#ff7a00] tracking-tight mb-2">
+                                15-30 Min
+                            </div>
+                            <div class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-widest">
+                                SAVED PER ANIMATION
+                            </div>
+                        </div>
+
+                        <!-- Col 2: 1,400+ -->
+                        <div class="pt-4 lg:pt-0 lg:px-6 flex flex-col items-center justify-center">
+                            <div class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-[#0f172a] dark:text-white tracking-tight mb-2">
+                                1,400+
+                            </div>
+                            <div class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-widest">
+                                ACTIVE CREATORS
+                            </div>
+                        </div>
+
+                        <!-- Col 3: 50 GB+ -->
+                        <div class="pt-4 lg:pt-0 lg:px-6 flex flex-col items-center justify-center">
+                            <div class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-[#ff7a00] tracking-tight mb-2">
+                                50 GB+
+                            </div>
+                            <div class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-widest">
+                                CURATED 4K ASSETS
+                            </div>
+                        </div>
+
+                        <!-- Col 4: 4.9 / 5 -->
+                        <div class="pt-4 lg:pt-0 lg:px-6 flex flex-col items-center justify-center">
+                            <div class="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-[#00c582] tracking-tight mb-2">
+                                4.9 / 5
+                            </div>
+                            <div class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-widest">
+                                AVERAGE RATING
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -947,8 +1104,8 @@
 
         <!-- 4. NEW: PRODUCT CATEGORIES & CATALOG SECTION -->
         
-<!-- 7. NEW: ABOUT DHANANJAY & MOTION BY DK SECTION -->
-        <section id="about" class="py-24 relative bg-dark-surface/50 border-t border-white/10">
+        <!-- 7. NEW: ABOUT DHANANJAY & MOTION BY DK SECTION -->
+        <section id="about" class="py-24 relative bg-gradient-to-b from-white via-orange-50/50 to-white dark:from-dark-surface/50 dark:via-dark-base dark:to-dark-surface/50 border-t border-orange-200/50 dark:border-white/10 scroll-mt-28" style="scroll-margin-top: 100px;">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -960,14 +1117,14 @@
                             <span>The Story Behind The Tools</span>
                         </div>
 
-                        <h2 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-6 leading-tight">
+                        <h2 class="font-heading font-black text-3xl sm:text-5xl text-slate-900 dark:text-white tracking-tight mb-6 leading-tight">
                             Built by an Editor. <br />
                             <span class="text-brand">Engineered for Speed.</span>
                         </h2>
 
-                        <div class="space-y-4 text-gray-300 text-sm sm:text-base leading-relaxed">
+                        <div class="space-y-4 text-slate-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
                             <p>
-                                Hey, I'm <strong class="text-white">Dhananjay Kumar (DK)</strong> — a Motion Designer and Video Editor with years of commercial production experience in Adobe After Effects and Premiere Pro.
+                                Hey, I'm <strong class="text-slate-900 dark:text-white">Dhananjay (DK)</strong> — a Motion Designer and Video Editor with years of commercial production experience in Adobe After Effects and Premiere Pro.
                             </p>
                             <p>
                                 Like every motion artist, I wasted countless late nights wrestling with the same repetitive bottlenecks: writing circular trigonometry math just to arrange layers in a 3D carousel, constantly nudging graph editor handles, and digging through messy hard drives for clean sound effects.
@@ -977,63 +1134,78 @@
                             </p>
                         </div>
 
-                        <!-- Core Studio Values -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-8 border-t border-white/10">
-                            <div>
-                                <span class="font-heading font-bold text-white text-base block mb-1">⚡ Zero Bloat</span>
-                                <span class="text-xs text-gray-400">Native JSX scripts. Zero heavy memory footprints or background daemons.</span>
+                        <!-- Core Studio Values (3 Separate White Boxes with Orange Stroke & Rounded Corners) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-4">
+                            <div class="about-val-card p-5 rounded-2xl bg-white dark:bg-dark-card border-2 border-brand shadow-sm hover:shadow-md transition-all">
+                                <div class="font-heading font-black text-slate-900 dark:text-white text-base mb-1.5 flex items-center gap-2">
+                                    <span class="text-brand text-lg">⚡</span>
+                                    <span>Zero Bloat</span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">
+                                    Native JSX scripts. Zero heavy memory footprints or background daemons.
+                                </p>
                             </div>
-                            <div>
-                                <span class="font-heading font-bold text-white text-base block mb-1">🎯 Battle Tested</span>
-                                <span class="text-xs text-gray-400">Tested and verified on real commercial YouTube and brand client deliverables.</span>
+                            <div class="about-val-card p-5 rounded-2xl bg-white dark:bg-dark-card border-2 border-brand shadow-sm hover:shadow-md transition-all">
+                                <div class="font-heading font-black text-slate-900 dark:text-white text-base mb-1.5 flex items-center gap-2">
+                                    <span class="text-brand text-lg">🎯</span>
+                                    <span>Battle Tested</span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">
+                                    Tested and verified on real commercial YouTube and brand client deliverables.
+                                </p>
                             </div>
-                            <div>
-                                <span class="font-heading font-bold text-white text-base block mb-1">🤝 Direct Support</span>
-                                <span class="text-xs text-gray-400">When you email us, you talk directly with Dhananjay, not a support bot.</span>
+                            <div class="about-val-card p-5 rounded-2xl bg-white dark:bg-dark-card border-2 border-brand shadow-sm hover:shadow-md transition-all">
+                                <div class="font-heading font-black text-slate-900 dark:text-white text-base mb-1.5 flex items-center gap-2">
+                                    <span class="text-brand text-lg">🤝</span>
+                                    <span>Direct Support</span>
+                                </div>
+                                <p class="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">
+                                    When you email us, you talk directly with Dhananjay, not a support bot.
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right: Founder Card & Social Proof (5 Cols) -->
                     <div class="lg:col-span-5">
-                        <div class="studio-card p-6 sm:p-8 border-2 border-brand/30 relative">
+                        <div class="studio-card p-6 sm:p-8 border-2 border-orange-200 dark:border-brand/30 relative bg-white dark:bg-dark-card rounded-3xl shadow-xl shadow-orange-500/5">
                             <!-- Monogram & Badge -->
                             <div class="flex items-center gap-4 mb-6">
-                                <div class="w-16 h-16 rounded-2xl bg-dark-card border border-brand/40 flex items-center justify-center p-3 text-brand shadow-brand-sm">
+                                <div class="w-16 h-16 rounded-2xl bg-orange-500/10 dark:bg-dark-card border border-brand/40 flex items-center justify-center p-3 text-brand shadow-brand-sm">
                                     <span class="font-heading font-black text-2xl text-brand">DK</span>
                                 </div>
                                 <div>
-                                    <h3 class="font-heading font-black text-xl text-white">Dhananjay Kumar</h3>
-                                    <span class="text-xs text-brand font-medium">Founder &amp; Motion Designer</span>
-                                    <div class="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
-                                        <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-400"></i>
+                                    <h3 class="font-heading font-black text-xl text-slate-900 dark:text-white">Dhananjay</h3>
+                                    <span class="text-xs text-brand font-bold">Founder &amp; Motion Designer</span>
+                                    <div class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">
+                                        <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-500"></i>
                                         <span>Verified Creator</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Founder Quote -->
-                            <blockquote class="p-4 rounded-xl bg-dark-base/80 border border-white/10 text-xs sm:text-sm text-gray-300 italic mb-6 leading-relaxed">
+                            <!-- Founder Quote (Light Orange in light mode) -->
+                            <blockquote class="about-quote-box p-5 rounded-2xl bg-[#fff7ed] border border-[#fed7aa] text-[#7c2d12] dark:bg-dark-base/80 dark:border-white/10 dark:text-gray-300 text-xs sm:text-sm italic mb-6 leading-relaxed shadow-sm">
                                 &ldquo;My goal is simple: give you your time back so you can charge higher rates and focus on storytelling instead of tedious keyframing.&rdquo;
                             </blockquote>
 
                             <!-- Direct Support Details -->
-                            <div class="space-y-3 text-xs text-gray-400 mb-6">
-                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
-                                    <span>Direct Email Support:</span>
-                                    <span class="text-white font-mono font-bold">motionbydk@gmail.com</span>
+                            <div class="space-y-3 text-xs text-slate-600 dark:text-gray-400 mb-6">
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-orange-50/60 dark:bg-dark-card border border-orange-100 dark:border-white/5">
+                                    <span class="font-medium text-slate-700 dark:text-gray-400">Direct Email Support:</span>
+                                    <span class="text-slate-900 dark:text-white font-mono font-bold">motionbydk@gmail.com</span>
                                 </div>
-                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
-                                    <span>Response Time:</span>
-                                    <span class="text-emerald-400 font-bold">&lt; 15 Minutes</span>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-orange-50/60 dark:bg-dark-card border border-orange-100 dark:border-white/5">
+                                    <span class="font-medium text-slate-700 dark:text-gray-400">Response Time:</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">&lt; 15 Minutes</span>
                                 </div>
-                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-card border border-white/5">
-                                    <span>Location:</span>
-                                    <span class="text-white font-medium">India 🇮🇳 (Global Delivery)</span>
+                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-orange-50/60 dark:bg-dark-card border border-orange-100 dark:border-white/5">
+                                    <span class="font-medium text-slate-700 dark:text-gray-400">Location:</span>
+                                    <span class="text-slate-900 dark:text-white font-medium">India 🇮🇳 (Global Delivery)</span>
                                 </div>
                             </div>
 
-                            <a href="mailto:motionbydk@gmail.com?subject=Question%20about%20MotionByDk%20Tools" class="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl text-center transition-all flex items-center justify-center gap-2">
+                            <a href="mailto:motionbydk@gmail.com?subject=Question%20about%20MotionByDk%20Tools" class="w-full py-3 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-brand-sm">
                                 <i data-lucide="mail" class="w-4 h-4"></i>
                                 <span>Send Direct Question to Dhananjay</span>
                             </a>
@@ -1148,14 +1320,14 @@
         </section>
 
         
-<!-- 9. INTERACTIVE FAQ ACCORDION -->
-        <section id="faq" class="py-20 relative bg-dark-surface/40 border-t border-white/10">
+        <!-- 9. INTERACTIVE FAQ ACCORDION -->
+        <section id="faq" class="py-20 relative bg-gradient-to-b from-white via-orange-50/60 to-white dark:from-dark-surface/40 dark:via-dark-base dark:to-dark-surface/40 border-t border-orange-200/50 dark:border-white/10 scroll-mt-28" style="scroll-margin-top: 100px;">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="font-heading font-black text-2xl sm:text-4xl text-white mb-2">
+                    <h2 class="font-heading font-black text-2xl sm:text-4xl text-slate-900 dark:text-white mb-2">
                         Frequently Asked Questions
                     </h2>
-                    <p class="text-gray-400 text-sm">Everything you need to know about licensing, compatibility, and refunds.</p>
+                    <p class="text-slate-600 dark:text-gray-400 text-sm">Everything you need to know about licensing, compatibility, and refunds.</p>
                 </div>
 
                 <div class="space-y-3.5" id="faqAccordion">
@@ -2419,7 +2591,7 @@
             </button>
             <div class="mb-5">
                 <h3 class="font-heading font-black text-2xl text-white">Contact Studio Support</h3>
-                <p class="text-xs text-gray-400 mt-1">Reach Dhananjay Kumar directly for licensing and inquiries.</p>
+                <p class="text-xs text-gray-400 mt-1">Reach Dhananjay directly for licensing and inquiries.</p>
             </div>
             <div class="p-4 rounded-xl bg-dark-base border border-white/10 mb-5 space-y-2 text-xs">
                 <div>
@@ -2673,7 +2845,64 @@
         // Initial Route on page load
         
         // =========================================================================
-        // LIGHT / DARK THEME TOGGLE ENGINE
+        // ACCURATE SMOOTH SCROLL WITH HEADER OFFSET (Prevents hiding under navbar)
+        // =========================================================================
+        function scrollToElementWithOffset(elementId, offset) {
+            if (offset === undefined) offset = 95;
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            var rect = el.getBoundingClientRect();
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var targetY = rect.top + scrollTop - offset;
+            window.scrollTo({
+                top: Math.max(0, targetY),
+                behavior: 'smooth'
+            });
+        }
+
+        function scrollToProducts(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            var homeView = document.getElementById('view-home');
+            if (homeView && homeView.style.display === 'none') {
+                navigateTo('home', false);
+            }
+            setTimeout(function() {
+                scrollToElementWithOffset('products', 95);
+            }, 120);
+        }
+
+        function scrollToProductCard(cardId) {
+            var homeView = document.getElementById('view-home');
+            if (homeView && homeView.style.display === 'none') {
+                navigateTo('home', false);
+            }
+            setTimeout(function() {
+                scrollToElementWithOffset(cardId, 95);
+            }, 120);
+        }
+
+        function scrollToAbout() {
+            var homeView = document.getElementById('view-home');
+            if (homeView && homeView.style.display === 'none') {
+                navigateTo('home', false);
+            }
+            setTimeout(function() {
+                scrollToElementWithOffset('about', 95);
+            }, 120);
+        }
+
+        function scrollToFaq() {
+            var homeView = document.getElementById('view-home');
+            if (homeView && homeView.style.display === 'none') {
+                navigateTo('home', false);
+            }
+            setTimeout(function() {
+                scrollToElementWithOffset('faq', 95);
+            }, 120);
+        }
+
+        // =========================================================================
+        // LIGHT / DARK THEME TOGGLE ENGINE (Exact Image 1 Slider & Orange Active)
         // =========================================================================
         function initTheme() {
             var saved = localStorage.getItem('motionbydk_theme');
@@ -2701,22 +2930,55 @@
         }
 
         function updateThemeUI(theme) {
-            var sun = document.getElementById('themeIconSun');
-            var moon = document.getElementById('themeIconMoon');
-            var label = document.getElementById('themeLabel');
-            var mobileLabel = document.getElementById('themeMobileLabel');
+            var isDark = (theme === 'dark');
 
-            if (theme === 'light') {
-                if (sun) sun.classList.remove('hidden');
-                if (moon) moon.classList.add('hidden');
-                if (label) label.innerText = 'Light';
-                if (mobileLabel) mobileLabel.innerText = 'Light Theme';
-            } else {
-                if (sun) sun.classList.add('hidden');
-                if (moon) moon.classList.remove('hidden');
-                if (label) label.innerText = 'Dark';
-                if (mobileLabel) mobileLabel.innerText = 'Dark Theme';
-            }
+            // Desktop Elements
+            var thumb = document.getElementById('themeToggleThumb');
+            var sun = document.getElementById('themeSvgSun');
+            var moon = document.getElementById('themeSvgMoon');
+
+            // Mobile Elements
+            var thumbM = document.getElementById('themeToggleThumbMobile');
+            var sunM = document.getElementById('themeSvgSunMobile');
+            var moonM = document.getElementById('themeSvgMoonMobile');
+
+            // Slide Knob: translateX(34px) when dark, translateX(0px) when light
+            [thumb, thumbM].forEach(function(el) {
+                if (!el) return;
+                if (isDark) {
+                    el.style.transform = 'translateX(34px)';
+                } else {
+                    el.style.transform = 'translateX(0px)';
+                }
+            });
+
+            // Sun Icon: active Brand Orange (#ff7a00) in Light mode, muted gray in Dark mode
+            [sun, sunM].forEach(function(el) {
+                if (!el) return;
+                if (isDark) {
+                    el.classList.remove('text-brand');
+                    el.classList.add('text-slate-400');
+                    el.style.color = '#94a3b8';
+                } else {
+                    el.classList.remove('text-slate-400');
+                    el.classList.add('text-brand');
+                    el.style.color = '#ff7a00';
+                }
+            });
+
+            // Moon Icon: active Brand Orange (#ff7a00) in Dark mode, muted gray in Light mode
+            [moon, moonM].forEach(function(el) {
+                if (!el) return;
+                if (isDark) {
+                    el.classList.remove('text-slate-400');
+                    el.classList.add('text-brand');
+                    el.style.color = '#ff7a00';
+                } else {
+                    el.classList.remove('text-brand');
+                    el.classList.add('text-slate-400');
+                    el.style.color = '#94a3b8';
+                }
+            });
         }
 
         window.addEventListener('DOMContentLoaded', function() {
@@ -2976,7 +3238,7 @@
                 if (directText) directText.innerText = 'Pay ₹499 on SuperProfile (Instant Key & Vault Access) →';
                 if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3D50GBVaultAEBundle';
                 if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=50GBVaultAEBundle';
-                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹299 via UPI App (1-Tap)';
+                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹499 via UPI App (1-Tap)';
                 if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9499%20via%20UPI%20for%2050GB%20Vault%20%2B%20AE%20Plugin%20Combo.%20Here%20is%20my%20screenshot%3A';
             } else if (currentUpiTier === 'assets') {
                 if (assetsBtn) assetsBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-sky-500 shadow-sm cursor-pointer text-center';
