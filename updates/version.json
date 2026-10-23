@@ -1,16 +1,20 @@
 {
-  "latestVersion": "3.7.0",
+  "latestVersion": "3.6.0",
   "releaseDate": "2026-10-13",
   "title": "MotionByDk Pro Suite Released!",
   "message": "Complete suite with 3D Carousel, macOS Mouse Dock, Graph Bezier Editor, and Shape Tools.",
   "downloadUrl": "https://motionbydk.in/updates.html",
+  "githubUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip",
   "gdriveUrl": "https://drive.google.com/drive/folders/1LUf8tof2Yzphr0WIPwqWzA1mZFQezryz",
   "minAEVersion": "15.0",
   "changelog": [
+    "Speed Graph vs Value Graph Dual-Overlay engine with velocity ghost curve",
+    "Dynamic UI Theme Switcher (Orange, Cyan, Violet, Emerald, Rose, Titanium)",
+    "In-Panel Detachable Floating Palettes & 1-Click Reset Layout",
+    "EaseCopy (Capture & Paste keyframe ease) and Invert Curve utilities",
     "Added 3D Carousel Suite with 5 visual layouts & live preview",
     "Added macOS Mouse Dock magnification effect with spring physics",
     "Added full Shape Tools with Trim Paths, Dashes & Taper",
-    "Enhanced Bezier Graph Editor curve library with instant easing",
     "Hardware-locked 2-PC commercial licensing engine"
   ]
 }
