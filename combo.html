@@ -2406,7 +2406,7 @@
                 <h3 class="font-heading font-black text-2xl text-white">Instant UPI &amp; Card Checkout</h3>
                 <p class="text-xs text-gray-300 mt-1">Select your product plan below for instant automated access:</p>
                 <div id="upiPriceBadge" class="inline-block mt-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 font-extrabold text-base sm:text-lg">
-                    ₹499 <span class="text-xs text-gray-400 font-normal">One-time / Lifetime License</span>
+                    AE Workflow Pro: <span class="text-brand font-black text-sm">₹299</span> (2-PC Lifetime Commercial)
                 </div>
             </div>
 
@@ -2414,16 +2414,16 @@
             <div class="grid grid-cols-3 gap-1.5 mb-5 p-1 rounded-xl bg-dark-base border border-white/10" id="upiTierSwitcher">
                 <button type="button" onclick="selectUpiTier('plugin')" id="upiTierPluginBtn" class="py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-brand shadow-sm cursor-pointer text-center">
                     <span>AE Plugin</span>
-                    <span class="block text-[10px] font-mono">₹499</span>
+                    <span class="block text-[10px] font-mono font-bold">₹299</span>
                 </button>
                 <button type="button" onclick="selectUpiTier('assets')" id="upiTierAssetsBtn" class="py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white cursor-pointer text-center">
                     <span>50GB Assets</span>
-                    <span class="block text-[10px] font-mono text-sky-400">Assets Only</span>
+                    <span class="block text-[10px] font-mono text-sky-400 font-bold">₹199</span>
                 </button>
                 <button type="button" onclick="selectUpiTier('bundle')" id="upiTierBundleBtn" class="py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white cursor-pointer relative text-center">
                     <span class="absolute -top-2 right-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.2 rounded-full uppercase">Best Value</span>
                     <span>Studio Combo</span>
-                    <span class="block text-[10px] font-mono text-amber-400">₹699</span>
+                    <span class="block text-[10px] font-mono text-amber-400 font-bold">₹499</span>
                 </button>
             </div>
 
@@ -2441,7 +2441,7 @@
                 </p>
                 <a id="upiSuperprofileDirectBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
                     <i data-lucide="shield-check" class="w-4 h-4 text-black"></i>
-                    <span id="upiSuperprofileDirectText">Pay ₹499 via SuperProfile (Instant Key &amp; Download) &rarr;</span>
+                    <span id="upiSuperprofileDirectText">Pay ₹299 via SuperProfile (Instant Key &amp; Download) &rarr;</span>
                 </a>
             </div>
 
@@ -2480,7 +2480,7 @@
                         </p>
                         <a id="upiTapPayLink" href="upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=299&cu=INR&tn=AEWorkflowPro" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 text-xs font-bold transition-all">
                             <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-                            <span id="upiTapPayText">Tap to Pay via UPI App (₹499)</span>
+                            <span id="upiTapPayText">Tap to Pay via UPI App (₹299)</span>
                         </a>
                     </div>
                 </div>
@@ -3263,7 +3263,7 @@
         }
 
         function openUpiModal(tier) {
-            if (tier) selectUpiTier(tier);
+            selectUpiTier(tier || 'plugin');
             var modal = document.getElementById('upiModal');
             if (!modal) return;
             modal.classList.remove('opacity-0', 'pointer-events-none');
