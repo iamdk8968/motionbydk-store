@@ -7,6 +7,14 @@
     "active": true,
     "note": "Master Studio Key for DK"
   },
+  "MDK-BOBY-PC": {
+    "email": "motionbydk@gmail.com",
+    "maxDevices": 2,
+    "devices": [],
+    "createdAt": "2026-10-26",
+    "active": true,
+    "note": "PLUGIN Pro Key for BOBY"
+  },
   "MDK-VIP-001": {
     "email": "customer1@example.com",
     "maxDevices": 2,
