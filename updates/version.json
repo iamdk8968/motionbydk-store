@@ -1,20 +1,20 @@
 {
-  "latestVersion": "3.6.0",
-  "releaseDate": "2026-10-23",
-  "title": "MotionByDk Pro Suite Released!",
-  "message": "Complete suite with 3D Carousel, macOS Mouse Dock, Graph Bezier Editor, and Shape Tools.",
+  "latestVersion": "3.7.0",
+  "releaseDate": "2026-10-28",
+  "title": "MotionByDk Pro Suite v3.7.0 Released!",
+  "message": "Integrated native Liquid Glass plugin, 3D Carousel stability overhaul (zero freeze / zero crash), and universal AE support.",
   "downloadUrl": "https://motionbydk.in/updates.html",
-  "githubUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip",
-  "gdriveUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.6.0.zip",
+  "githubUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.7.0.zip",
+  "gdriveUrl": "https://github.com/iamdk8968/motionbydk-ae-workflow/releases/latest/download/MotionByDk_AE_Workflow_v3.7.0.zip",
   "minAEVersion": "15.0",
   "changelog": [
+    "\ud83d\udca7 Liquid Glass Plugin: Native glass distortion effect with 1-click Mac (.plugin) & Windows (.aex) auto-installers",
+    "\u26a1 3D Carousel Architecture Overhaul: Native ExtendScript engine with 0% CPU lockup and 0% crash on Create",
+    "\ud83d\udee1\ufe0f Non-Blocking Error Feedback: Replaced all AE modal alerts with non-blocking status bar feedback",
+    "\ud83c\udf10 Universal Language Support: Expression engine compatible with all After Effects language editions",
+    "\ud83c\udfa8 Dynamic Theme UI: Liquid Glass button syncs with all 6 color themes",
     "Speed Graph vs Value Graph Dual-Overlay engine with velocity ghost curve",
     "Dynamic UI Theme Switcher (Orange, Cyan, Violet, Emerald, Rose, Titanium)",
-    "In-Panel Detachable Floating Palettes & 1-Click Reset Layout",
-    "EaseCopy (Capture & Paste keyframe ease) and Invert Curve utilities",
-    "Added 3D Carousel Suite with 5 visual layouts & live preview",
-    "Added macOS Mouse Dock magnification effect with spring physics",
-    "Added full Shape Tools with Trim Paths, Dashes & Taper",
-    "Hardware-locked 2-PC commercial licensing engine"
+    "In-Panel Detachable Floating Palettes & 1-Click Reset Layout"
   ]
 }
