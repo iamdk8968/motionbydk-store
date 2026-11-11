@@ -38,6 +38,23 @@ import {
   dispatchClaimOtpEmail,
   hasEmailBeenSent,
 } from './email';
+import {
+  handleAdminLogin,
+  handleAdminMe,
+  handleAdminMetrics,
+  handleAdminOrders,
+  handleAdminOrderDetail,
+  handleAdminLicenses,
+  handleAdminLicenseDetail,
+  handleAdminResetDevices,
+  handleAdminRevokeLicense,
+  handleAdminReinstateLicense,
+  handleAdminEmails,
+  handleAdminResendEmail,
+  handleAdminAuditLogs,
+  handleAdminPaymentEvents,
+  authenticateAdmin,
+} from './admin';
 
 const ALLOWED_ORIGINS = [
   'https://www.motionbydk.in',
@@ -49,12 +66,16 @@ const ALLOWED_ORIGINS = [
 
 function getCorsHeaders(request: Request, envCorsOrigin?: string): HeadersInit {
   const origin = request.headers.get('Origin') || '';
-  const allowed = ALLOWED_ORIGINS.includes(origin) || (envCorsOrigin && envCorsOrigin.split(',').includes(origin));
+  const allowed =
+    ALLOWED_ORIGINS.includes(origin) ||
+    (envCorsOrigin && envCorsOrigin.split(',').includes(origin)) ||
+    origin.startsWith('http://localhost:') ||
+    origin.startsWith('http://127.0.0.1:');
 
   return {
-    'Access-Control-Allow-Origin': allowed ? origin : 'https://www.motionbydk.in',
+    'Access-Control-Allow-Origin': allowed && origin ? origin : 'https://www.motionbydk.in',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-webhook-signature, x-webhook-timestamp',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-webhook-signature, x-webhook-timestamp, x-admin-token',
     'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': '86400',
   };
@@ -725,6 +746,114 @@ export default {
           .all();
 
         return jsonResponse({ orderId, logs: logs.results || [] }, 200, corsHeaders);
+      }
+
+      // =======================================================================
+      // ADMIN & OBSERVABILITY ENDPOINTS (/api/admin/*)
+      // =======================================================================
+      if (pathname.startsWith('/api/admin/')) {
+        const clientIp = request.headers.get('CF-Connecting-IP') || request.headers.get('x-real-ip') || 'unknown';
+
+        // 1. Admin Login (POST /api/admin/login) - Rate limited
+        if (pathname === '/api/admin/login' && request.method === 'POST') {
+          if (!checkRateLimit(`admin-login:${clientIp}`, 10, 60000)) {
+            return jsonResponse(
+              { success: false, error: 'Too many login attempts. Please wait 1 minute.' },
+              429,
+              corsHeaders
+            );
+          }
+          return handleAdminLogin(request, env, clientIp, corsHeaders);
+        }
+
+        // 2. Admin Me (GET /api/admin/me)
+        if (pathname === '/api/admin/me' && request.method === 'GET') {
+          return handleAdminMe(request, env, corsHeaders);
+        }
+
+        // 3. Admin Metrics (GET /api/admin/metrics)
+        if (pathname === '/api/admin/metrics' && request.method === 'GET') {
+          return handleAdminMetrics(request, env, corsHeaders);
+        }
+
+        // 4. Admin Orders List (GET /api/admin/orders)
+        if (pathname === '/api/admin/orders' && request.method === 'GET') {
+          return handleAdminOrders(request, env, corsHeaders);
+        }
+
+        // 5. Admin Order Detail (GET /api/admin/orders/:order_id)
+        if (pathname.startsWith('/api/admin/orders/') && request.method === 'GET') {
+          const orderId = pathname.replace('/api/admin/orders/', '').trim();
+          return handleAdminOrderDetail(request, env, orderId, corsHeaders);
+        }
+
+        // 6. Admin Licenses List (GET /api/admin/licenses)
+        if (pathname === '/api/admin/licenses' && request.method === 'GET') {
+          return handleAdminLicenses(request, env, corsHeaders);
+        }
+
+        // 7. Admin License Detail (GET /api/admin/licenses/:license_key)
+        if (pathname.startsWith('/api/admin/licenses/') && request.method === 'GET') {
+          const licenseKey = pathname.replace('/api/admin/licenses/', '').trim();
+          return handleAdminLicenseDetail(request, env, licenseKey, corsHeaders);
+        }
+
+        // 8. Admin Reset Devices (POST /api/admin/licenses/reset-devices)
+        if (pathname === '/api/admin/licenses/reset-devices' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminResetDevices(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 9. Admin Revoke License (POST /api/admin/licenses/revoke)
+        if (pathname === '/api/admin/licenses/revoke' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminRevokeLicense(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 10. Admin Reinstate License (POST /api/admin/licenses/reinstate)
+        if (pathname === '/api/admin/licenses/reinstate' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminReinstateLicense(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 11. Admin Emails List (GET /api/admin/emails)
+        if (pathname === '/api/admin/emails' && request.method === 'GET') {
+          return handleAdminEmails(request, env, corsHeaders);
+        }
+
+        // 12. Admin Resend Email (POST /api/admin/emails/resend)
+        if (pathname === '/api/admin/emails/resend' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminResendEmail(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 13. Admin Audit Logs (GET /api/admin/audit-logs)
+        if (pathname === '/api/admin/audit-logs' && request.method === 'GET') {
+          return handleAdminAuditLogs(request, env, corsHeaders);
+        }
+
+        // 14. Admin Payment Webhook Events (GET /api/admin/payment-events)
+        if (pathname === '/api/admin/payment-events' && request.method === 'GET') {
+          return handleAdminPaymentEvents(request, env, corsHeaders);
+        }
+
+        return jsonResponse(
+          { error: 'ADMIN_ROUTE_NOT_FOUND', message: `Admin route ${pathname} not found.` },
+          404,
+          corsHeaders
+        );
       }
 
       // Backward-compatibility endpoint for legacy AE extensions querying /api/licenses.json

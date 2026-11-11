@@ -622,21 +622,24 @@ export async function dispatchOrderReceiptEmail(
     paymentId: string;
     licenseKey?: string | null;
     downloadUrl?: string | null;
+    forceResend?: boolean;
   }
 ): Promise<SendResult> {
-  const { orderId, customerEmail } = params;
+  const { orderId, customerEmail, forceResend } = params;
 
-  // 1. Idempotency Check
-  const check = await hasEmailBeenSent(db, orderId, 'ORDER_RECEIPT');
-  if (check.sent) {
-    console.log(`[Email Engine] ORDER_RECEIPT already sent for order ${orderId}. Skipping duplicate.`);
-    return {
-      success: true,
-      status: 'SENT',
-      resendMessageId: check.resendMessageId || null,
-      attemptCount: 0,
-      mocked: false,
-    };
+  // 1. Idempotency Check (Bypassed if explicitly forced by Admin)
+  if (!forceResend) {
+    const check = await hasEmailBeenSent(db, orderId, 'ORDER_RECEIPT');
+    if (check.sent) {
+      console.log(`[Email Engine] ORDER_RECEIPT already sent for order ${orderId}. Skipping duplicate.`);
+      return {
+        success: true,
+        status: 'SENT',
+        resendMessageId: check.resendMessageId || null,
+        attemptCount: 0,
+        mocked: false,
+      };
+    }
   }
 
   // 2. Build Payload

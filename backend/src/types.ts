@@ -148,3 +148,43 @@ export interface ClaimVerificationRecord {
   expires_at: string;
   created_at: string;
 }
+
+export interface AdminUserRecord {
+  id: string;
+  username: string;
+  password_hash: string;
+  salt: string;
+  full_name: string;
+  role: 'admin' | 'support';
+  last_login_at: string | null;
+  created_at: string;
+}
+
+export interface AuditLogRecord {
+  id: string;
+  actor_id: string;
+  action: string;
+  target_type: string | null;
+  target_id: string | null;
+  details: string | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+export interface AdminJwtPayload {
+  sub: string;
+  name: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}

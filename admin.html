@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Merchant Admin &amp; Observability | Motion by DK</title>
+    <meta name="description" content="Merchant administration, revenue analytics, license hardware locker, order dossier, and email observability for MotionByDK.">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00F0FF',
+                            hover: '#33F3FF',
+                            dim: '#008b94'
+                        },
+                        dark: {
+                            base: '#07090e',
+                            surface: '#0d1117',
+                            card: '#131822',
+                            elevated: '#1a2230',
+                            border: '#232d3f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        body {
+            background-color: #07090e;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .studio-card {
+            background: linear-gradient(180deg, rgba(19, 24, 34, 0.9) 0%, rgba(13, 17, 23, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(14px);
+        }
+        .studio-card:hover {
+            border-color: rgba(0, 240, 255, 0.25);
+        }
+        .nav-tab.active {
+            background-color: rgba(0, 240, 255, 0.12);
+            border-color: #00F0FF;
+            color: #00F0FF;
+        }
+        .filter-btn.active {
+            background-color: #00F0FF;
+            color: #07090e;
+            font-weight: 700;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232d3f;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Studio Glow -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-32 left-1/3 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[140px]"></div>
+        <div class="absolute bottom-10 right-10 w-[400px] h-[400px] bg-purple-600/5 rounded-full blur-[140px]"></div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <!-- 1. LOGIN VIEW (Shown when unauthenticated) -->
+    <div id="login-view" class="flex-1 flex items-center justify-center p-4 relative z-10">
+        <div class="w-full max-w-md studio-card rounded-2xl p-8 border border-white/10 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-dark-elevated border border-brand/40 p-3 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-brand/10">
+                    <img src="assets/icon.svg" alt="Motion By DK" class="w-full h-full object-contain">
+                </div>
+                <h1 class="font-heading font-black text-2xl tracking-tight text-white">MOTION<span class="text-brand">BY DK</span></h1>
+                <p class="text-xs text-gray-400 font-mono mt-1 uppercase tracking-wider">Merchant Admin &amp; Observability</p>
+            </div>
+
+            <div id="login-error" class="hidden mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+                <span id="login-error-text">Invalid username or password.</span>
+            </div>
+
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider">Admin Username</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="login-username" required autocomplete="username" placeholder="dhananjay"
+                            class="w-full pl-10 pr-4 py-2.5 bg-dark-base/80 border border-dark-border rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5 uppercase tracking-wider">Master Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                        <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••••••"
+                            class="w-full pl-10 pr-10 py-2.5 bg-dark-base/80 border border-dark-border rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand transition-colors">
+                        <button type="button" id="toggle-pwd-btn" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="login-submit-btn" class="w-full py-3 rounded-xl bg-brand text-dark-base font-heading font-extrabold text-sm tracking-wide hover:bg-brand-hover active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>Authenticate Merchant Session</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                <span class="inline-flex items-center gap-1.5 text-[11px] text-gray-500 font-mono">
+                    <i data-lucide="lock" class="w-3 h-3 text-emerald-400"></i>
+                    Cloudflare D1 &bull; HMAC-SHA256 Encrypted Session
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. AUTHENTICATED DASHBOARD (Hidden by default) -->
+    <div id="dashboard-view" class="hidden flex-1 flex flex-col relative z-10">
+        <!-- Top App Bar -->
+        <header class="border-b border-white/10 bg-dark-base/90 backdrop-blur-xl sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-dark-card border border-brand/40 p-2 flex items-center justify-center">
+                        <img src="assets/icon.svg" alt="Motion By DK" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-heading font-black text-lg tracking-tight text-white">MOTION<span class="text-brand">BY DK</span></span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">OPERATIONAL</span>
+                            <span id="env-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider bg-brand/10 text-brand border border-brand/20">STAGING</span>
+                        </div>
+                        <span class="text-[11px] text-gray-400 hidden sm:block">Merchant Control Center &amp; Observability</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button id="refresh-data-btn" class="px-3 py-1.5 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white hover:border-brand/40 transition-all flex items-center gap-1.5">
+                        <i data-lucide="refresh-cw" id="refresh-icon" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Refresh</span>
+                    </button>
+
+                    <div class="flex items-center gap-2 pl-2 border-l border-white/10">
+                        <div class="w-7 h-7 rounded-full bg-brand/10 border border-brand/30 flex items-center justify-center text-brand font-bold text-xs">
+                            DK
+                        </div>
+                        <div class="text-left hidden md:block">
+                            <span id="admin-user-display" class="block text-xs font-bold text-white leading-tight">Dhananjay K</span>
+                            <span class="block text-[10px] text-gray-400 font-mono leading-none">admin</span>
+                        </div>
+                    </div>
+
+                    <button id="logout-btn" title="Sign Out" class="p-2 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Bar -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/5">
+                <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2">
+                    <button data-tab="overview" class="nav-tab active flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Overview &amp; KPIs</span>
+                    </button>
+                    <button data-tab="orders" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Orders Directory</span>
+                        <span id="badge-total-orders" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="licenses" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="key" class="w-4 h-4"></i>
+                        <span>Licenses &amp; Hardware</span>
+                        <span id="badge-total-licenses" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="emails" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        <span>Email Observability</span>
+                        <span id="badge-total-emails" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="audit" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                        <span>Security &amp; Audit Trail</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+            <!-- TAB 1: OVERVIEW & ANALYTICS -->
+            <section id="tab-overview" class="tab-pane space-y-8">
+                <!-- 6 Top KPI Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <!-- Total Revenue -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Gross Revenue</span>
+                            <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i data-lucide="indian-rupee" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-revenue-total" class="font-heading font-extrabold text-xl text-white">₹0.00</div>
+                        <div class="text-[10px] text-emerald-400 font-mono mt-1">Paid Cashfree Volume</div>
+                    </div>
+
+                    <!-- 24h Revenue -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">24h Revenue</span>
+                            <div class="w-7 h-7 rounded-lg bg-brand/10 text-brand flex items-center justify-center">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-revenue-24h" class="font-heading font-extrabold text-xl text-brand">₹0.00</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-1">Last 24 Hours</div>
+                    </div>
+
+                    <!-- Paid Orders -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Paid Orders</span>
+                            <div class="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-orders-paid" class="font-heading font-extrabold text-xl text-white">0</div>
+                        <div id="metric-orders-breakdown" class="text-[10px] text-gray-400 font-mono mt-1">0 total &bull; 0 pend</div>
+                    </div>
+
+                    <!-- Conversion Rate -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Conversion</span>
+                            <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                                <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-conversion-rate" class="font-heading font-extrabold text-xl text-white">0.0%</div>
+                        <div class="text-[10px] text-amber-400 font-mono mt-1">Checkout to Paid</div>
+                    </div>
+
+                    <!-- Active Licenses -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Active Keys</span>
+                            <div class="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                                <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-licenses-active" class="font-heading font-extrabold text-xl text-white">0</div>
+                        <div id="metric-licenses-ratio" class="text-[10px] text-gray-400 font-mono mt-1">0 commercial &bull; 0 legacy</div>
+                    </div>
+
+                    <!-- Workstations Locked -->
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <div class="flex items-center justify-between text-gray-400 mb-2">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Active Devices</span>
+                            <div class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                                <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                        <div id="metric-devices-active" class="font-heading font-extrabold text-xl text-white">0</div>
+                        <div id="metric-devices-licenses" class="text-[10px] text-gray-400 font-mono mt-1">0 machines locked</div>
+                    </div>
+                </div>
+
+                <!-- Secondary Panels: Products Breakdown + Recent Feeds -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Product Sales Performance -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 lg:col-span-1">
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="package" class="w-4 h-4 text-brand"></i>
+                            <span>Product Revenue Breakdown</span>
+                        </h3>
+                        <div id="product-breakdown-list" class="space-y-3">
+                            <div class="text-xs text-gray-500 py-4 text-center">Loading breakdown...</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders Feed -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 lg:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-brand"></i>
+                                <span>Recent Orders Feed</span>
+                            </h3>
+                            <button onclick="switchTab('orders')" class="text-xs text-brand hover:underline font-semibold">View all orders &rarr;</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="text-gray-400 border-b border-white/5 pb-2">
+                                        <th class="py-2">Order ID</th>
+                                        <th class="py-2">Customer</th>
+                                        <th class="py-2">Product</th>
+                                        <th class="py-2">Amount</th>
+                                        <th class="py-2">Status</th>
+                                        <th class="py-2">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-orders-tbody" class="divide-y divide-white/5 text-gray-300">
+                                    <tr><td colspan="6" class="py-4 text-center text-gray-500">Loading orders...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ORDERS DIRECTORY -->
+            <section id="tab-orders" class="tab-pane hidden space-y-6">
+                <!-- Search & Filters -->
+                <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full sm:w-80">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="order-search-input" placeholder="Search order ID, email, customer..."
+                            class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                    </div>
+                    <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
+                        <button class="order-filter-btn filter-btn active px-3 py-1.5 rounded-lg text-xs" data-status="ALL">All</button>
+                        <button class="order-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="PAID">Paid</button>
+                        <button class="order-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="PENDING">Pending</button>
+                        <button class="order-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="FAILED">Failed</button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Order ID</th>
+                                    <th class="py-3 px-4">Customer</th>
+                                    <th class="py-3 px-4">Product</th>
+                                    <th class="py-3 px-4">Amount</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Date</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="7" class="py-8 text-center text-gray-500">Loading orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Bar -->
+                    <div class="p-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                        <span id="orders-page-info">Showing page 1</span>
+                        <div class="flex items-center gap-2">
+                            <button id="orders-prev-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">&larr; Prev</button>
+                            <button id="orders-next-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">Next &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: LICENSES & HARDWARE LOCKER -->
+            <section id="tab-licenses" class="tab-pane hidden space-y-6">
+                <!-- Search & Filters -->
+                <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full sm:w-80">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="license-search-input" placeholder="Search license key, email, order..."
+                            class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                    </div>
+                    <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
+                        <button class="license-filter-btn filter-btn active px-3 py-1.5 rounded-lg text-xs" data-type="ALL">All</button>
+                        <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="COMMERCIAL">Commercial (New)</button>
+                        <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="LEGACY">Legacy (105)</button>
+                        <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="REVOKED">Revoked</button>
+                    </div>
+                </div>
+
+                <!-- Licenses Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">License Key</th>
+                                    <th class="py-3 px-4">Type</th>
+                                    <th class="py-3 px-4">Customer Email</th>
+                                    <th class="py-3 px-4">Order Ref</th>
+                                    <th class="py-3 px-4">Hardware Slots</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="licenses-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="7" class="py-8 text-center text-gray-500">Loading licenses...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Bar -->
+                    <div class="p-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                        <span id="licenses-page-info">Showing page 1</span>
+                        <div class="flex items-center gap-2">
+                            <button id="licenses-prev-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">&larr; Prev</button>
+                            <button id="licenses-next-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">Next &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: EMAIL OBSERVABILITY & RETRY -->
+            <section id="tab-emails" class="tab-pane hidden space-y-6">
+                <!-- Search & Filters -->
+                <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full sm:w-80">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="email-search-input" placeholder="Search recipient email, order ID..."
+                            class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                    </div>
+                    <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
+                        <button class="email-filter-btn filter-btn active px-3 py-1.5 rounded-lg text-xs" data-status="ALL">All</button>
+                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="SENT">Sent</button>
+                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="MOCK_SENT">Mock Sent</button>
+                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="FAILED">Failed</button>
+                    </div>
+                </div>
+
+                <!-- Email Logs Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Recipient</th>
+                                    <th class="py-3 px-4">Template Type</th>
+                                    <th class="py-3 px-4">Order ID</th>
+                                    <th class="py-3 px-4">Resend ID</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Attempts</th>
+                                    <th class="py-3 px-4">Timestamp</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emails-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="8" class="py-8 text-center text-gray-500">Loading email logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Bar -->
+                    <div class="p-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                        <span id="emails-page-info">Showing page 1</span>
+                        <div class="flex items-center gap-2">
+                            <button id="emails-prev-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">&larr; Prev</button>
+                            <button id="emails-next-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">Next &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: SECURITY & AUDIT TRAIL -->
+            <section id="tab-audit" class="tab-pane hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Admin Audit Logs -->
+                    <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                        <div class="p-4 border-b border-white/5 flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="shield" class="w-4 h-4 text-brand"></i>
+                                <span>Admin Actions Audit Log</span>
+                            </h3>
+                            <span class="text-[10px] text-gray-400 font-mono">D1 audit_logs</span>
+                        </div>
+                        <div class="overflow-x-auto max-h-[500px]">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0">
+                                    <tr>
+                                        <th class="py-2.5 px-4">Action</th>
+                                        <th class="py-2.5 px-4">Actor</th>
+                                        <th class="py-2.5 px-4">Target</th>
+                                        <th class="py-2.5 px-4">Details</th>
+                                        <th class="py-2.5 px-4">Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-tbody" class="divide-y divide-white/5 text-gray-300 font-mono text-[11px]">
+                                    <tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payment Webhook Events -->
+                    <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                        <div class="p-4 border-b border-white/5 flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="webhook" class="w-4 h-4 text-purple-400"></i>
+                                <span>Cashfree Webhook Events</span>
+                            </h3>
+                            <span class="text-[10px] text-gray-400 font-mono">payment_events</span>
+                        </div>
+                        <div class="overflow-x-auto max-h-[500px]">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0">
+                                    <tr>
+                                        <th class="py-2.5 px-4">Event ID</th>
+                                        <th class="py-2.5 px-4">Order ID</th>
+                                        <th class="py-2.5 px-4">Event Type</th>
+                                        <th class="py-2.5 px-4">Signature</th>
+                                        <th class="py-2.5 px-4">Processed At</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="webhooks-tbody" class="divide-y divide-white/5 text-gray-300 font-mono text-[11px]">
+                                    <tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook logs...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: ORDER DOSSIER -->
+    <div id="modal-order-dossier" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-white/10 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <h3 class="font-heading font-extrabold text-lg text-white">Order Dossier</h3>
+                    <span id="modal-order-id-display" class="font-mono text-xs text-brand"></span>
+                </div>
+                <button onclick="closeModal('modal-order-dossier')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="modal-order-content" class="space-y-4 text-xs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DEVICE INSPECTION & RESET -->
+    <div id="modal-license-devices" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-white/10 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <h3 class="font-heading font-extrabold text-lg text-white">Hardware Device Locks</h3>
+                    <span id="modal-license-key-display" class="font-mono text-xs text-brand"></span>
+                </div>
+                <button onclick="closeModal('modal-license-devices')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="modal-devices-content" class="space-y-4 text-xs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REVOKE LICENSE -->
+    <div id="modal-revoke-license" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-rose-500/30 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-rose-400">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
+                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-white">Revoke Commercial License</h3>
+                    <span id="revoke-license-key-label" class="font-mono text-xs text-rose-400"></span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">
+                Revoking this license will immediately lock After Effects on all activated machines and prevent any new device activations.
+            </p>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Mandatory Revocation Reason:</label>
+                <input type="text" id="revoke-reason-input" placeholder="e.g. Chargeback initiated, Refund issued, or Terms violation"
+                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-rose-400">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-revoke-license')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                <button id="confirm-revoke-btn" class="px-4 py-2 rounded-lg bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors">Confirm Revocation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: RESEND EMAIL -->
+    <div id="modal-resend-email" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-brand/30 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-brand">
+                <div class="w-10 h-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-white">Resend Transactional Email</h3>
+                    <span id="resend-order-id-label" class="font-mono text-xs text-gray-400"></span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Select Email Template:</label>
+                <select id="resend-type-select" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white focus:outline-none focus:border-brand">
+                    <option value="ORDER_RECEIPT">Order Receipt &amp; Full Access Package</option>
+                    <option value="LICENSE_CLAIMED">Commercial License Key Retrieval</option>
+                    <option value="DOWNLOAD_DELIVERY">Secure R2 Download Link Refresh</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Recipient Override (Optional):</label>
+                <input type="email" id="resend-recipient-override" placeholder="Leave empty for customer billing email"
+                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                <p class="text-[10px] text-gray-500 mt-1">In staging, recipient must be in approved allowlist (iamdk8968@gmail.com, motionbydk@gmail.com).</p>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-resend-email')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                <button id="confirm-resend-btn" class="px-4 py-2 rounded-lg bg-brand text-dark-base text-xs font-bold hover:bg-brand-hover transition-colors">Dispatch Email</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CORE ADMIN LOGIC SCRIPT -->
+    <script>
+        // API Base URL - Automatically detects staging vs production vs local
+        const API_BASE = window.location.origin.includes('workers.dev') 
+            ? window.location.origin 
+            : 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+
+        let adminToken = sessionStorage.getItem('mdk_admin_token') || '';
+        let currentAdmin = null;
+
+        // Active State
+        let ordersState = { page: 1, limit: 25, status: 'ALL', search: '', total: 0 };
+        let licensesState = { page: 1, limit: 25, type: 'ALL', search: '', total: 0 };
+        let emailsState = { page: 1, limit: 25, status: 'ALL', search: '', total: 0 };
+
+        // DOM Elements
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const loginErrorText = document.getElementById('login-error-text');
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-500/90 text-white' : type === 'error' ? 'bg-rose-500/90 text-white' : 'bg-brand/90 text-dark-base';
+            toast.className = `p-3 rounded-xl shadow-xl text-xs font-semibold ${bgClass} transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center justify-between gap-3`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="opacity-80 hover:opacity-100">&times;</button>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Modal Helpers
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        }
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            const targetPane = document.getElementById(`tab-${tabId}`);
+            const targetTab = document.querySelector(`[data-tab="${tabId}"]`);
+            if (targetPane) targetPane.classList.remove('hidden');
+            if (targetTab) targetTab.classList.add('active');
+
+            if (tabId === 'overview') fetchMetrics();
+            if (tabId === 'orders') fetchOrders();
+            if (tabId === 'licenses') fetchLicenses();
+            if (tabId === 'emails') fetchEmails();
+            if (tabId === 'audit') fetchAuditTrail();
+        }
+
+        // Authenticated API Fetch Wrapper
+        async function adminFetch(endpoint, options = {}) {
+            const headers = options.headers || {};
+            headers['Authorization'] = `Bearer ${adminToken}`;
+            headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+
+            const url = `${API_BASE}${endpoint}`;
+            const res = await fetch(url, { ...options, headers });
+
+            if (res.status === 401) {
+                sessionStorage.removeItem('mdk_admin_token');
+                adminToken = '';
+                showToast('Admin session expired. Please sign in again.', 'error');
+                showLogin();
+                throw new Error('Unauthorized');
+            }
+            return res.json();
+        }
+
+        // Check Session on Load
+        async function checkSession() {
+            if (!adminToken) {
+                showLogin();
+                return;
+            }
+            try {
+                const data = await adminFetch('/api/admin/me');
+                if (data.success && data.admin) {
+                    currentAdmin = data.admin;
+                    showDashboard();
+                } else {
+                    showLogin();
+                }
+            } catch {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            loginView.classList.remove('hidden');
+            dashboardView.classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        function showDashboard() {
+            loginView.classList.add('hidden');
+            dashboardView.classList.remove('hidden');
+            if (currentAdmin) {
+                document.getElementById('admin-user-display').textContent = currentAdmin.name || currentAdmin.sub;
+            }
+            fetchMetrics();
+            lucide.createIcons();
+        }
+
+        // ---------------------------------------------------------------------
+        // DATA FETCHING & RENDERING
+        // ---------------------------------------------------------------------
+
+        // 1. Metrics & Overview
+        async function fetchMetrics() {
+            try {
+                const data = await adminFetch('/api/admin/metrics');
+                if (!data.success || !data.metrics) return;
+
+                const m = data.metrics;
+                // Top KPI Cards
+                document.getElementById('metric-revenue-total').textContent = m.revenue.totalInrFormatted;
+                document.getElementById('metric-revenue-24h').textContent = m.revenue.revenue24hInr;
+                document.getElementById('metric-orders-paid').textContent = m.orders.paid;
+                document.getElementById('metric-orders-breakdown').textContent = `${m.orders.total} total • ${m.orders.pending} pend • ${m.orders.failed} fail`;
+                document.getElementById('metric-conversion-rate').textContent = `${m.orders.conversionRatePercent}%`;
+                document.getElementById('metric-licenses-active').textContent = m.licenses.active;
+                document.getElementById('metric-licenses-ratio').textContent = `${m.licenses.commercial} commercial • ${m.licenses.legacy} legacy`;
+                document.getElementById('metric-devices-active').textContent = m.devices.activeHardwareSlots;
+                document.getElementById('metric-devices-licenses').textContent = `${m.devices.licensesWithDevices} keys active`;
+
+                // Header Badges
+                document.getElementById('badge-total-orders').textContent = m.orders.total;
+                document.getElementById('badge-total-licenses').textContent = m.licenses.total;
+                document.getElementById('badge-total-emails').textContent = m.emails.totalDispatched;
+
+                // Product Breakdown
+                const pbContainer = document.getElementById('product-breakdown-list');
+                pbContainer.innerHTML = '';
+                if (m.productsBreakdown.length === 0) {
+                    pbContainer.innerHTML = '<div class="text-xs text-gray-500 py-2">No product sales yet.</div>';
+                } else {
+                    m.productsBreakdown.forEach(p => {
+                        const item = document.createElement('div');
+                        item.className = 'p-3 rounded-lg bg-dark-base/50 border border-white/5 flex items-center justify-between';
+                        item.innerHTML = `
+                            <div>
+                                <span class="font-bold text-white block text-xs">${escapeHtml(p.name)}</span>
+                                <span class="text-[10px] text-gray-400 font-mono">${p.salesCount} unit(s) sold</span>
+                            </div>
+                            <span class="font-heading font-extrabold text-brand text-xs">${p.revenueInr}</span>
+                        `;
+                        pbContainer.appendChild(item);
+                    });
+                }
+
+                // Recent Orders Feed
+                const recentOrdersTbody = document.getElementById('recent-orders-tbody');
+                recentOrdersTbody.innerHTML = '';
+                if (m.recentOrders.length === 0) {
+                    recentOrdersTbody.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-gray-500">No orders recorded yet.</td></tr>';
+                } else {
+                    m.recentOrders.forEach(o => {
+                        const tr = document.createElement('tr');
+                        const statusBadge = getStatusBadgeHtml(o.status);
+                        tr.innerHTML = `
+                            <td class="py-2.5 font-mono text-brand font-semibold cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(o.order_id)}')">${escapeHtml(o.order_id)}</td>
+                            <td class="py-2.5">
+                                <span class="font-semibold text-white block">${escapeHtml(o.customer_name)}</span>
+                                <span class="text-gray-400 text-[10px]">${escapeHtml(o.customer_email)}</span>
+                            </td>
+                            <td class="py-2.5 text-gray-300 max-w-[160px] truncate" title="${escapeHtml(o.product_name)}">${escapeHtml(o.product_name)}</td>
+                            <td class="py-2.5 font-bold text-white">₹${(o.final_amount_inr / 100).toFixed(2)}</td>
+                            <td class="py-2.5">${statusBadge}</td>
+                            <td class="py-2.5 text-gray-400 font-mono text-[10px]">${escapeHtml(o.created_at)}</td>
+                        `;
+                        recentOrdersTbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to fetch metrics:', err);
+            }
+        }
+
+        // 2. Orders List
+        async function fetchOrders() {
+            const tbody = document.getElementById('orders-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading orders...</td></tr>';
+
+            try {
+                const params = new URLSearchParams({
+                    page: ordersState.page,
+                    limit: ordersState.limit,
+                    status: ordersState.status,
+                    search: ordersState.search,
+                });
+                const data = await adminFetch(`/api/admin/orders?${params.toString()}`);
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                if (data.orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">No orders matching criteria.</td></tr>';
+                } else {
+                    data.orders.forEach(o => {
+                        const tr = document.createElement('tr');
+                        const statusBadge = getStatusBadgeHtml(o.status);
+                        tr.innerHTML = `
+                            <td class="py-3 px-4 font-mono text-brand font-bold cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(o.order_id)}')">${escapeHtml(o.order_id)}</td>
+                            <td class="py-3 px-4">
+                                <span class="font-semibold text-white block">${escapeHtml(o.customer_name)}</span>
+                                <span class="text-gray-400 text-[10px] font-mono">${escapeHtml(o.customer_email)}</span>
+                                ${o.customer_phone ? `<span class="text-gray-500 text-[10px] block font-mono">📱 ${escapeHtml(o.customer_phone)}</span>` : ''}
+                            </td>
+                            <td class="py-3 px-4 text-gray-300 max-w-[180px] truncate" title="${escapeHtml(o.product_name)}">
+                                ${escapeHtml(o.product_name)}
+                                ${o.coupon_code ? `<span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-brand/10 text-brand font-mono">${escapeHtml(o.coupon_code)}</span>` : ''}
+                            </td>
+                            <td class="py-3 px-4 font-bold text-white">${escapeHtml(o.finalAmountInrFormatted)}</td>
+                            <td class="py-3 px-4">${statusBadge}</td>
+                            <td class="py-3 px-4 text-gray-400 font-mono text-[10px]">${escapeHtml(o.created_at)}</td>
+                            <td class="py-3 px-4 text-right">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button onclick="viewOrderDossier('${escapeHtml(o.order_id)}')" class="px-2 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-semibold text-gray-300 hover:text-brand">Dossier</button>
+                                    <button onclick="promptResendEmail('${escapeHtml(o.order_id)}', '${escapeHtml(o.customer_email)}')" class="px-2 py-1 rounded bg-brand/10 border border-brand/20 hover:bg-brand/20 text-[11px] font-semibold text-brand">Resend</button>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Update Pagination Controls
+                ordersState.total = data.pagination.total;
+                document.getElementById('orders-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} orders)`;
+                document.getElementById('orders-prev-btn').disabled = data.pagination.page <= 1;
+                document.getElementById('orders-next-btn').disabled = data.pagination.page >= data.pagination.totalPages;
+            } catch (err) {
+                console.error('Failed to fetch orders:', err);
+            }
+        }
+
+        // 3. Order Dossier
+        async function viewOrderDossier(orderId) {
+            openModal('modal-order-dossier');
+            document.getElementById('modal-order-id-display').textContent = orderId;
+            const container = document.getElementById('modal-order-content');
+            container.innerHTML = '<div class="py-8 text-center text-gray-500">Loading complete order dossier...</div>';
+
+            try {
+                const data = await adminFetch(`/api/admin/orders/${orderId}`);
+                if (!data.success || !data.order) {
+                    container.innerHTML = `<div class="py-6 text-center text-rose-400">Failed to load order dossier: ${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+
+                const o = data.order;
+                const lic = data.license;
+                const payments = data.payments || [];
+                const tokens = data.downloadTokens || [];
+                const emails = data.emailLogs || [];
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-1.5">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Customer &amp; Payment</span>
+                            <div><strong class="text-white">${escapeHtml(o.customer_name)}</strong></div>
+                            <div class="text-gray-300 font-mono">${escapeHtml(o.customer_email)}</div>
+                            <div class="text-gray-400 font-mono">${escapeHtml(o.customer_phone || 'No phone provided')}</div>
+                            <div class="pt-2 text-gray-400 text-[11px]">
+                                Amount: <strong class="text-white">${escapeHtml(o.finalAmountInrFormatted)}</strong> (${escapeHtml(o.currency)})
+                                &bull; Status: ${getStatusBadgeHtml(o.status)}
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-1.5">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Product &amp; Gateway Session</span>
+                            <div class="text-white font-bold">${escapeHtml(o.product_name)}</div>
+                            <div class="text-gray-400 font-mono text-[10px] truncate" title="${escapeHtml(o.cf_payment_session_id || '')}">
+                                Session: ${escapeHtml(o.cf_payment_session_id || 'None')}
+                            </div>
+                            <div class="text-gray-400 text-[11px]">
+                                IP: <span class="font-mono">${escapeHtml(o.ip_address || 'N/A')}</span>
+                            </div>
+                            <div class="text-gray-400 text-[11px]">
+                                Created: <span class="font-mono">${escapeHtml(o.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Commercial License Section -->
+                    <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-brand uppercase tracking-wider">Official License Key</span>
+                            ${lic ? `<button onclick="promptResetDevices('${escapeHtml(lic.license_key)}')" class="text-[10px] font-bold text-amber-400 hover:underline">Reset Hardware Slots</button>` : ''}
+                        </div>
+                        ${lic ? `
+                            <div class="flex items-center justify-between p-2.5 rounded-lg bg-dark-elevated border border-brand/20 font-mono text-brand font-bold text-sm">
+                                <span>${escapeHtml(lic.license_key)}</span>
+                                <span class="text-xs px-2 py-0.5 rounded ${lic.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                                    ${lic.is_active ? 'ACTIVE' : 'REVOKED'}
+                                </span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 flex items-center justify-between">
+                                <span>Active Machines: <strong>${lic.activeDevicesCount} / ${lic.max_devices} Devices</strong></span>
+                                <button onclick="inspectDevices('${escapeHtml(lic.license_key)}')" class="text-brand hover:underline font-semibold">Inspect Workstations &rarr;</button>
+                            </div>
+                        ` : `
+                            <div class="text-gray-500 text-xs">No commercial license issued for this order.</div>
+                        `}
+                    </div>
+
+                    <!-- Gateway Payments List -->
+                    <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
+                        <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Gateway Payments</span>
+                        ${payments.length === 0 ? '<div class="text-gray-500 text-xs">No payment records found.</div>' : `
+                            <div class="space-y-1.5 font-mono text-[11px]">
+                                ${payments.map(p => `
+                                    <div class="p-2 rounded bg-dark-elevated flex items-center justify-between">
+                                        <div>
+                                            <span class="text-white font-bold">CF ID: ${escapeHtml(p.cf_payment_id)}</span>
+                                            <span class="text-gray-400 ml-2">(${escapeHtml(p.payment_method || 'UPI')})</span>
+                                            ${p.bank_reference ? `<span class="text-gray-500 block text-[10px]">Bank UTR: ${escapeHtml(p.bank_reference)}</span>` : ''}
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="font-bold text-emerald-400">₹${(p.payment_amount_inr / 100).toFixed(2)}</span>
+                                            <span class="block text-[10px] text-gray-400">${escapeHtml(p.payment_status)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+
+                    <!-- Email History for this Order -->
+                    <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Dispatched Email History</span>
+                        ${emails.length === 0 ? '<div class="text-gray-500 text-xs">No emails sent for this order yet.</div>' : `
+                            <div class="space-y-1.5 font-mono text-[11px]">
+                                ${emails.map(e => `
+                                    <div class="p-2 rounded bg-dark-elevated flex items-center justify-between">
+                                        <div>
+                                            <span class="text-brand font-bold">${escapeHtml(e.email_type)}</span>
+                                            <span class="text-gray-400 block text-[10px]">${escapeHtml(e.recipient_email)} &bull; ${escapeHtml(e.resend_message_id || 'mock')}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-xs px-2 py-0.5 rounded ${e.status === 'SENT' || e.status === 'MOCK_SENT' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-bold">${escapeHtml(e.status)}</span>
+                                            <span class="block text-[10px] text-gray-500">${escapeHtml(e.created_at)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+                lucide.createIcons();
+            } catch (err) {
+                container.innerHTML = `<div class="py-4 text-center text-rose-400">Error: ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        // 4. Licenses List
+        async function fetchLicenses() {
+            const tbody = document.getElementById('licenses-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading licenses...</td></tr>';
+
+            try {
+                const params = new URLSearchParams({
+                    page: licensesState.page,
+                    limit: licensesState.limit,
+                    type: licensesState.type,
+                    search: licensesState.search,
+                });
+                const data = await adminFetch(`/api/admin/licenses?${params.toString()}`);
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                if (data.licenses.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">No licenses found.</td></tr>';
+                } else {
+                    data.licenses.forEach(l => {
+                        const tr = document.createElement('tr');
+                        const isCommercial = l.is_legacy === 0;
+                        const typeBadge = isCommercial 
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-brand/10 text-brand border border-brand/20">COMMERCIAL</span>'
+                            : '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-gray-500/10 text-gray-400 border border-white/5">LEGACY</span>';
+                        
+                        const statusBadge = l.is_active === 1
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ACTIVE</span>'
+                            : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">REVOKED</span>';
+
+                        const deviceBadge = l.active_devices_count >= l.max_devices
+                            ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 font-mono">${l.active_devices_count}/${l.max_devices} MAXED</span>`
+                            : `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-dark-card border border-white/10 text-gray-300 font-mono">${l.active_devices_count}/${l.max_devices} Active</span>`;
+
+                        tr.innerHTML = `
+                            <td class="py-3 px-4 font-mono text-brand font-bold cursor-pointer hover:underline" onclick="inspectDevices('${escapeHtml(l.license_key)}')">${escapeHtml(l.license_key)}</td>
+                            <td class="py-3 px-4">${typeBadge}</td>
+                            <td class="py-3 px-4">
+                                <span class="font-semibold text-white block">${escapeHtml(l.customer_name || 'Unassigned / Studio')}</span>
+                                <span class="text-gray-400 text-[10px] font-mono">${escapeHtml(l.customer_email || 'legacy@motionbydk.in')}</span>
+                            </td>
+                            <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">
+                                ${l.order_id ? `<button onclick="viewOrderDossier('${escapeHtml(l.order_id)}')" class="hover:text-brand hover:underline">${escapeHtml(l.order_id)}</button>` : '<span class="text-gray-600">Pre-launch</span>'}
+                            </td>
+                            <td class="py-3 px-4">${deviceBadge}</td>
+                            <td class="py-3 px-4">${statusBadge}</td>
+                            <td class="py-3 px-4 text-right">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button onclick="inspectDevices('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-semibold text-gray-300 hover:text-white">Devices</button>
+                                    <button onclick="promptResetDevices('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 text-[11px] font-semibold text-amber-400">Reset</button>
+                                    ${l.is_active === 1 
+                                        ? `<button onclick="promptRevokeLicense('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 text-[11px] font-semibold text-rose-400">Revoke</button>`
+                                        : `<button onclick="reinstateLicense('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 text-[11px] font-semibold text-emerald-400">Reinstate</button>`
+                                    }
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Update Pagination
+                licensesState.total = data.pagination.total;
+                document.getElementById('licenses-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} keys)`;
+                document.getElementById('licenses-prev-btn').disabled = data.pagination.page <= 1;
+                document.getElementById('licenses-next-btn').disabled = data.pagination.page >= data.pagination.totalPages;
+            } catch (err) {
+                console.error('Failed to fetch licenses:', err);
+            }
+        }
+
+        // 5. Inspect Hardware Devices
+        async function inspectDevices(licenseKey) {
+            openModal('modal-license-devices');
+            document.getElementById('modal-license-key-display').textContent = licenseKey;
+            const container = document.getElementById('modal-devices-content');
+            container.innerHTML = '<div class="py-6 text-center text-gray-500">Querying hardware lock records...</div>';
+
+            try {
+                const data = await adminFetch(`/api/admin/licenses/${licenseKey}`);
+                if (!data.success || !data.license) {
+                    container.innerHTML = `<div class="py-4 text-center text-rose-400">Failed to load device info: ${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+
+                const lic = data.license;
+                const acts = lic.activations || [];
+
+                container.innerHTML = `
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-dark-base/80 border border-white/5">
+                        <div>
+                            <span class="text-white font-bold block">${escapeHtml(lic.product_name || 'MotionByDK Software')}</span>
+                            <span class="text-gray-400 text-[11px]">${lic.customer_email ? escapeHtml(lic.customer_email) : 'Legacy Customer'}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-brand block">${lic.activeDevicesCount} / ${lic.max_devices} Active Devices</span>
+                            <button onclick="promptResetDevices('${escapeHtml(licenseKey)}')" class="text-[11px] font-bold text-amber-400 hover:underline">Reset All Slots</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Registered Hardware Activations (${acts.length})</span>
+                        ${acts.length === 0 ? '<div class="text-gray-500 text-xs py-2">No workstations have activated this key yet.</div>' : `
+                            <div class="space-y-2 font-mono text-[11px]">
+                                ${acts.map(a => `
+                                    <div class="p-3 rounded-lg bg-dark-base border ${a.is_active ? 'border-brand/30' : 'border-white/5 opacity-60'} flex items-center justify-between">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-white">${escapeHtml(a.machine_name || 'Workstation')}</span>
+                                                <span class="px-1.5 py-0.2 rounded text-[9px] ${a.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'}">
+                                                    ${a.is_active ? 'ACTIVE' : 'DEACTIVATED'}
+                                                </span>
+                                            </div>
+                                            <span class="text-gray-400 block text-[10px] mt-0.5">Hash: ${escapeHtml(a.machine_id)}</span>
+                                            <span class="text-gray-500 block text-[10px]">OS: ${escapeHtml(a.os || 'Desktop')} &bull; Activated: ${escapeHtml(a.activated_at)}</span>
+                                            ${a.deactivated_at ? `<span class="text-rose-400/80 block text-[10px]">Deactivated: ${escapeHtml(a.deactivated_at)}</span>` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = `<div class="py-4 text-center text-rose-400">Error: ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        // 6. Reset Device Hardware Locks
+        async function promptResetDevices(licenseKey) {
+            if (!confirm(`Are you sure you want to reset all active hardware locks for license ${licenseKey}?\n\nThis will free up the 2-PC slots so the customer can activate on a new computer.`)) {
+                return;
+            }
+            try {
+                const data = await adminFetch('/api/admin/licenses/reset-devices', {
+                    method: 'POST',
+                    body: JSON.stringify({ license_key: licenseKey, reason: 'Admin dashboard reset' })
+                });
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    fetchLicenses();
+                    fetchMetrics();
+                    closeModal('modal-license-devices');
+                } else {
+                    showToast(data.error || 'Failed to reset devices.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // 7. Revoke & Reinstate License
+        let pendingRevokeKey = '';
+        function promptRevokeLicense(licenseKey) {
+            pendingRevokeKey = licenseKey;
+            document.getElementById('revoke-license-key-label').textContent = licenseKey;
+            document.getElementById('revoke-reason-input').value = '';
+            openModal('modal-revoke-license');
+        }
+
+        document.getElementById('confirm-revoke-btn').addEventListener('click', async () => {
+            const reason = document.getElementById('revoke-reason-input').value.trim();
+            if (!reason) {
+                alert('Please specify a revocation reason.');
+                return;
+            }
+            try {
+                const data = await adminFetch('/api/admin/licenses/revoke', {
+                    method: 'POST',
+                    body: JSON.stringify({ license_key: pendingRevokeKey, reason })
+                });
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    closeModal('modal-revoke-license');
+                    fetchLicenses();
+                    fetchMetrics();
+                } else {
+                    showToast(data.error || 'Failed to revoke license.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        async function reinstateLicense(licenseKey) {
+            if (!confirm(`Reinstate revoked license ${licenseKey}?`)) return;
+            try {
+                const data = await adminFetch('/api/admin/licenses/reinstate', {
+                    method: 'POST',
+                    body: JSON.stringify({ license_key: licenseKey, reason: 'Admin reinstatement' })
+                });
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    fetchLicenses();
+                    fetchMetrics();
+                } else {
+                    showToast(data.error || 'Failed to reinstate.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // 8. Emails List & Manual Resend
+        async function fetchEmails() {
+            const tbody = document.getElementById('emails-tbody');
+            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">Loading email logs...</td></tr>';
+
+            try {
+                const params = new URLSearchParams({
+                    page: emailsState.page,
+                    limit: emailsState.limit,
+                    status: emailsState.status,
+                    search: emailsState.search,
+                });
+                const data = await adminFetch(`/api/admin/emails?${params.toString()}`);
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                if (data.emails.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">No email logs matching filter.</td></tr>';
+                } else {
+                    data.emails.forEach(e => {
+                        const tr = document.createElement('tr');
+                        const statusBadge = e.status === 'SENT' || e.status === 'ACCEPTED'
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SENT</span>'
+                            : e.status === 'MOCK_SENT'
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">MOCK_SENT</span>'
+                            : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">FAILED</span>';
+
+                        tr.innerHTML = `
+                            <td class="py-3 px-4 font-mono text-white">${escapeHtml(e.recipient_email)}</td>
+                            <td class="py-3 px-4 font-mono text-brand font-semibold text-[11px]">${escapeHtml(e.email_type)}</td>
+                            <td class="py-3 px-4 font-mono text-gray-400 cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(e.order_id)}')">${escapeHtml(e.order_id)}</td>
+                            <td class="py-3 px-4 font-mono text-gray-500 text-[10px] max-w-[120px] truncate" title="${escapeHtml(e.resend_message_id || '')}">${escapeHtml(e.resend_message_id || 'none')}</td>
+                            <td class="py-3 px-4">${statusBadge}</td>
+                            <td class="py-3 px-4 font-mono text-center">${e.attempt_count}</td>
+                            <td class="py-3 px-4 font-mono text-gray-400 text-[10px]">${escapeHtml(e.created_at)}</td>
+                            <td class="py-3 px-4 text-right">
+                                <button onclick="promptResendEmail('${escapeHtml(e.order_id)}', '${escapeHtml(e.recipient_email)}', '${escapeHtml(e.email_type)}')" class="px-2.5 py-1 rounded bg-brand/10 border border-brand/20 hover:bg-brand/20 text-[11px] font-semibold text-brand">Resend</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Pagination
+                emailsState.total = data.pagination.total;
+                document.getElementById('emails-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} emails)`;
+                document.getElementById('emails-prev-btn').disabled = data.pagination.page <= 1;
+                document.getElementById('emails-next-btn').disabled = data.pagination.page >= data.pagination.totalPages;
+            } catch (err) {
+                console.error('Failed to fetch emails:', err);
+            }
+        }
+
+        let pendingResendOrderId = '';
+        function promptResendEmail(orderId, customerEmail, emailType = 'ORDER_RECEIPT') {
+            pendingResendOrderId = orderId;
+            document.getElementById('resend-order-id-label').textContent = orderId;
+            document.getElementById('resend-type-select').value = emailType;
+            document.getElementById('resend-recipient-override').value = customerEmail || '';
+            openModal('modal-resend-email');
+        }
+
+        document.getElementById('confirm-resend-btn').addEventListener('click', async () => {
+            const emailType = document.getElementById('resend-type-select').value;
+            const customRecipient = document.getElementById('resend-recipient-override').value.trim();
+
+            try {
+                const data = await adminFetch('/api/admin/emails/resend', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        order_id: pendingResendOrderId,
+                        email_type: emailType,
+                        custom_recipient: customRecipient || undefined,
+                    })
+                });
+
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    closeModal('modal-resend-email');
+                    fetchEmails();
+                    fetchMetrics();
+                } else {
+                    showToast(data.error || 'Failed to dispatch email.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        // 9. Audit Trail & Events
+        async function fetchAuditTrail() {
+            const auditTbody = document.getElementById('audit-tbody');
+            const webhooksTbody = document.getElementById('webhooks-tbody');
+            auditTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>';
+            webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook logs...</td></tr>';
+
+            try {
+                const [auditData, webhookData] = await Promise.all([
+                    adminFetch('/api/admin/audit-logs?limit=50'),
+                    adminFetch('/api/admin/payment-events?limit=50')
+                ]);
+
+                // Render Audit Logs
+                if (auditData.success && auditData.auditLogs) {
+                    auditTbody.innerHTML = '';
+                    if (auditData.auditLogs.length === 0) {
+                        auditTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">No admin actions recorded yet.</td></tr>';
+                    } else {
+                        auditData.auditLogs.forEach(a => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td class="py-2.5 px-4 font-bold text-brand">${escapeHtml(a.action)}</td>
+                                <td class="py-2.5 px-4 text-white">${escapeHtml(a.actor_id)}</td>
+                                <td class="py-2.5 px-4 text-gray-300 max-w-[120px] truncate" title="${escapeHtml(a.target_id || '')}">${escapeHtml(a.target_id || 'N/A')}</td>
+                                <td class="py-2.5 px-4 text-gray-400 max-w-[160px] truncate" title="${escapeHtml(a.details || '')}">${escapeHtml(a.details || '-')}</td>
+                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(a.created_at)}</td>
+                            `;
+                            auditTbody.appendChild(tr);
+                        });
+                    }
+                }
+
+                // Render Webhook Events
+                if (webhookData.success && webhookData.paymentEvents) {
+                    webhooksTbody.innerHTML = '';
+                    if (webhookData.paymentEvents.length === 0) {
+                        webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">No webhook events logged yet.</td></tr>';
+                    } else {
+                        webhookData.paymentEvents.forEach(w => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td class="py-2.5 px-4 text-gray-300 max-w-[120px] truncate" title="${escapeHtml(w.event_id)}">${escapeHtml(w.event_id)}</td>
+                                <td class="py-2.5 px-4 text-brand">${escapeHtml(w.order_id)}</td>
+                                <td class="py-2.5 px-4 text-purple-400 text-[10px]">${escapeHtml(w.event_type)}</td>
+                                <td class="py-2.5 px-4 text-center">
+                                    <span class="px-1.5 py-0.2 rounded text-[9px] ${w.signature_verified ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'} font-bold">
+                                        ${w.signature_verified ? 'VERIFIED' : 'RAW'}
+                                    </span>
+                                </td>
+                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(w.processed_at)}</td>
+                            `;
+                            webhooksTbody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load audit trail:', err);
+            }
+        }
+
+        // Status Badge Helper
+        function getStatusBadgeHtml(status) {
+            if (status === 'PAID') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PAID</span>';
+            }
+            if (status === 'PENDING') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">PENDING</span>';
+            }
+            if (status === 'FAILED') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">FAILED</span>';
+            }
+            return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-white/5">${escapeHtml(status)}</span>`;
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/[&<>"']/g, s => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[s]);
+        }
+
+        // ---------------------------------------------------------------------
+        // EVENT LISTENERS
+        // ---------------------------------------------------------------------
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            loginError.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Verifying credentials...</span>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+                if (data.success && data.token) {
+                    sessionStorage.setItem('mdk_admin_token', data.token);
+                    adminToken = data.token;
+                    currentAdmin = data.admin;
+                    showToast('Merchant authentication successful!', 'success');
+                    showDashboard();
+                } else {
+                    loginErrorText.textContent = data.error || 'Authentication failed.';
+                    loginError.classList.remove('hidden');
+                }
+            } catch (err) {
+                loginErrorText.textContent = err.message || 'Network error communicating with API.';
+                loginError.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4"></i><span>Authenticate Merchant Session</span>';
+                lucide.createIcons();
+            }
+        });
+
+        // Toggle Password Visibility
+        document.getElementById('toggle-pwd-btn').addEventListener('click', () => {
+            const pwdInput = document.getElementById('login-password');
+            const isPwd = pwdInput.type === 'password';
+            pwdInput.type = isPwd ? 'text' : 'password';
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            sessionStorage.removeItem('mdk_admin_token');
+            adminToken = '';
+            currentAdmin = null;
+            showToast('Signed out of Merchant Dashboard.', 'info');
+            showLogin();
+        });
+
+        // Refresh Data Button
+        document.getElementById('refresh-data-btn').addEventListener('click', () => {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            const activeTab = document.querySelector('.nav-tab.active')?.getAttribute('data-tab') || 'overview';
+            switchTab(activeTab);
+            setTimeout(() => icon.classList.remove('animate-spin'), 600);
+            showToast('Dashboard data refreshed.', 'info');
+        });
+
+        // Navigation Tabs
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.getAttribute('data-tab'));
+            });
+        });
+
+        // Search & Filter Listeners: Orders
+        let orderSearchTimer;
+        document.getElementById('order-search-input').addEventListener('input', (e) => {
+            clearTimeout(orderSearchTimer);
+            orderSearchTimer = setTimeout(() => {
+                ordersState.search = e.target.value.trim();
+                ordersState.page = 1;
+                fetchOrders();
+            }, 300);
+        });
+
+        document.querySelectorAll('.order-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                ordersState.status = btn.getAttribute('data-status');
+                ordersState.page = 1;
+                fetchOrders();
+            });
+        });
+
+        document.getElementById('orders-prev-btn').addEventListener('click', () => {
+            if (ordersState.page > 1) {
+                ordersState.page -= 1;
+                fetchOrders();
+            }
+        });
+
+        document.getElementById('orders-next-btn').addEventListener('click', () => {
+            ordersState.page += 1;
+            fetchOrders();
+        });
+
+        // Search & Filter Listeners: Licenses
+        let licenseSearchTimer;
+        document.getElementById('license-search-input').addEventListener('input', (e) => {
+            clearTimeout(licenseSearchTimer);
+            licenseSearchTimer = setTimeout(() => {
+                licensesState.search = e.target.value.trim();
+                licensesState.page = 1;
+                fetchLicenses();
+            }, 300);
+        });
+
+        document.querySelectorAll('.license-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.license-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                licensesState.type = btn.getAttribute('data-type');
+                licensesState.page = 1;
+                fetchLicenses();
+            });
+        });
+
+        document.getElementById('licenses-prev-btn').addEventListener('click', () => {
+            if (licensesState.page > 1) {
+                licensesState.page -= 1;
+                fetchLicenses();
+            }
+        });
+
+        document.getElementById('licenses-next-btn').addEventListener('click', () => {
+            licensesState.page += 1;
+            fetchLicenses();
+        });
+
+        // Search & Filter Listeners: Emails
+        let emailSearchTimer;
+        document.getElementById('email-search-input').addEventListener('input', (e) => {
+            clearTimeout(emailSearchTimer);
+            emailSearchTimer = setTimeout(() => {
+                emailsState.search = e.target.value.trim();
+                emailsState.page = 1;
+                fetchEmails();
+            }, 300);
+        });
+
+        document.querySelectorAll('.email-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.email-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                emailsState.status = btn.getAttribute('data-status');
+                emailsState.page = 1;
+                fetchEmails();
+            });
+        });
+
+        document.getElementById('emails-prev-btn').addEventListener('click', () => {
+            if (emailsState.page > 1) {
+                emailsState.page -= 1;
+                fetchEmails();
+            }
+        });
+
+        document.getElementById('emails-next-btn').addEventListener('click', () => {
+            emailsState.page += 1;
+            fetchEmails();
+        });
+
+        // Initialize On Load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+        });
+    </script>
+</body>
+</html>
