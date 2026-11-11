@@ -30,6 +30,9 @@ workers_dev = true
 [env.staging.vars]
 ENVIRONMENT = "staging"
 CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in,http://localhost:3000,http://127.0.0.1:5500"
+EMAIL_FROM = "Motion By DK <delivery@motionbydk.in>"
+EMAIL_REPLY_TO = "motionbydk@gmail.com"
+EMAIL_TEST_RECIPIENT_ALLOWLIST = "iamdk8968@gmail.com,motionbydk@gmail.com,delivered@resend.dev"
 
 [[env.staging.d1_databases]]
 binding = "DB"

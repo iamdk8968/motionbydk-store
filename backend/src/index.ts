@@ -24,6 +24,12 @@ import { createCashfreeOrder, getCashfreeOrder, verifyCashfreeWebhookSignature }
 import { handleDownloadRequest } from './download';
 import { verifyLicenseKey, activateDevice, deactivateDevice, claimLicenseByOrder } from './licenseManager';
 import { hashString } from './license';
+import {
+  dispatchOrderReceiptEmail,
+  dispatchLicenseClaimedEmail,
+  dispatchDownloadDeliveryEmail,
+  hasEmailBeenSent,
+} from './email';
 
 const ALLOWED_ORIGINS = [
   'https://www.motionbydk.in',
@@ -457,6 +463,31 @@ export default {
             await incrementCouponUsage(env.DB, order.coupon_code);
           }
 
+          // Dispatch Transactional Email (Idempotent & Non-blocking)
+          try {
+            const customer = await env.DB
+              .prepare('SELECT email, full_name FROM customers WHERE id = ?')
+              .bind(order.customer_id)
+              .first<{ email: string; full_name: string }>();
+
+            if (customer) {
+              const downloadUrl = downloadToken ? `https://${url.host}/api/download/${downloadToken}` : null;
+              await dispatchOrderReceiptEmail(env.DB, env, {
+                orderId: order.order_id,
+                customerEmail: customer.email,
+                customerName: customer.full_name,
+                productName: product ? product.name : 'AE Workflow Pro',
+                amountInrPaise: Math.round(paymentAmount * 100) || order.final_amount_inr,
+                paymentId: cfPaymentId,
+                licenseKey,
+                downloadUrl,
+              });
+            }
+          } catch (emailErr: any) {
+            console.error('[Email Dispatch Error]:', emailErr);
+            // Email failure NEVER invalidates confirmed payment
+          }
+
           console.log(`[Webhook] Order ${orderId} marked PAID. License: ${licenseKey || 'N/A'}, Token: ${downloadToken || 'N/A'}`);
         } else if (paymentStatus === 'FAILED' || orderStatus === 'EXPIRED') {
           await updateOrderStatus(env.DB, orderId, 'FAILED');
@@ -541,8 +572,96 @@ export default {
           orderId: body.orderId,
           email: body.email,
         });
+
+        // Dispatch License Claimed Confirmation Email (Non-blocking)
+        if (result.success && result.licenseKey && result.licenseKey !== 'N/A') {
+          try {
+            await dispatchLicenseClaimedEmail(env.DB, env, {
+              orderId: body.orderId,
+              customerEmail: body.email,
+              customerName: result.customerName || 'Customer',
+              productName: result.productName || 'MotionByDk AE Workflow Pro',
+              licenseKey: result.licenseKey,
+              maxDevices: result.maxDevices || 2,
+            });
+          } catch (emailErr: any) {
+            console.error('[Email Claim Dispatch Error]:', emailErr);
+          }
+        }
+
         const status = result.success ? 200 : (result.code === 'ORDER_NOT_FOUND' ? 404 : 403);
         return jsonResponse(result, status, corsHeaders);
+      }
+
+      // =======================================================================
+      // 7. TRANSACTIONAL EMAIL TEST & LOG ENDPOINTS (STAGING / INTERNAL)
+      // =======================================================================
+      if (pathname === '/api/email/test' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const { type, recipient, orderId } = body;
+        const targetEmail = recipient || 'iamdk8968@gmail.com';
+        const targetOrderId = orderId || 'MDK_ORD_1794382847_38C93F';
+
+        let result: any;
+        if (type === 'LICENSE_CLAIMED') {
+          result = await dispatchLicenseClaimedEmail(env.DB, env, {
+            orderId: targetOrderId,
+            customerEmail: targetEmail,
+            customerName: 'Dhananjay Kumar',
+            productName: 'MotionByDk AE Workflow Pro',
+            licenseKey: 'MDK-PRO-2026-TEST-KEY1',
+            maxDevices: 2,
+          });
+        } else if (type === 'DOWNLOAD_DELIVERY') {
+          result = await dispatchDownloadDeliveryEmail(env.DB, env, {
+            orderId: targetOrderId,
+            customerEmail: targetEmail,
+            customerName: 'Dhananjay Kumar',
+            productName: 'MotionByDk AE Workflow Pro',
+            downloadUrl: `https://${url.host}/api/download/test_token_48h`,
+          });
+        } else {
+          // Default: ORDER_RECEIPT
+          result = await dispatchOrderReceiptEmail(env.DB, env, {
+            orderId: targetOrderId,
+            customerEmail: targetEmail,
+            customerName: 'Dhananjay Kumar',
+            productName: 'MotionByDk AE Workflow Pro',
+            amountInrPaise: 49900,
+            paymentId: 'cf_pay_test_123',
+            licenseKey: 'MDK-PRO-2026-TEST-KEY1',
+            downloadUrl: `https://${url.host}/api/download/test_token_48h`,
+          });
+        }
+
+        // Fetch recent email log for this order
+        const recentLogs = await env.DB
+          .prepare('SELECT * FROM email_delivery_logs WHERE order_id = ? ORDER BY created_at DESC LIMIT 5')
+          .bind(targetOrderId)
+          .all();
+
+        return jsonResponse(
+          {
+            testResult: result,
+            environment: env.ENVIRONMENT,
+            targetEmail,
+            targetOrderId,
+            recentLogs: recentLogs.results,
+          },
+          result.success ? 200 : 500,
+          corsHeaders
+        );
+      }
+
+      if (pathname.startsWith('/api/email/logs/') && request.method === 'GET') {
+        const orderId = pathname.replace('/api/email/logs/', '').trim();
+        const logs = await env.DB
+          .prepare('SELECT * FROM email_delivery_logs WHERE order_id = ? ORDER BY created_at DESC')
+          .bind(orderId)
+          .all();
+
+        return jsonResponse({ orderId, logs: logs.results || [] }, 200, corsHeaders);
       }
 
       // Backward-compatibility endpoint for legacy AE extensions querying /api/licenses.json

@@ -11,6 +11,9 @@ export interface Env {
   CASHFREE_SECRET_KEY?: string;
   CASHFREE_ENV?: string;             // 'SANDBOX' | 'PRODUCTION'
   RESEND_API_KEY?: string;
+  EMAIL_FROM?: string;
+  EMAIL_REPLY_TO?: string;
+  EMAIL_TEST_RECIPIENT_ALLOWLIST?: string;
   ADMIN_JWT_SECRET?: string;
 }
 
@@ -102,4 +105,33 @@ export interface CashfreeOrderResponse {
   order_expiry_time?: string;
   message?: string;
   code?: string;
+}
+
+export type EmailType =
+  | 'ORDER_RECEIPT'
+  | 'LICENSE_ISSUED'
+  | 'DOWNLOAD_DELIVERY'
+  | 'LICENSE_CLAIMED'
+  | 'STARTER_KIT'
+  | 'REFUND';
+
+export type EmailStatus =
+  | 'SENT'
+  | 'ACCEPTED'
+  | 'FAILED'
+  | 'RETRYING'
+  | 'MOCK_SENT'
+  | 'PENDING';
+
+export interface EmailDeliveryLogRecord {
+  id: string;
+  order_id: string;
+  recipient_email: string;
+  email_type: EmailType;
+  resend_message_id: string | null;
+  status: EmailStatus;
+  attempt_count: number;
+  error_message: string | null;
+  created_at: string;
+  updated_at: string;
 }
