@@ -65,6 +65,9 @@ function jsonResponse(data: unknown, status = 200, corsHeaders: HeadersInit = {}
     status,
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
       ...corsHeaders,
     },
   });
@@ -484,7 +487,7 @@ export default {
             // Email failure NEVER invalidates confirmed payment
           }
 
-          console.log(`[Webhook] Order ${orderId} marked PAID. License: ${licenseKey || 'N/A'}, Token: ${downloadToken || 'N/A'}`);
+          console.log(`[Webhook] Order ${orderId} marked PAID. License: ${licenseKey ? 'ISSUED' : 'N/A'}, Token: ${downloadToken ? 'GENERATED' : 'N/A'}`);
         } else if (paymentStatus === 'FAILED' || orderStatus === 'EXPIRED') {
           await updateOrderStatus(env.DB, orderId, 'FAILED');
           await recordPayment(env.DB, {

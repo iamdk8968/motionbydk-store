@@ -530,9 +530,12 @@ export async function requestClaimVerification(
     .bind(cleanOrderId)
     .run();
 
-  // Generate 6-digit numeric OTP
+  // Generate 6-digit numeric OTP (cryptographically unbiased CSPRNG rejection sampling)
+  const limit = Math.floor(0xFFFFFFFF / 900000) * 900000; // 4,294,800,000
   const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
+  do {
+    crypto.getRandomValues(array);
+  } while (array[0] >= limit);
   const otp = String(100000 + (array[0] % 900000));
   const otpHash = await hashString(otp);
 
