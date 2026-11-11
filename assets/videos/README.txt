@@ -12,7 +12,7 @@ FILE NAMES:
 4. mousedock_demo.mp4   -> macOS Mouse Dock magnifier ka video
 5. graph_demo.mp4       -> Bezier Graph curves ka video
 6. shape_demo.mp4       -> Shape Tools & Trim Paths ka video
-7. vault_demo.mp4       -> 50GB Private Editing Vault showcase / preview video
+7. vault_demo.mp4       -> Creator Starter Assets showcase / preview video
 
 AUTOMATIC DETECTION:
 Website automatically check karti hai:
