@@ -1,0 +1,67 @@
+name = "motionbydk-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+account_id = "3bc15dc2a7ee4f72aa56723a4294e573"
+workers_dev = true
+
+[vars]
+ENVIRONMENT = "development"
+CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in,http://localhost:3000,http://127.0.0.1:5500"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "motionbydk-db"
+database_id = "6f5c4910-22ae-4ee6-aa95-8060827fcf97"
+
+# Cloudflare R2 Product Storage Bucket
+[[r2_buckets]]
+binding = "PRODUCTS_BUCKET"
+bucket_name = "motionbydk-products"
+
+# -----------------------------------------------------------------------------
+# STAGING ENVIRONMENT (Runs on *.workers.dev for safe integration testing)
+# -----------------------------------------------------------------------------
+[env.staging]
+name = "motionbydk-api-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in,http://localhost:3000,http://127.0.0.1:5500"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "motionbydk-db"
+database_id = "6f5c4910-22ae-4ee6-aa95-8060827fcf97"
+
+[[env.staging.r2_buckets]]
+binding = "PRODUCTS_BUCKET"
+bucket_name = "motionbydk-products"
+
+# -----------------------------------------------------------------------------
+# PRODUCTION ENVIRONMENT (Prepared for api.motionbydk.in)
+# Custom domain routing will be enabled in Phase 10 without affecting GitHub Pages
+# -----------------------------------------------------------------------------
+[env.production]
+name = "motionbydk-api"
+workers_dev = true
+
+[env.production.vars]
+ENVIRONMENT = "production"
+CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "motionbydk-db"
+database_id = "6f5c4910-22ae-4ee6-aa95-8060827fcf97"
+
+[[env.production.r2_buckets]]
+binding = "PRODUCTS_BUCKET"
+bucket_name = "motionbydk-products"
+
+# In Phase 10, when adding the custom domain api.motionbydk.in:
+# routes = [
+#   { pattern = "api.motionbydk.in", custom_domain = true }
+# ]

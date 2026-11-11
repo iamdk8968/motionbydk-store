@@ -1,0 +1,19 @@
+{
+  "name": "motionbydk-api",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker backend API for Motion By DK",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:staging": "wrangler dev --env staging",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy --env production",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241101.0",
+    "typescript": "^5.6.3",
+    "wrangler": "^4.160.0"
+  }
+}
