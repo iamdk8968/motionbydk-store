@@ -1,14 +1,26 @@
 {
   "MDK-PRO-STUDIO": {
-    "email": "motionbydk@gmail.com",
     "maxDevices": 999,
     "devices": [],
     "createdAt": "2026-10-13",
     "active": true,
     "note": "Master Studio Key for DK"
   },
+  "MDK-BOBY-PC": {
+    "maxDevices": 2,
+    "devices": [],
+    "createdAt": "2026-10-26",
+    "active": true,
+    "note": "PLUGIN Pro Key for BOBY"
+  },
+  "MDK-DEEKSHITH-PC": {
+    "maxDevices": 2,
+    "devices": [],
+    "createdAt": "2026-10-26",
+    "active": true,
+    "note": "PLUGIN Pro Key for Deekshith"
+  },
   "MDK-VIP-001": {
-    "email": "customer1@example.com",
     "maxDevices": 2,
     "devices": [],
     "createdAt": "2026-10-13",
@@ -16,7 +28,6 @@
     "note": "Sample customer key - allows up to 2 PCs"
   },
   "MDK-VIP-002": {
-    "email": "customer2@example.com",
     "maxDevices": 2,
     "devices": [],
     "createdAt": "2026-10-13",

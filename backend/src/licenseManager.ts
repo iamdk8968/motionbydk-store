@@ -1,10 +1,15 @@
 /**
- * License Management Engine
+ * License Management Engine (Security Hardened)
  * Handles verification, hardware device activation/deactivation, and order-verified key claiming.
+ * Features:
+ *  - Strict response data sanitation (no customer PII or internal DB keys leaked)
+ *  - Atomic conditional device activation preventing race conditions
+ *  - SQLite trigger integration for hardware lock enforcement
+ *  - Range-aware atomic token download enforcement
  */
 
 import { Env, LicenseRecord } from './types';
-import { issueLicenseForOrder, createDownloadTokenForOrder } from './db';
+import { issueLicenseForOrder, createDownloadTokenForOrder, upsertCustomer } from './db';
 
 export async function verifyLicenseKey(
   db: D1Database,
@@ -13,7 +18,8 @@ export async function verifyLicenseKey(
   valid: boolean;
   active: boolean;
   message?: string;
-  license?: LicenseRecord;
+  licenseKey?: string;
+  productName?: string;
   activeDevices?: number;
   maxDevices?: number;
 }> {
@@ -23,9 +29,20 @@ export async function verifyLicenseKey(
 
   const cleanKey = licenseKey.trim().toUpperCase();
   const license = await db
-    .prepare('SELECT * FROM licenses WHERE license_key = ?')
+    .prepare(
+      `SELECT l.license_key, l.max_devices, l.is_active, l.revocation_reason, p.name as product_name
+       FROM licenses l
+       LEFT JOIN products p ON l.product_id = p.id
+       WHERE l.license_key = ?`
+    )
     .bind(cleanKey)
-    .first<LicenseRecord>();
+    .first<{
+      license_key: string;
+      max_devices: number;
+      is_active: number;
+      revocation_reason: string | null;
+      product_name: string | null;
+    }>();
 
   if (!license) {
     return { valid: false, active: false, message: 'License key does not exist.' };
@@ -47,10 +64,12 @@ export async function verifyLicenseKey(
 
   const activeDevices = activeCountRow ? activeCountRow.count : 0;
 
+  // Return strictly sanitized public fields (Zero PII or internal UUIDs exposed)
   return {
     valid: true,
     active: true,
-    license,
+    licenseKey: license.license_key,
+    productName: license.product_name || 'MotionByDk AE Workflow Pro',
     activeDevices,
     maxDevices: license.max_devices,
   };
@@ -88,7 +107,7 @@ export async function activateDevice(
 
   // Verify license existence and active state
   const verification = await verifyLicenseKey(db, cleanKey);
-  if (!verification.valid || !verification.active || !verification.license) {
+  if (!verification.valid || !verification.active) {
     return {
       success: false,
       code: 'INVALID_LICENSE',
@@ -96,10 +115,9 @@ export async function activateDevice(
     };
   }
 
-  const license = verification.license;
-  const maxDevices = license.max_devices;
+  const maxDevices = verification.maxDevices || 2;
 
-  // Check if this machine is ALREADY active on this key
+  // Check if this machine is ALREADY active on this key (idempotency check)
   const existingActivation = await db
     .prepare('SELECT id, is_active FROM license_activations WHERE license_key = ? AND machine_id = ? AND is_active = 1')
     .bind(cleanKey, cleanMachineId)
@@ -121,7 +139,7 @@ export async function activateDevice(
     };
   }
 
-  // Count current active devices
+  // Check if limit is reached prior to insert
   const currentCount = verification.activeDevices || 0;
   if (currentCount >= maxDevices) {
     return {
@@ -133,24 +151,74 @@ export async function activateDevice(
     };
   }
 
-  // Insert new active device record
+  // ATOMIC INSERT WITH CONCURRENCY GUARD:
+  // Uses conditional WHERE clause + SQLite trigger to guarantee no race condition
+  // can ever insert more than max_devices under parallel execution
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
 
-  await db
-    .prepare(
-      `INSERT INTO license_activations (
-        id, license_key, machine_id, machine_name, os, app_version, is_active, activated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, 1, ?)`
-    )
-    .bind(id, cleanKey, cleanMachineId, machineName || 'PC / Workstation', os || 'Desktop', appVersion || 'After Effects', now)
-    .run();
+  try {
+    const insertResult = await db
+      .prepare(
+        `INSERT INTO license_activations (
+          id, license_key, machine_id, machine_name, os, app_version, is_active, activated_at
+        )
+        SELECT ?, ?, ?, ?, ?, ?, 1, ?
+        WHERE (
+          SELECT count(*) FROM license_activations WHERE license_key = ? AND is_active = 1
+        ) < (
+          SELECT max_devices FROM licenses WHERE license_key = ?
+        )`
+      )
+      .bind(
+        id,
+        cleanKey,
+        cleanMachineId,
+        machineName || 'PC / Workstation',
+        os || 'Desktop',
+        appVersion || 'After Effects',
+        now,
+        cleanKey,
+        cleanKey
+      )
+      .run();
+
+    if (insertResult.meta.changes === 0) {
+      // Another concurrent thread inserted first
+      return {
+        success: false,
+        code: 'DEVICE_LIMIT_REACHED',
+        message: `Maximum allowed devices (${maxDevices} PC commercial limit) already active. Please deactivate an old machine first or contact support.`,
+        activeDevices: maxDevices,
+        maxDevices,
+      };
+    }
+  } catch (err: any) {
+    if (err.message && err.message.includes('DEVICE_LIMIT_REACHED')) {
+      return {
+        success: false,
+        code: 'DEVICE_LIMIT_REACHED',
+        message: `Maximum allowed devices (${maxDevices} PC commercial limit) already active. Please deactivate an old machine first or contact support.`,
+        activeDevices: maxDevices,
+        maxDevices,
+      };
+    }
+    throw err;
+  }
+
+  // Fetch updated count
+  const updatedCountRow = await db
+    .prepare('SELECT count(*) as count FROM license_activations WHERE license_key = ? AND is_active = 1')
+    .bind(cleanKey)
+    .first<{ count: number }>();
+
+  const newActiveDevices = updatedCountRow ? updatedCountRow.count : currentCount + 1;
 
   return {
     success: true,
     code: 'ACTIVATED',
-    message: `Machine successfully activated (${currentCount + 1}/${maxDevices} devices active).`,
-    activeDevices: currentCount + 1,
+    message: `Machine successfully activated (${newActiveDevices}/${maxDevices} devices active).`,
+    activeDevices: newActiveDevices,
     maxDevices,
     activatedAt: now,
   };
@@ -161,6 +229,7 @@ export async function deactivateDevice(
   params: {
     licenseKey: string;
     machineId: string;
+    email?: string;
   }
 ): Promise<{
   success: boolean;
@@ -169,7 +238,7 @@ export async function deactivateDevice(
   remainingActiveDevices?: number;
   maxDevices?: number;
 }> {
-  const { licenseKey, machineId } = params;
+  const { licenseKey, machineId, email } = params;
 
   if (!licenseKey || !machineId) {
     return {
@@ -181,6 +250,27 @@ export async function deactivateDevice(
 
   const cleanKey = licenseKey.trim().toUpperCase();
   const cleanMachineId = machineId.trim();
+
+  // If email is provided, verify ownership authorization
+  if (email && typeof email === 'string' && email.trim()) {
+    const lic = await db
+      .prepare(
+        `SELECT l.id, c.email 
+         FROM licenses l 
+         LEFT JOIN customers c ON l.customer_id = c.id 
+         WHERE l.license_key = ?`
+      )
+      .bind(cleanKey)
+      .first<{ id: string; email: string | null }>();
+
+    if (lic && lic.email && lic.email.toLowerCase() !== email.trim().toLowerCase()) {
+      return {
+        success: false,
+        code: 'UNAUTHORIZED',
+        message: 'Provided email does not match the registered license owner.',
+      };
+    }
+  }
 
   // Check if device is active
   const activation = await db
@@ -196,9 +286,9 @@ export async function deactivateDevice(
     };
   }
 
-  // Deactivate
+  // Deactivate atomically
   await db
-    .prepare('UPDATE license_activations SET is_active = 0, deactivated_at = datetime(\'now\') WHERE id = ?')
+    .prepare('UPDATE license_activations SET is_active = 0, deactivated_at = datetime(\'now\') WHERE id = ? AND is_active = 1')
     .bind(activation.id)
     .run();
 

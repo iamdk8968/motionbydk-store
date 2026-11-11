@@ -1,6 +1,6 @@
 /**
- * Cloudflare R2 Digital Product Streaming Engine
- * Supports token validation, expiry checks, download limits, chunked streaming, and HTTP Range requests.
+ * Cloudflare R2 Digital Product Streaming Engine (Security Hardened)
+ * Supports token validation, expiry checks, atomic download limits, chunked streaming, and HTTP Range requests.
  */
 
 import { Env, DownloadTokenRecord } from './types';
@@ -21,14 +21,15 @@ export async function handleDownloadRequest(
     );
   }
 
+  const cleanToken = token.trim();
+  const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('x-real-ip') || 'unknown';
+  const userAgent = request.headers.get('User-Agent') || 'unknown';
+
   // 1. Validate Token in D1
   const tokenRecord = await env.DB
     .prepare('SELECT * FROM download_tokens WHERE token = ?')
-    .bind(token.trim())
+    .bind(cleanToken)
     .first<DownloadTokenRecord>();
-
-  const ipAddress = request.headers.get('CF-Connecting-IP') || request.headers.get('x-real-ip') || 'unknown';
-  const userAgent = request.headers.get('User-Agent') || 'unknown';
 
   if (!tokenRecord) {
     return new Response(
@@ -40,10 +41,10 @@ export async function handleDownloadRequest(
     );
   }
 
-  // 2. Check Expiration
+  // 2. Check Expiration (Strict 48-Hour TTL Enforcement)
   const isExpired = new Date(tokenRecord.expires_at).getTime() <= Date.now();
   if (isExpired) {
-    await logDownloadAttempt(env.DB, tokenRecord.token, 0, ipAddress, userAgent, 410);
+    await logDownloadAttempt(env.DB, cleanToken, 0, ipAddress, userAgent, 410);
     return new Response(
       JSON.stringify({
         error: 'TOKEN_EXPIRED',
@@ -54,22 +55,49 @@ export async function handleDownloadRequest(
     );
   }
 
-  // 3. Check Download Limit
-  if (tokenRecord.download_count >= tokenRecord.max_downloads) {
-    await logDownloadAttempt(env.DB, tokenRecord.token, 0, ipAddress, userAgent, 403);
-    return new Response(
-      JSON.stringify({
-        error: 'DOWNLOAD_LIMIT_REACHED',
-        message: 'Maximum download limit reached for this purchase. Contact support@motionbydk.in if you need your access reset.',
-        downloadCount: tokenRecord.download_count,
-        maxDownloads: tokenRecord.max_downloads,
-      }),
-      { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-    );
+  // 3. Range-Aware Atomic Slot Reservation
+  // Only the initial download request or the first chunk (bytes=0-...) increments the download count.
+  // Subsequent chunks for multi-connection downloaders do not consume extra download count slots.
+  const rangeHeader = request.headers.get('Range') || request.headers.get('range');
+  const isInitialOrFullDownload = !rangeHeader || rangeHeader.includes('bytes=0-');
+
+  if (isInitialOrFullDownload) {
+    const atomicUpdate = await env.DB
+      .prepare(
+        `UPDATE download_tokens 
+         SET download_count = download_count + 1 
+         WHERE token = ? AND download_count < max_downloads AND expires_at > datetime('now')`
+      )
+      .bind(cleanToken)
+      .run();
+
+    if (atomicUpdate.meta.changes === 0) {
+      await logDownloadAttempt(env.DB, cleanToken, 0, ipAddress, userAgent, 403);
+      return new Response(
+        JSON.stringify({
+          error: 'DOWNLOAD_LIMIT_REACHED',
+          message: 'Maximum download limit reached for this purchase. Contact support@motionbydk.in if you need your access reset.',
+          downloadCount: tokenRecord.download_count,
+          maxDownloads: tokenRecord.max_downloads,
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+  } else {
+    // For non-initial chunk requests, still verify that the token has not exceeded limits
+    if (tokenRecord.download_count > tokenRecord.max_downloads) {
+      await logDownloadAttempt(env.DB, cleanToken, 0, ipAddress, userAgent, 403);
+      return new Response(
+        JSON.stringify({
+          error: 'DOWNLOAD_LIMIT_REACHED',
+          message: 'Download limit exceeded.',
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
   }
 
   // 4. Fetch Object from R2 with Range Header Support
-  const rangeHeader = request.headers.get('Range') || request.headers.get('range');
   let object: R2ObjectBody | null = null;
 
   try {
@@ -103,12 +131,6 @@ export async function handleDownloadRequest(
     );
   }
 
-  // 5. Increment Download Count in D1
-  await env.DB
-    .prepare('UPDATE download_tokens SET download_count = download_count + 1 WHERE token = ?')
-    .bind(tokenRecord.token)
-    .run();
-
   // Extract friendly filename
   const filename = tokenRecord.r2_object_key.split('/').pop() || 'MotionByDk_Download.zip';
 
@@ -126,7 +148,6 @@ export async function handleDownloadRequest(
   const status = isRangeRequest ? 206 : 200;
 
   if (isRangeRequest && object.range) {
-    // Format: bytes start-end/total
     if ('offset' in object.range && 'length' in object.range) {
       const start = object.range.offset;
       const end = object.range.offset + object.range.length - 1;
@@ -139,7 +160,7 @@ export async function handleDownloadRequest(
 
   // Log successful download
   const bytesSent = isRangeRequest && object.range && 'length' in object.range ? object.range.length : object.size;
-  await logDownloadAttempt(env.DB, tokenRecord.token, bytesSent, ipAddress, userAgent, status);
+  await logDownloadAttempt(env.DB, cleanToken, bytesSent, ipAddress, userAgent, status);
 
   // Stream directly from R2 to client (Memory usage < 5MB)
   return new Response(object.body, {

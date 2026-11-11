@@ -56,6 +56,28 @@ function jsonResponse(data: unknown, status = 200, corsHeaders: HeadersInit = {}
   });
 }
 
+// In-Memory IP Rate Limiter for sensitive endpoints
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(ip: string, limit = 20, windowMs = 60000): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
+    if (rateLimitMap.size > 1000) {
+      for (const [k, v] of rateLimitMap.entries()) {
+        if (now > v.resetAt) rateLimitMap.delete(k);
+      }
+    }
+    return true;
+  }
+  if (record.count >= limit) {
+    return false;
+  }
+  record.count += 1;
+  return true;
+}
+
 function generateOrderId(): string {
   const bytes = new Uint8Array(3);
   crypto.getRandomValues(bytes);
@@ -463,9 +485,14 @@ export default {
       }
 
       // =======================================================================
-      // 6. LICENSE MANAGEMENT & ACTIVATION ENGINE
+      // 6. LICENSE MANAGEMENT & ACTIVATION ENGINE (SECURITY HARDENED)
       // =======================================================================
+      const clientIp = request.headers.get('CF-Connecting-IP') || request.headers.get('x-real-ip') || 'unknown';
+
       if (pathname === '/api/license/verify' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 20, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Please wait a minute.' }, 429, corsHeaders);
+        }
         let body: any = {};
         try { body = await request.json(); } catch {}
         const result = await verifyLicenseKey(env.DB, body.licenseKey || body.key);
@@ -473,6 +500,9 @@ export default {
       }
 
       if (pathname === '/api/license/activate' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 20, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Please wait a minute.' }, 429, corsHeaders);
+        }
         let body: any = {};
         try { body = await request.json(); } catch {}
         const result = await activateDevice(env.DB, {
@@ -487,16 +517,24 @@ export default {
       }
 
       if (pathname === '/api/license/deactivate' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 20, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Please wait a minute.' }, 429, corsHeaders);
+        }
         let body: any = {};
         try { body = await request.json(); } catch {}
         const result = await deactivateDevice(env.DB, {
           licenseKey: body.licenseKey || body.key,
           machineId: body.machineId || body.hardwareId || body.uuid,
+          email: body.email,
         });
-        return jsonResponse(result, result.success ? 200 : 404, corsHeaders);
+        const status = result.success ? 200 : (result.code === 'UNAUTHORIZED' ? 403 : 404);
+        return jsonResponse(result, status, corsHeaders);
       }
 
       if (pathname === '/api/license/claim' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 15, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many claim attempts. Please wait a minute.' }, 429, corsHeaders);
+        }
         let body: any = {};
         try { body = await request.json(); } catch {}
         const result = await claimLicenseByOrder(env.DB, url.host, {
@@ -509,7 +547,7 @@ export default {
 
       // Backward-compatibility endpoint for legacy AE extensions querying /api/licenses.json
       if (pathname === '/api/licenses.json' && request.method === 'GET') {
-        // Return 103 legacy keys in original format without exposing private customer emails
+        // Return all 105 legacy keys from D1 without exposing customer email addresses
         const legacyKeys = await env.DB
           .prepare('SELECT license_key, max_devices, is_active FROM licenses WHERE is_legacy = 1')
           .all<{ license_key: string; max_devices: number; is_active: number }>();
