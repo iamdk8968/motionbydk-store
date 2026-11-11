@@ -265,10 +265,11 @@ export default {
         const userAgent = request.headers.get('User-Agent');
 
         // Create Order via Cashfree PG
-        // Redirect to activate.html without exposing customer email in query params
+        // Cashfree PG API v2023-08-01 requires an HTTPS return_url; fallback to HTTPS store domain during localhost tests
         const clientOrigin = request.headers.get('Origin') || 'https://www.motionbydk.in';
         const safeOrigin = ALLOWED_ORIGINS.includes(clientOrigin) ? clientOrigin : 'https://www.motionbydk.in';
-        const returnUrl = `${safeOrigin}/activate.html?order_id=${orderId}`;
+        const returnOrigin = safeOrigin.startsWith('https://') ? safeOrigin : 'https://www.motionbydk.in';
+        const returnUrl = `${returnOrigin}/activate.html?order_id=${orderId}`;
         const notifyUrl = `https://${url.host}/api/webhooks/cashfree`;
 
         const cfOrder = await createCashfreeOrder(env, {
