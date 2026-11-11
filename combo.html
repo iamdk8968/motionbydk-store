@@ -236,7 +236,7 @@
                     <span>Products</span>
                 </button>
 
-                <a id="headerBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-brand hover:bg-brand-hover text-black text-xs font-black shadow-brand-sm transition-all flex items-center gap-1.5 cursor-pointer">
+                <a id="headerBuyBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); return false;" class="px-4 py-2 rounded-xl bg-brand hover:bg-brand-hover text-black text-xs font-black shadow-brand-sm transition-all flex items-center gap-1.5 cursor-pointer">
                     <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
                     <span id="headerBuyText">Get Pro (₹499)</span>
                 </a>
@@ -285,9 +285,9 @@
                         <i data-lucide="refresh-cw" class="w-3 h-3 text-brand"></i>
                     </button>
                 </div>
-                <a id="mobileBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" onclick="toggleMobileMenu();" class="w-full block text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl">Buy AE Workflow Pro (₹499)</a>
-                <button onclick="openUpiModal(); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl">Instant UPI Direct Pay (₹499)</button>
-                <a href="https://superprofile.bio/vp/ae-workflow-pro" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl">Get 50GB Vault + Plugin (₹699)</a>
+                <a id="mobileBuyBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); toggleMobileMenu(); return false;" class="w-full block text-center py-3 bg-brand text-black font-extrabold text-sm rounded-xl cursor-pointer">Buy AE Workflow Pro (₹499)</a>
+                <button onclick="openCashfreeModal('ae-workflow-pro'); toggleMobileMenu();" class="w-full text-center py-2.5 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl cursor-pointer">Instant UPI &amp; Card Pay (₹499)</button>
+                <button onclick="navigateTo('combo'); toggleMobileMenu();" class="w-full text-center py-2.5 bg-dark-card border border-white/10 text-white font-semibold text-xs rounded-xl cursor-pointer">Explore Studio Combo (₹699)</button>
                 <div class="pt-2 flex items-center justify-center gap-4 text-xs text-gray-400">
                     <a href="https://instagram.com/motionbydk" target="_blank" class="hover:text-brand flex items-center gap-1 transition-colors">
                         <i data-lucide="instagram" class="w-3.5 h-3.5 text-brand"></i>
@@ -513,8 +513,8 @@
                                 <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
                                     <span>Gumroad ($15)</span>
                                 </a>
-                                <button onclick="openUpiModal('plugin')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI (₹499)</span>
+                                <button onclick="openCashfreeModal('ae-workflow-pro')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>Cashfree (₹499)</span>
                                 </button>
                             </div>
                         </div>
@@ -589,11 +589,11 @@
                                 </button>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <a href="https://superprofile.bio/vp/50gb-assets-vault" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
-                                    <span>Checkout Link</span>
-                                </a>
-                                <button onclick="openUpiModal('assets')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI / QR</span>
+                                <button onclick="navigateTo('vault')" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>View Assets Demo</span>
+                                </button>
+                                <button onclick="openCashfreeModal('ae-workflow-pro')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>Get Pro (₹499)</span>
                                 </button>
                             </div>
                         </div>
@@ -680,11 +680,11 @@
                                 </button>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1">
-                                    <span>Checkout (₹699)</span>
-                                </a>
-                                <button onclick="openUpiModal('bundle')" class="py-2.5 px-3 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
-                                    <span>UPI / QR</span>
+                                <button onclick="navigateTo('combo')" class="py-2.5 px-3 bg-dark-card hover:bg-white/10 text-white font-bold text-xs rounded-xl text-center border border-white/10 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>View Combo</span>
+                                </button>
+                                <button onclick="openCashfreeModal('ae-workflow-pro', 'FIRST100')" class="py-2.5 px-3 bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 font-bold text-xs rounded-xl text-center transition-colors flex items-center justify-center gap-1 cursor-pointer">
+                                    <span>Get Pro (₹399 w/ code)</span>
                                 </button>
                             </div>
                         </div>
@@ -1021,7 +1021,7 @@
                             <i id="faqIcon-2" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
                         </button>
                         <div id="faqAns-2" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-                            <strong>For Indian Creators:</strong> Click 'Pay with UPI (₹499)'. You can pay using GPay, PhonePe, Paytm, or any UPI app to <strong>motionbydk@ybl</strong> or scan the QR code. Enter your UTR / Ref number in the verification box for instant on-screen access! You can also use our automated card/netbanking gateway via SuperProfile.<br>
+                            <strong>For Indian Creators:</strong> Click 'Get Pro (₹499)'. Pay instantly via Cashfree using any UPI app (GPay, PhonePe, Paytm, QR), Debit/Credit Cards, or NetBanking. Once payment is confirmed, you are automatically redirected to activate your 2-PC commercial license with instant key and installer download access!<br>
                             <strong>For International Creators:</strong> Click 'Buy $15' to checkout securely via Gumroad with any international credit card, debit card, or PayPal.
                         </div>
                     </div>
@@ -1274,8 +1274,8 @@
                                 <span>Buy on Gumroad – $15</span>
                                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
                             </a>
-                            <button onclick="openUpiModal()" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm py-3 px-4 rounded-xl transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
-                                <span>🇮🇳 Pay UPI – ₹499</span>
+                            <button onclick="openCashfreeModal('ae-workflow-pro')" class="flex-1 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm py-3 px-4 rounded-xl transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                                <span>🇮🇳 Pay ₹499 (Cashfree / UPI)</span>
                             </button>
                         </div>
                     </div>
@@ -1384,8 +1384,8 @@
                             </div>
                             <div>
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="text-xs font-bold font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">DIRECT UPI</span>
-                                    <span class="text-xs text-emerald-400 font-semibold">GPay • PhonePe • Paytm</span>
+                                    <span class="text-xs font-bold font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">CASHFREE / UPI</span>
+                                    <span class="text-xs text-emerald-400 font-semibold">UPI • Cards • NetBanking</span>
                                 </div>
                                 <h4 class="font-heading font-black text-2xl text-white mb-2">Indian Creator Edition</h4>
                                 <div class="flex items-baseline gap-2 mb-4">
@@ -1393,14 +1393,14 @@
                                     <span class="text-xs text-gray-400">INR • Lifetime Access</span>
                                 </div>
                                 <ul class="space-y-3 text-xs sm:text-sm text-gray-200 mb-8">
-                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Direct UPI ID: <strong class="text-white">motionbydk@ybl</strong></li>
-                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> No international card required</li>
-                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> License key sent to your Email within 15 mins</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Instant UPI (GPay, PhonePe, Paytm, QR) &amp; Cards</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Instant on-screen license activation &amp; email delivery</li>
+                                    <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> 2 Personal Computers (PC + Laptop) included</li>
                                     <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✔</span> Windows &amp; Mac 1-Click Installers</li>
                                 </ul>
                             </div>
-                            <button onclick="openUpiModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
-                                <span>Pay with UPI – ₹499</span>
+                            <button onclick="openCashfreeModal('ae-workflow-pro')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-xl shadow-lg transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                                <span>Pay with Cashfree (₹499)</span>
                             </button>
                         </div>
                     </div>
@@ -1684,13 +1684,10 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto mb-6">
-                        <a href="https://superprofile.bio/vp/50gb-assets-vault" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto flex-1 inline-flex items-center justify-center px-8 py-4 bg-sky-500 hover:bg-sky-400 text-black font-heading font-extrabold text-base rounded-xl shadow-lg transition-all gap-2 cursor-pointer">
-                            <i data-lucide="download" class="w-5 h-5 text-black"></i>
-                            <span>Get 50GB Assets (SuperProfile)</span>
+                        <button onclick="openCashfreeModal('ae-workflow-pro')" class="w-full sm:w-auto flex-1 inline-flex items-center justify-center px-8 py-4 bg-sky-500 hover:bg-sky-400 text-black font-heading font-extrabold text-base rounded-xl shadow-lg transition-all gap-2 cursor-pointer">
+                            <i data-lucide="zap" class="w-5 h-5 text-black"></i>
+                            <span>Get AE Workflow Pro (₹499)</span>
                             <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                        </a>
-                        <button onclick="openUpiModal('assets')" class="w-full sm:w-auto px-6 py-4 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
-                            <span>Pay UPI / QR</span>
                         </button>
                     </div>
 
@@ -1931,12 +1928,9 @@
                         </div>
 
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto mb-4">
-                            <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto flex-1 inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black font-heading font-black text-base rounded-xl shadow-lg transition-all gap-2 cursor-pointer">
-                                <i data-lucide="download" class="w-5 h-5 text-black"></i>
-                                <span>Get Combo on SuperProfile &rarr;</span>
-                            </a>
-                            <button onclick="openUpiModal('bundle')" class="w-full sm:w-auto px-6 py-4 bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-500/40 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
-                                <span>Pay ₹699 UPI</span>
+                            <button onclick="openCashfreeModal('ae-workflow-pro', 'FIRST100')" class="w-full sm:w-auto flex-1 inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black font-heading font-black text-base rounded-xl shadow-lg transition-all gap-2 cursor-pointer">
+                                <i data-lucide="zap" class="w-5 h-5 text-black"></i>
+                                <span>Get Pro License (₹499 • Apply FIRST100 for ₹399) &rarr;</span>
                             </button>
                         </div>
                         <span class="text-[11px] text-gray-400 block">Instant automated Google Drive delivery &amp; official license key.</span>
@@ -2017,10 +2011,10 @@
             </div>
 
             <h3 class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
-                Get <span class="text-amber-400">₹100 OFF</span> Studio Combo!
+                Get <span class="text-amber-400">₹100 OFF</span> AE Workflow Pro!
             </h3>
             <p class="text-xs sm:text-sm text-gray-300 mb-5 leading-relaxed max-w-sm mx-auto">
-                Get Dhananjay's complete <strong class="text-white">50GB Asset Vault + AE Workflow Pro Plugin</strong> together for just <span class="text-amber-400 font-extrabold text-base">₹599</span> <span class="line-through text-gray-500 text-xs">₹699</span>!
+                Get Dhananjay's flagship <strong class="text-white">MotionByDk AE Workflow Pro Plugin (2-PC Lifetime License)</strong> for just <span class="text-amber-400 font-extrabold text-base">₹399</span> <span class="line-through text-gray-500 text-xs">₹499</span>!
             </p>
 
             <!-- Coupon Code Container with 1-Click Copy -->
@@ -2035,7 +2029,7 @@
                 </div>
                 <p class="text-[11px] text-emerald-400 mt-2 font-medium flex items-center justify-center gap-1">
                     <i data-lucide="check" class="w-3 h-3"></i>
-                    <span>Saves ₹100 instantly on SuperProfile checkout</span>
+                    <span>Saves ₹100 instantly on Cashfree checkout</span>
                 </p>
             </div>
 
@@ -2048,17 +2042,17 @@
                 <div class="w-full h-2 bg-dark-base rounded-full overflow-hidden border border-white/10">
                     <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width: 83%"></div>
                 </div>
-                <span class="text-[10px] text-gray-400 block text-center">Urgency: Once 100 coupons are claimed, price returns to ₹699</span>
+                <span class="text-[10px] text-gray-400 block text-center">Urgency: Once 100 coupons are claimed, price returns to ₹499</span>
             </div>
 
             <!-- Action CTA Buttons -->
             <div class="space-y-2">
-                <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-6 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black font-heading font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer">
+                <button onclick="closeWelcomeOfferModal(); openCashfreeModal('ae-workflow-pro', 'FIRST100');" class="w-full py-3.5 px-6 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-300 hover:to-yellow-300 text-black font-heading font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer">
                     <i data-lucide="zap" class="w-4 h-4 fill-black"></i>
-                    <span>Claim ₹100 OFF on Combo Pack &rarr;</span>
-                </a>
-                <button onclick="closeWelcomeOfferModal(); navigateTo('combo');" class="w-full py-2.5 px-4 text-xs font-bold text-gray-400 hover:text-white transition-colors cursor-pointer">
-                    View Combo Pack Details &rarr;
+                    <span>Claim ₹100 OFF with Code FIRST100 &rarr;</span>
+                </button>
+                <button onclick="closeWelcomeOfferModal(); navigateTo('plugin');" class="w-full py-2.5 px-4 text-xs font-bold text-gray-400 hover:text-white transition-colors cursor-pointer">
+                    View Plugin Features &rarr;
                 </button>
             </div>
         </div>
@@ -2099,7 +2093,7 @@
                 </button>
             </div>
 
-            <!-- 1. RECOMMENDED: INSTANT AUTOMATED DELIVERY VIA SUPERPROFILE -->
+            <!-- 1. RECOMMENDED: INSTANT AUTOMATED DELIVERY VIA CASHFREE PAYMENTS -->
             <div class="mb-5 p-4 rounded-xl bg-gradient-to-r from-emerald-950/50 to-brand/10 border-2 border-emerald-500/50 space-y-2.5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-white flex items-center gap-1.5">
@@ -2111,9 +2105,9 @@
                 <p class="text-[11px] text-gray-300 leading-relaxed">
                     Pay securely with UPI (GPay, PhonePe, Paytm), Debit/Credit Cards, or NetBanking. You instantly receive your download files and official 2-PC License Key automatically on screen and via email!
                 </p>
-                <a id="upiSuperprofileDirectBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); return false;" class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
+                <a id="upiCashfreeDirectBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); return false;" class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
                     <i data-lucide="shield-check" class="w-4 h-4 text-black"></i>
-                    <span id="upiSuperprofileDirectText">Pay ₹499 via Cashfree (Instant Key &amp; Download) &rarr;</span>
+                    <span id="upiCashfreeDirectText">Pay ₹499 via Cashfree (Instant Key &amp; Download) &rarr;</span>
                 </a>
             </div>
 
@@ -2294,7 +2288,7 @@
             <h3 class="font-heading font-black text-2xl text-white mb-4">Privacy Policy</h3>
             <div class="space-y-4 text-xs sm:text-sm text-gray-300 leading-relaxed">
                 <p>At <strong>Motion by DK</strong>, we respect your privacy. We only collect the minimal information necessary (name, email address, transaction reference) to deliver your digital purchases, activation keys, and customer support.</p>
-                <p>We do not sell, rent, or trade your personal data. Payments are processed securely via Gumroad and SuperProfile/UPI. We do not store card or banking information on our servers.</p>
+                <p>We do not sell, rent, or trade your personal data. Payments are processed securely via Gumroad and Cashfree Payments. We do not store card or banking information on our servers.</p>
                 <p>For our complete legal policy, please visit our <a href="privacy.html" class="text-brand font-bold underline">Standalone Privacy Policy Page &rarr;</a></p>
             </div>
             <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
@@ -2340,12 +2334,12 @@
             </div>
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
-            <a id="stickyBuyBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl shadow-brand-sm flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+            <a id="stickyBuyBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); return false;" class="px-3.5 py-2 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl shadow-brand-sm flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
                 <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
                 <span id="stickyBuyLabel">Buy ($15 / ₹499)</span>
             </a>
-            <button onclick="openUpiModal()" class="hidden sm:inline-flex px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
-                <span>UPI ₹499</span>
+            <button onclick="openCashfreeModal('ae-workflow-pro')" class="hidden sm:inline-flex px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                <span>Pay ₹499 (UPI / Cards)</span>
             </button>
         </div>
     </div>
@@ -2422,8 +2416,8 @@
                             <a href="https://gumroad.com/l/bbpskg" data-gumroad-action="buy" class="px-3.5 py-2 bg-brand hover:bg-brand-hover text-black font-extrabold text-xs rounded-xl shadow-brand-sm flex items-center gap-1.5 whitespace-nowrap">
                                 <span>Buy $15</span>
                             </a>
-                            <button onclick="openUpiModal()" class="px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
-                                <span>₹499 UPI</span>
+                            <button onclick="openCashfreeModal('ae-workflow-pro')" class="px-3 py-2 bg-emerald-950 text-emerald-400 border border-emerald-500/40 font-bold text-xs rounded-xl whitespace-nowrap cursor-pointer">
+                                <span>₹499 Cashfree</span>
                             </button>
                         </div>
                     `;
@@ -2434,31 +2428,31 @@
                                 ⭐
                             </div>
                             <div class="min-w-0">
-                                <div class="text-xs font-bold text-white truncate">Studio Combo Pack (₹699)</div>
-                                <div class="text-[10px] text-amber-400">50GB Vault + Plugin • Use FIRST100 for ₹100 OFF</div>
+                                <div class="text-xs font-bold text-white truncate">AE Workflow Pro (₹499)</div>
+                                <div class="text-[10px] text-amber-400">Use FIRST100 for ₹100 OFF (Final: ₹399)</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <a href="https://superprofile.bio/vp/studio-combo-pack" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                <span>Get Combo (₹699)</span>
-                            </a>
+                            <button onclick="openCashfreeModal('ae-workflow-pro', 'FIRST100')" class="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                                <span>Get Pro (₹399 w/ code)</span>
+                            </button>
                         </div>
                     `;
                 } else if (pageId === 'vault') {
                     stickyBar.innerHTML = `
                         <div class="flex items-center gap-3 min-w-0">
                             <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 font-black text-xs flex items-center justify-center flex-shrink-0 border border-sky-400/30">
-                                50G
+                                AE
                             </div>
                             <div class="min-w-0">
-                                <div class="text-xs font-bold text-white truncate">50GB Video Assets (Only)</div>
-                                <div class="text-[10px] text-gray-400">4K Overlays, SFX &amp; LUTs (Any Editor)</div>
+                                <div class="text-xs font-bold text-white truncate">MotionByDk AE Workflow Pro</div>
+                                <div class="text-[10px] text-gray-400">2-PC Lifetime Commercial License (₹499)</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <a href="https://superprofile.bio/vp/50gb-assets-vault" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                                <span>Get 50GB Assets</span>
-                            </a>
+                            <button onclick="openCashfreeModal('ae-workflow-pro')" class="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+                                <span>Get Pro (₹499)</span>
+                            </button>
                         </div>
                     `;
                 } else {
@@ -2689,7 +2683,6 @@
             }
         })();
 
-        var superprofileUrl = 'https://superprofile.bio/vp/ae-workflow-pro';
         var gumroadUrl = 'https://gumroad.com/l/bbpskg';
 
         function applyCurrencyUI() {
@@ -2752,8 +2745,6 @@
             if (currentCurrency === 'INR') {
                 if (typeof openCashfreeModal === 'function') {
                     openCashfreeModal('ae-workflow-pro');
-                } else {
-                    window.open(superprofileUrl, '_blank');
                 }
             } else {
                 window.open(gumroadUrl, '_blank');
@@ -2771,8 +2762,8 @@
             var assetsBtn = document.getElementById('upiTierAssetsBtn');
             var bundleBtn = document.getElementById('upiTierBundleBtn');
             var priceBadge = document.getElementById('upiPriceBadge');
-            var directBtn = document.getElementById('upiSuperprofileDirectBtn');
-            var directText = document.getElementById('upiSuperprofileDirectText');
+            var directBtn = document.getElementById('upiCashfreeDirectBtn');
+            var directText = document.getElementById('upiCashfreeDirectText');
             var qrImg = document.getElementById('upiQrCodeImg');
             var tapPayLink = document.getElementById('upiTapPayLink');
             var tapPayText = document.getElementById('upiTapPayText');
@@ -2787,27 +2778,36 @@
 
             if (currentUpiTier === 'bundle') {
                 if (bundleBtn) bundleBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-amber-400 shadow-sm cursor-pointer relative text-center';
-                if (priceBadge) priceBadge.innerHTML = 'Studio Combo: <span class="text-amber-400 font-black text-sm">₹699</span> (Apply FIRST100 for ₹599)';
-                if (directBtn) directBtn.href = 'https://superprofile.bio/vp/studio-combo-pack';
-                if (directText) directText.innerText = 'Pay ₹699 on SuperProfile (Apply Code FIRST100 for ₹100 OFF) →';
-                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D699%26cu%3DINR%26tn%3D50GBVaultAEBundle';
-                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=699&cu=INR&tn=50GBVaultAEBundle';
-                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹699 via UPI App (1-Tap)';
-                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20%E2%82%B9699%20via%20UPI%20for%2050GB%20Vault%20%2B%20AE%20Plugin%20Combo.%20Here%20is%20my%20screenshot%3A';
+                if (priceBadge) priceBadge.innerHTML = 'AE Workflow Pro: <span class="text-amber-400 font-black text-sm">₹499</span> (Apply FIRST100 for ₹399)';
+                if (directBtn) {
+                    directBtn.href = '#checkout';
+                    directBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro', 'FIRST100'); };
+                }
+                if (directText) directText.innerText = 'Pay ₹399 via Cashfree (Code FIRST100 Applied) →';
+                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3DAEWorkflowPro';
+                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=AEWorkflowPro';
+                if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹499 via UPI App (1-Tap)';
+                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20screenshot%3A';
             } else if (currentUpiTier === 'assets') {
                 if (assetsBtn) assetsBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-sky-500 shadow-sm cursor-pointer text-center';
-                if (priceBadge) priceBadge.innerHTML = '50GB Mega Assets (Only): <span class="text-sky-400 font-black text-sm">Instant Download Access</span>';
-                if (directBtn) directBtn.href = 'https://superprofile.bio/vp/50gb-assets-vault';
-                if (directText) directText.innerText = 'Pay via SuperProfile (Instant 50GB Google Drive Access) →';
-                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3D50GBVideoAssets';
-                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=50GBVideoAssets';
+                if (priceBadge) priceBadge.innerHTML = 'AE Workflow Pro: <span class="text-sky-400 font-black text-sm">₹499</span> (Instant License Key)';
+                if (directBtn) {
+                    directBtn.href = '#checkout';
+                    directBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro'); };
+                }
+                if (directText) directText.innerText = 'Pay ₹499 via Cashfree (Instant Key & Download) →';
+                if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3DAEWorkflowPro';
+                if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=AEWorkflowPro';
                 if (tapPayText) tapPayText.innerText = 'Tap to Pay via UPI App (1-Tap)';
-                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20via%20UPI%20for%2050GB%20Video%20Assets.%20Here%20is%20my%20screenshot%3A';
+                if (waBtn) waBtn.href = 'https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20paid%20via%20UPI%20for%20AE%20Workflow%20Pro.%20Here%20is%20my%20screenshot%3A';
             } else {
                 if (pluginBtn) pluginBtn.className = 'py-2.5 px-2 rounded-lg text-xs font-bold transition-all text-black bg-brand shadow-sm cursor-pointer text-center';
                 if (priceBadge) priceBadge.innerHTML = 'AE Workflow Pro: <span class="text-brand font-black text-sm">₹499</span> (2-PC Lifetime Commercial)';
-                if (directBtn) directBtn.href = 'https://superprofile.bio/vp/ae-workflow-pro';
-                if (directText) directText.innerText = 'Pay ₹499 via SuperProfile (Instant Key & Download) →';
+                if (directBtn) {
+                    directBtn.href = '#checkout';
+                    directBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro'); };
+                }
+                if (directText) directText.innerText = 'Pay ₹499 via Cashfree (Instant Key & Download) →';
                 if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi%3A%2F%2Fpay%3Fpa%3Dmotionbydk%40ybl%26pn%3DMotionByDk%26am%3D499%26cu%3DINR%26tn%3DAEWorkflowPro';
                 if (tapPayLink) tapPayLink.href = 'upi://pay?pa=motionbydk@ybl&pn=MotionByDk&am=499&cu=INR&tn=AEWorkflowPro';
                 if (tapPayText) tapPayText.innerText = 'Tap to Pay ₹499 via UPI App (1-Tap)';
@@ -2817,6 +2817,10 @@
         }
 
         function openUpiModal(tier) {
+            if (typeof openCashfreeModal === 'function') {
+                openCashfreeModal('ae-workflow-pro');
+                return;
+            }
             if (tier) selectUpiTier(tier);
             var modal = document.getElementById('upiModal');
             if (!modal) return;
@@ -2964,7 +2968,7 @@
             }
         }
 
-        // Secure payment verification handled automated via SuperProfile and manual WhatsApp proof
+        // Automated checkout handled via Cashfree Payments SDK v3 & verified D1 database records
 
         // =========================================================================
         // 8. GENERIC MODAL CONTROLLER & LIFECYCLE LISTENERS

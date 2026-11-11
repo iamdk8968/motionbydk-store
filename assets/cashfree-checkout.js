@@ -17,6 +17,13 @@
       if (callback) callback();
       return;
     }
+    var existing = document.querySelector('script[src*="cashfree.com/js/v3/cashfree.js"]');
+    if (existing) {
+      existing.addEventListener('load', function () {
+        if (callback) callback();
+      });
+      return;
+    }
     var script = document.createElement('script');
     script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
     script.async = true;
@@ -107,7 +114,7 @@
 
                 <!-- Supported Payment Rails -->
                 <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pt-2 text-[10px] text-gray-400">
-                    <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> UPI (GPay, PhonePe, Paytm)</span>
+                    <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> UPI (GPay, PhonePe, Paytm, QR)</span>
                     <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> Debit / Credit Cards</span>
                     <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> NetBanking</span>
                 </div>
@@ -128,11 +135,15 @@
   }
 
   // Open the Cashfree Checkout Modal
-  window.openCashfreeModal = function (productId) {
+  window.openCashfreeModal = function (productId, initialCoupon) {
     loadCashfreeSDK();
     injectModalHTML();
 
-    activeProductId = productId || 'ae-workflow-pro';
+    if (!productId || productId === 'plugin' || productId === 'mdk-ae-workflow-pro') {
+      productId = 'ae-workflow-pro';
+    }
+    activeProductId = productId;
+
     var modal = document.getElementById('cashfreeCheckoutModal');
     if (!modal) return;
 
@@ -148,9 +159,16 @@
     if (activeProductId === 'ae-workflow-pro') {
       if (nameEl) nameEl.innerText = 'MotionByDk AE Workflow Pro';
       if (descEl) descEl.innerText = 'Valid on up to 2 Personal Computers (PC + Laptop)';
+      if (origEl) origEl.innerText = '₹999';
+    }
+
+    if (initialCoupon) {
+      var couponInput = document.getElementById('cfModalCouponInput');
+      if (couponInput) couponInput.value = initialCoupon.trim().toUpperCase();
+      window.applyModalCoupon();
+    } else {
       var currentPrice = appliedCoupon === 'FIRST100' ? '₹399' : '₹499';
       if (priceEl) priceEl.innerText = currentPrice;
-      if (origEl) origEl.innerText = '₹999';
       if (btnLabel) btnLabel.innerText = 'Proceed to Pay ' + currentPrice;
     }
 
@@ -198,10 +216,13 @@
       if (priceEl) priceEl.innerText = '₹499';
       if (btnLabel) btnLabel.innerText = 'Proceed to Pay ₹499';
     } else {
+      appliedCoupon = '';
       if (msg) {
         msg.className = 'text-[11px] text-red-400 font-bold block';
         msg.innerText = 'Coupon "' + val + '" is invalid or expired.';
       }
+      if (priceEl) priceEl.innerText = '₹499';
+      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ₹499';
     }
   };
 
@@ -231,7 +252,8 @@
       return;
     }
 
-    if (!customerEmail || !customerEmail.includes('@')) {
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerEmail || !emailPattern.test(customerEmail)) {
       if (errEl) {
         errEl.innerText = 'Please enter a valid email address.';
         errEl.classList.remove('hidden');
@@ -330,6 +352,17 @@
     }
   };
 
+  // Global event delegation for buy triggers
+  document.addEventListener('click', function (e) {
+    var target = e.target && e.target.closest ? e.target.closest('[data-cashfree-checkout]') : null;
+    if (target) {
+      e.preventDefault();
+      var prod = target.getAttribute('data-product-id') || 'ae-workflow-pro';
+      var coupon = target.getAttribute('data-coupon') || '';
+      window.openCashfreeModal(prod, coupon);
+    }
+  });
+
   // Keyboard navigation: Close on ESC
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -337,7 +370,7 @@
     }
   });
 
-  // URL parameter triggers: ?buy=plugin or ?ref=ae_trial
+  // URL parameter triggers: ?buy=plugin or ?ref=ae_trial or ?coupon=FIRST100
   document.addEventListener('DOMContentLoaded', function () {
     loadCashfreeSDK();
     injectModalHTML();
@@ -345,10 +378,11 @@
     var params = new URLSearchParams(window.location.search);
     var buyParam = params.get('buy');
     var refParam = params.get('ref');
+    var couponParam = params.get('coupon');
 
-    if (buyParam === 'plugin' || refParam === 'ae_trial') {
+    if (buyParam === 'plugin' || buyParam === 'ae-workflow-pro' || refParam === 'ae_trial') {
       setTimeout(function () {
-        window.openCashfreeModal('ae-workflow-pro');
+        window.openCashfreeModal('ae-workflow-pro', couponParam);
       }, 300);
     }
   });
