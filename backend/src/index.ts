@@ -22,6 +22,7 @@ import {
 } from './db';
 import { createCashfreeOrder, getCashfreeOrder, verifyCashfreeWebhookSignature } from './cashfree';
 import { handleDownloadRequest } from './download';
+import { verifyLicenseKey, activateDevice, deactivateDevice, claimLicenseByOrder } from './licenseManager';
 import { hashString } from './license';
 
 const ALLOWED_ORIGINS = [
@@ -461,8 +462,68 @@ export default {
         return await handleDownloadRequest(request, env, token, corsHeaders);
       }
 
-      if (pathname.startsWith('/api/license/')) {
-        return jsonResponse({ error: 'PHASE_5_PENDING', message: 'License activation routes will be enabled in Phase 5.' }, 501, corsHeaders);
+      // =======================================================================
+      // 6. LICENSE MANAGEMENT & ACTIVATION ENGINE
+      // =======================================================================
+      if (pathname === '/api/license/verify' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await verifyLicenseKey(env.DB, body.licenseKey || body.key);
+        return jsonResponse(result, result.valid ? 200 : 404, corsHeaders);
+      }
+
+      if (pathname === '/api/license/activate' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await activateDevice(env.DB, {
+          licenseKey: body.licenseKey || body.key,
+          machineId: body.machineId || body.hardwareId || body.uuid,
+          machineName: body.machineName || body.hostname,
+          os: body.os,
+          appVersion: body.appVersion,
+        });
+        const status = result.success ? 200 : (result.code === 'DEVICE_LIMIT_REACHED' ? 409 : 403);
+        return jsonResponse(result, status, corsHeaders);
+      }
+
+      if (pathname === '/api/license/deactivate' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await deactivateDevice(env.DB, {
+          licenseKey: body.licenseKey || body.key,
+          machineId: body.machineId || body.hardwareId || body.uuid,
+        });
+        return jsonResponse(result, result.success ? 200 : 404, corsHeaders);
+      }
+
+      if (pathname === '/api/license/claim' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await claimLicenseByOrder(env.DB, url.host, {
+          orderId: body.orderId,
+          email: body.email,
+        });
+        const status = result.success ? 200 : (result.code === 'ORDER_NOT_FOUND' ? 404 : 403);
+        return jsonResponse(result, status, corsHeaders);
+      }
+
+      // Backward-compatibility endpoint for legacy AE extensions querying /api/licenses.json
+      if (pathname === '/api/licenses.json' && request.method === 'GET') {
+        // Return 103 legacy keys in original format without exposing private customer emails
+        const legacyKeys = await env.DB
+          .prepare('SELECT license_key, max_devices, is_active FROM licenses WHERE is_legacy = 1')
+          .all<{ license_key: string; max_devices: number; is_active: number }>();
+
+        const legacyMap: Record<string, any> = {};
+        for (const r of legacyKeys.results || []) {
+          legacyMap[r.license_key] = {
+            type: r.license_key.includes('BUNDLE') ? 'Studio Bundle (2-PC Commercial)' : 'AE Workflow Pro (2-PC Commercial)',
+            maxDevices: r.max_devices,
+            devices: [],
+            active: r.is_active === 1,
+          };
+        }
+        return jsonResponse(legacyMap, 200, corsHeaders);
       }
 
       // 404 Route Not Found
