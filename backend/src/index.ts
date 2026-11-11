@@ -22,12 +22,20 @@ import {
 } from './db';
 import { createCashfreeOrder, getCashfreeOrder, verifyCashfreeWebhookSignature } from './cashfree';
 import { handleDownloadRequest } from './download';
-import { verifyLicenseKey, activateDevice, deactivateDevice, claimLicenseByOrder } from './licenseManager';
+import {
+  verifyLicenseKey,
+  activateDevice,
+  deactivateDevice,
+  claimLicenseByOrder,
+  requestClaimVerification,
+  confirmClaimVerification,
+} from './licenseManager';
 import { hashString } from './license';
 import {
   dispatchOrderReceiptEmail,
   dispatchLicenseClaimedEmail,
   dispatchDownloadDeliveryEmail,
+  dispatchClaimOtpEmail,
   hasEmailBeenSent,
 } from './email';
 
@@ -228,7 +236,10 @@ export default {
         const userAgent = request.headers.get('User-Agent');
 
         // Create Order via Cashfree PG
-        const returnUrl = `https://www.motionbydk.in/?order_id=${orderId}&status=return`;
+        // Redirect to activate.html without exposing customer email in query params
+        const clientOrigin = request.headers.get('Origin') || 'https://www.motionbydk.in';
+        const safeOrigin = ALLOWED_ORIGINS.includes(clientOrigin) ? clientOrigin : 'https://www.motionbydk.in';
+        const returnUrl = `${safeOrigin}/activate.html?order_id=${orderId}`;
         const notifyUrl = `https://${url.host}/api/webhooks/cashfree`;
 
         const cfOrder = await createCashfreeOrder(env, {
@@ -314,22 +325,8 @@ export default {
           }
         }
 
-        // Fetch associated customer, license, and download token if PAID
-        let licenseKey: string | null = null;
-        let downloadToken: string | null = null;
-        let downloadUrl: string | null = null;
-
-        if (order.status === 'PAID') {
-          const lic = await getLicenseByOrder(env.DB, order.order_id);
-          if (lic) licenseKey = lic.license_key;
-
-          const tok = await getDownloadTokenByOrder(env.DB, order.order_id);
-          if (tok) {
-            downloadToken = tok.token;
-            downloadUrl = `https://${url.host}/api/download/${tok.token}`;
-          }
-        }
-
+        // For privacy & security: Never expose license keys or download tokens
+        // based solely on an order ID. Authenticated claim verification is required.
         const product = await getProduct(env.DB, order.product_id);
 
         return jsonResponse(
@@ -342,9 +339,8 @@ export default {
             amountInr: Number((order.final_amount_inr / 100).toFixed(2)),
             currency: order.currency,
             paidAt: order.paid_at,
-            licenseKey,
-            downloadToken,
-            downloadUrl,
+            hasLicense: product ? !!product.has_license : false,
+            requiresClaimVerification: order.status === 'PAID',
           },
           200,
           corsHeaders
@@ -562,12 +558,68 @@ export default {
         return jsonResponse(result, status, corsHeaders);
       }
 
+      // 2-Step Authenticated License Claim: Step 1 (Request OTP)
+      if (pathname === '/api/license/claim/request' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 5, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many verification code requests. Please wait a minute.' }, 429, corsHeaders);
+        }
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await requestClaimVerification(env.DB, env, {
+          orderId: body.orderId,
+          email: body.email,
+        });
+        const status = result.success ? 200 : (result.code === 'ORDER_NOT_FOUND' ? 404 : (result.code === 'MISSING_PARAMS' ? 400 : 403));
+        return jsonResponse(result, status, corsHeaders);
+      }
+
+      // 2-Step Authenticated License Claim: Step 2 (Confirm OTP & Issue Key)
+      if (pathname === '/api/license/claim/confirm' && request.method === 'POST') {
+        if (!checkRateLimit(clientIp, 10, 60000)) {
+          return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many verification attempts. Please wait a minute.' }, 429, corsHeaders);
+        }
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const result = await confirmClaimVerification(env.DB, env, url.host, {
+          orderId: body.orderId,
+          email: body.email,
+          otp: body.otp,
+        });
+        const status = result.success
+          ? 200
+          : (result.code === 'INVALID_OTP'
+            ? 401
+            : (result.code === 'MAX_ATTEMPTS_EXCEEDED'
+              ? 429
+              : (result.code === 'ORDER_NOT_FOUND' || result.code === 'NO_PENDING_CLAIM' ? 404 : 400)));
+        return jsonResponse(result, status, corsHeaders);
+      }
+
       if (pathname === '/api/license/claim' && request.method === 'POST') {
         if (!checkRateLimit(clientIp, 15, 60000)) {
           return jsonResponse({ error: 'RATE_LIMIT_EXCEEDED', message: 'Too many claim attempts. Please wait a minute.' }, 429, corsHeaders);
         }
         let body: any = {};
         try { body = await request.json(); } catch {}
+
+        // If OTP is provided, process via secure 2-step confirm
+        if (body.otp) {
+          const result = await confirmClaimVerification(env.DB, env, url.host, {
+            orderId: body.orderId,
+            email: body.email,
+            otp: body.otp,
+          });
+          const status = result.success
+            ? 200
+            : (result.code === 'INVALID_OTP'
+              ? 401
+              : (result.code === 'MAX_ATTEMPTS_EXCEEDED'
+                ? 429
+                : (result.code === 'ORDER_NOT_FOUND' || result.code === 'NO_PENDING_CLAIM' ? 404 : 400)));
+          return jsonResponse(result, status, corsHeaders);
+        }
+
+        // Direct claim fallback
         const result = await claimLicenseByOrder(env.DB, url.host, {
           orderId: body.orderId,
           email: body.email,
@@ -604,7 +656,15 @@ export default {
         const targetOrderId = orderId || 'MDK_ORD_1794382847_38C93F';
 
         let result: any;
-        if (type === 'LICENSE_CLAIMED') {
+        if (type === 'CLAIM_OTP') {
+          result = await dispatchClaimOtpEmail(env.DB, env, {
+            orderId: targetOrderId,
+            customerEmail: targetEmail,
+            customerName: 'Dhananjay Kumar',
+            otp: '849201',
+            expiresMinutes: 15,
+          });
+        } else if (type === 'LICENSE_CLAIMED') {
           result = await dispatchLicenseClaimedEmail(env.DB, env, {
             orderId: targetOrderId,
             customerEmail: targetEmail,

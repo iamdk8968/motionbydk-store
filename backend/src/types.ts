@@ -112,6 +112,7 @@ export type EmailType =
   | 'LICENSE_ISSUED'
   | 'DOWNLOAD_DELIVERY'
   | 'LICENSE_CLAIMED'
+  | 'CLAIM_OTP'
   | 'STARTER_KIT'
   | 'REFUND';
 
@@ -134,4 +135,16 @@ export interface EmailDeliveryLogRecord {
   error_message: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ClaimVerificationRecord {
+  id: string;
+  order_id: string;
+  email: string;
+  otp_hash: string;
+  attempt_count: number;
+  max_attempts: number;
+  is_consumed: number;
+  expires_at: string;
+  created_at: string;
 }

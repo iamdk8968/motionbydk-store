@@ -735,3 +735,104 @@ export async function dispatchDownloadDeliveryEmail(
 
   return result;
 }
+
+/**
+ * Template 5: CLAIM_OTP — 2-Step Authenticated Claim Code
+ */
+export function buildClaimOtpEmail(params: {
+  customerName: string;
+  orderId: string;
+  otp: string;
+  expiresMinutes?: number;
+}): EmailPayload {
+  const { customerName, orderId, otp, expiresMinutes = 15 } = params;
+
+  const html = baseEmailWrapper(
+    'Verification Code - MotionByDk',
+    `
+    <div class="badge badge-cyan">Security Verification</div>
+    <h1>Your Verification Code</h1>
+    <p>Hi ${customerName}, use the verification code below to claim and reveal your official commercial license key for Order <code style="color:#00F0FF;">${orderId}</code>:</p>
+
+    <div style="background: #090b10; border: 2px dashed #00F0FF; border-radius: 14px; padding: 24px 16px; margin: 24px 0; text-align: center;">
+      <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-family: monospace; display: block; margin-bottom: 8px;">One-Time Verification Code</span>
+      <div style="font-family: 'JetBrains Mono', Consolas, Monaco, monospace; font-size: 38px; font-weight: 800; color: #00F0FF; letter-spacing: 10px; margin: 6px 0;">${otp}</div>
+      <span style="font-size: 12px; color: #f59e0b; display: block; margin-top: 8px; font-weight: 600;">⏱ Expires in ${expiresMinutes} minutes</span>
+    </div>
+
+    <table class="info-table">
+      <tr>
+        <td class="info-label">Order ID</td>
+        <td class="info-val"><code style="color:#00F0FF;">${orderId}</code></td>
+      </tr>
+      <tr>
+        <td class="info-label">Security Notice</td>
+        <td class="info-val" style="color: #94a3b8;">Never share this code with anyone. Motion By DK will never ask for your code.</td>
+      </tr>
+    </table>
+
+    <p style="font-size: 12px; color: #64748b; margin-top: 20px;">
+      If you did not request this code, you can safely ignore this email. Your license remains secure.
+    </p>
+    `
+  );
+
+  const text = `
+MOTION BY DK — VERIFICATION CODE
+===============================================
+Hi ${customerName},
+
+Your one-time verification code to claim your license key for Order ${orderId} is:
+
+VERIFICATION CODE: ${otp}
+
+⏱ This code will expire in ${expiresMinutes} minutes.
+
+Security Notice: Never share this code with anyone. Motion By DK will never ask for your code.
+If you did not request this code, you can safely ignore this message.
+`.trim();
+
+  return {
+    to: params.customerName,
+    subject: `Your MotionByDk Verification Code: ${otp}`,
+    html,
+    text,
+  };
+}
+
+/**
+ * Dispatch Claim OTP Email
+ */
+export async function dispatchClaimOtpEmail(
+  db: D1Database,
+  env: Env,
+  params: {
+    orderId: string;
+    customerEmail: string;
+    customerName: string;
+    otp: string;
+    expiresMinutes?: number;
+  }
+): Promise<SendResult> {
+  const { orderId, customerEmail } = params;
+
+  // Build Payload
+  const built = buildClaimOtpEmail(params);
+  built.to = customerEmail;
+
+  // Send via Resend
+  const result = await sendEmailWithResend(env, built);
+
+  // Log in D1
+  await logEmailAttempt(db, {
+    orderId,
+    recipientEmail: customerEmail,
+    emailType: 'CLAIM_OTP',
+    resendMessageId: result.resendMessageId,
+    status: result.status,
+    attemptCount: result.attemptCount,
+    errorMessage: result.error || null,
+  });
+
+  return result;
+}

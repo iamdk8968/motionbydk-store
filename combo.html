@@ -28,6 +28,9 @@
     <!-- Gumroad Overlay Script -->
     <script src="https://gumroad.com/js/gumroad.js"></script>
 
+    <!-- Cashfree JS SDK v3 -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -2108,9 +2111,9 @@
                 <p class="text-[11px] text-gray-300 leading-relaxed">
                     Pay securely with UPI (GPay, PhonePe, Paytm), Debit/Credit Cards, or NetBanking. You instantly receive your download files and official 2-PC License Key automatically on screen and via email!
                 </p>
-                <a id="upiSuperprofileDirectBtn" href="https://superprofile.bio/vp/ae-workflow-pro" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
+                <a id="upiSuperprofileDirectBtn" href="#checkout" onclick="openCashfreeModal('ae-workflow-pro'); return false;" class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs sm:text-sm rounded-xl text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
                     <i data-lucide="shield-check" class="w-4 h-4 text-black"></i>
-                    <span id="upiSuperprofileDirectText">Pay ₹499 via SuperProfile (Instant Key &amp; Download) &rarr;</span>
+                    <span id="upiSuperprofileDirectText">Pay ₹499 via Cashfree (Instant Key &amp; Download) &rarr;</span>
                 </a>
             </div>
 
@@ -2704,25 +2707,39 @@
                 if (currSymbol) currSymbol.innerText = '₹';
                 if (currMobileLabel) currMobileLabel.innerText = '₹ INR (India)';
                 if (headerBuyText) headerBuyText.innerText = 'Get Pro (₹499)';
-                if (headerBuyBtn) headerBuyBtn.href = superprofileUrl;
+                if (headerBuyBtn) {
+                    headerBuyBtn.href = '#checkout';
+                    headerBuyBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro'); };
+                }
                 if (mobileBuyBtn) {
                     mobileBuyBtn.innerText = 'Buy AE Workflow Pro (₹499)';
-                    mobileBuyBtn.href = superprofileUrl;
+                    mobileBuyBtn.href = '#checkout';
+                    mobileBuyBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro'); };
                 }
                 if (stickyBuyLabel) stickyBuyLabel.innerText = 'Buy Pro (₹499)';
-                if (stickyBuyBtn) stickyBuyBtn.href = superprofileUrl;
+                if (stickyBuyBtn) {
+                    stickyBuyBtn.href = '#checkout';
+                    stickyBuyBtn.onclick = function(e){ e.preventDefault(); openCashfreeModal('ae-workflow-pro'); };
+                }
             } else {
                 if (currLabel) currLabel.innerText = 'USD';
                 if (currSymbol) currSymbol.innerText = '$';
                 if (currMobileLabel) currMobileLabel.innerText = '$ USD (Global)';
                 if (headerBuyText) headerBuyText.innerText = 'Get Pro ($15)';
-                if (headerBuyBtn) headerBuyBtn.href = gumroadUrl;
+                if (headerBuyBtn) {
+                    headerBuyBtn.href = gumroadUrl;
+                    headerBuyBtn.onclick = null;
+                }
                 if (mobileBuyBtn) {
                     mobileBuyBtn.innerText = 'Buy AE Workflow Pro ($15)';
                     mobileBuyBtn.href = gumroadUrl;
+                    mobileBuyBtn.onclick = null;
                 }
                 if (stickyBuyLabel) stickyBuyLabel.innerText = 'Buy Pro ($15)';
-                if (stickyBuyBtn) stickyBuyBtn.href = gumroadUrl;
+                if (stickyBuyBtn) {
+                    stickyBuyBtn.href = gumroadUrl;
+                    stickyBuyBtn.onclick = null;
+                }
             }
         }
 
@@ -2732,8 +2749,15 @@
         }
 
         function handlePrimaryBuy() {
-            var url = (currentCurrency === 'INR') ? superprofileUrl : gumroadUrl;
-            window.open(url, '_blank');
+            if (currentCurrency === 'INR') {
+                if (typeof openCashfreeModal === 'function') {
+                    openCashfreeModal('ae-workflow-pro');
+                } else {
+                    window.open(superprofileUrl, '_blank');
+                }
+            } else {
+                window.open(gumroadUrl, '_blank');
+            }
         }
 
         // =========================================================================
@@ -3019,5 +3043,8 @@
             }
         });
     </script>
+
+    <!-- MotionByDk Cashfree Checkout Engine -->
+    <script src="assets/cashfree-checkout.js"></script>
 </body>
 </html>

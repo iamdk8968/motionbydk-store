@@ -150,8 +150,8 @@
                         </div>
                     </div>
 
-                    <!-- Activation Form -->
-                    <form id="claimKeyForm" onsubmit="handleClaimLicense(event)" class="space-y-4">
+                    <!-- Step 1 Form: Request Verification Code -->
+                    <form id="claimKeyForm" onsubmit="handleRequestOtp(event)" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-300 mb-1.5">Purchased Product:</label>
                             <select id="claimProductType" class="w-full px-4 py-3 rounded-xl bg-dark-base border border-white/10 text-white text-xs sm:text-sm focus:border-brand focus:outline-none">
@@ -161,9 +161,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-300 mb-1.5">Your Purchase Email Address:</label>
+                            <label class="block text-xs font-semibold text-gray-300 mb-1.5">Your Purchase / Billing Email Address:</label>
                             <input type="email" id="claimBuyerEmail" required placeholder="e.g. editor@gmail.com" class="w-full px-4 py-3 rounded-xl bg-dark-base border border-white/10 text-white text-xs sm:text-sm focus:border-brand focus:outline-none">
-                            <span class="block text-[10px] text-gray-500 mt-1">The email address used during Cashfree checkout or payment.</span>
+                            <span class="block text-[10px] text-gray-500 mt-1">The email address entered during Cashfree checkout.</span>
                         </div>
 
                         <div>
@@ -172,10 +172,44 @@
                             <span class="block text-[10px] text-gray-500 mt-1">Found in your Cashfree receipt or order confirmation email.</span>
                         </div>
 
-                        <button type="submit" id="claimSubmitBtn" class="w-full py-3.5 px-6 rounded-xl bg-brand hover:bg-brand-hover text-black font-heading font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i data-lucide="zap" id="claimSubmitIcon" class="w-4 h-4 fill-black"></i>
-                            <span id="claimSubmitLabel">Verify &amp; Retrieve License Key</span>
+                        <button type="submit" id="claimRequestBtn" class="w-full py-3.5 px-6 rounded-xl bg-brand hover:bg-brand-hover text-black font-heading font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="mail" id="claimRequestIcon" class="w-4 h-4 fill-black"></i>
+                            <span id="claimRequestLabel">Send Verification Code</span>
                         </button>
+                    </form>
+
+                    <!-- Step 2 Form: Enter & Confirm Verification OTP (Hidden initially) -->
+                    <form id="claimOtpForm" onsubmit="handleConfirmOtp(event)" class="hidden space-y-5 pt-1">
+                        <div class="p-4 rounded-xl bg-brand/10 border border-brand/30 text-center space-y-1">
+                            <div class="inline-flex items-center gap-1.5 text-brand font-bold text-xs uppercase tracking-wider">
+                                <i data-lucide="mail-check" class="w-4 h-4"></i>
+                                <span>Verification Code Dispatched</span>
+                            </div>
+                            <p class="text-xs text-gray-300">
+                                We sent a 6-digit code to <strong id="claimOtpEmailMasked" class="text-white font-mono">e***@domain.com</strong>
+                            </p>
+                            <span class="text-[11px] text-amber-400 block font-medium">⏱ Code expires in 15 minutes</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2 text-center">Enter 6-Digit Verification Code:</label>
+                            <input type="text" id="claimOtpInput" required maxlength="6" pattern="[0-9]{6}" placeholder="• • • • • •" autocomplete="one-time-code" class="w-full px-4 py-3.5 rounded-xl bg-dark-base border border-brand/40 text-center font-mono text-2xl font-black text-brand tracking-[0.4em] focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30">
+                            <span class="block text-[11px] text-gray-400 text-center mt-2">Check your inbox and spam/promotions folder.</span>
+                        </div>
+
+                        <button type="submit" id="claimConfirmBtn" class="w-full py-3.5 px-6 rounded-xl bg-brand hover:bg-brand-hover text-black font-heading font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i data-lucide="key" id="claimConfirmIcon" class="w-4 h-4 fill-black"></i>
+                            <span id="claimConfirmLabel">Verify &amp; Reveal License Key</span>
+                        </button>
+
+                        <div class="flex items-center justify-between text-xs text-gray-400 pt-1">
+                            <button type="button" onclick="backToStep1()" class="hover:text-white underline cursor-pointer">
+                                &larr; Change email or Order ID
+                            </button>
+                            <button type="button" id="resendOtpBtn" onclick="handleResendOtp()" class="text-brand hover:underline cursor-pointer">
+                                Resend Code
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Generated Key Success Box (Hidden by default) -->
@@ -362,26 +396,51 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        // Handle Claim License via Server Verification
-        async function handleClaimLicense(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('claimBuyerEmail');
-            const orderIdInput = document.getElementById('claimOrderId');
+        // Active state for 2-step verification session
+        let activeClaimSession = {
+            orderId: '',
+            email: '',
+            resendCooldown: 0
+        };
+
+        function showError(title, message) {
             const errorBox = document.getElementById('claimErrorBox');
             const errorTitle = document.getElementById('claimErrorTitle');
             const errorMessage = document.getElementById('claimErrorMessage');
-            const submitBtn = document.getElementById('claimSubmitBtn');
-            const submitLabel = document.getElementById('claimSubmitLabel');
+            errorTitle.innerText = title;
+            errorMessage.innerText = message;
+            errorBox.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function hideError() {
+            const errorBox = document.getElementById('claimErrorBox');
+            errorBox.classList.add('hidden');
+        }
+
+        // Step 1: Request 6-Digit Verification Code
+        async function handleRequestOtp(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            hideError();
+
+            const emailInput = document.getElementById('claimBuyerEmail');
+            const orderIdInput = document.getElementById('claimOrderId');
+            const requestBtn = document.getElementById('claimRequestBtn');
+            const requestLabel = document.getElementById('claimRequestLabel');
 
             const email = emailInput.value.trim();
             const orderId = orderIdInput.value.trim();
 
-            errorBox.classList.add('hidden');
-            submitBtn.disabled = true;
-            submitLabel.innerText = 'Verifying with Server...';
+            if (!email || !orderId) {
+                showError('Missing Information', 'Please provide both your purchase email and Order ID.');
+                return;
+            }
+
+            requestBtn.disabled = true;
+            requestLabel.innerText = 'Sending Verification Code...';
 
             try {
-                const res = await fetch(`${API_BASE}/api/license/claim`, {
+                const res = await fetch(`${API_BASE}/api/license/claim/request`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ orderId, email })
@@ -390,8 +449,85 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    // Success! Display verified details
+                    activeClaimSession.orderId = orderId;
+                    activeClaimSession.email = email;
+
+                    // Switch to Step 2 form
                     document.getElementById('claimKeyForm').classList.add('hidden');
+                    const otpForm = document.getElementById('claimOtpForm');
+                    otpForm.classList.remove('hidden');
+
+                    const maskedEl = document.getElementById('claimOtpEmailMasked');
+                    if (maskedEl) maskedEl.innerText = data.maskedEmail || email;
+
+                    const otpInput = document.getElementById('claimOtpInput');
+                    otpInput.value = '';
+                    otpInput.focus();
+
+                    // Start 30s resend cooldown
+                    startResendTimer(30);
+                } else {
+                    let title = 'Verification Failed';
+                    let msg = data.message || 'Unable to request verification code.';
+
+                    if (data.code === 'ORDER_NOT_FOUND') {
+                        title = 'Order Not Found';
+                        msg = 'No order found matching this Order ID. Please check your purchase receipt or contact WhatsApp support.';
+                    } else if (data.code === 'PAYMENT_PENDING') {
+                        title = 'Payment Pending';
+                        msg = 'This order has not yet been marked as PAID. If you just completed checkout, please wait 15 seconds and try again.';
+                    } else if (data.code === 'EMAIL_MISMATCH') {
+                        title = 'Email Mismatch';
+                        msg = 'The email provided does not match the billing email registered for this order.';
+                    } else if (data.error === 'RATE_LIMIT_EXCEEDED') {
+                        title = 'Too Many Requests';
+                        msg = 'Please wait 60 seconds before requesting another verification code.';
+                    }
+
+                    showError(title, msg);
+                }
+            } catch (err) {
+                showError('Network Error', 'Could not connect to the verification server. Please check your connection.');
+            } finally {
+                requestBtn.disabled = false;
+                requestLabel.innerText = 'Send Verification Code';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        // Step 2: Confirm 6-Digit Verification Code & Reveal License
+        async function handleConfirmOtp(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            hideError();
+
+            const otpInput = document.getElementById('claimOtpInput');
+            const confirmBtn = document.getElementById('claimConfirmBtn');
+            const confirmLabel = document.getElementById('claimConfirmLabel');
+
+            const otp = otpInput.value.trim();
+            const orderId = activeClaimSession.orderId;
+            const email = activeClaimSession.email;
+
+            if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+                showError('Invalid Code', 'Please enter a valid 6-digit numeric verification code.');
+                return;
+            }
+
+            confirmBtn.disabled = true;
+            confirmLabel.innerText = 'Verifying Code...';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/license/claim/confirm`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, email, otp })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    // Success! Display verified key and download link
+                    document.getElementById('claimOtpForm').classList.add('hidden');
                     const successBox = document.getElementById('claimSuccessBox');
                     successBox.classList.remove('hidden');
 
@@ -407,7 +543,6 @@
                     // Save verified receipt to localStorage
                     try {
                         localStorage.setItem('motionbydk_claimed_key', JSON.stringify({
-                            email: email,
                             orderId: orderId,
                             key: data.licenseKey,
                             customerName: data.customerName,
@@ -416,37 +551,78 @@
                             timestamp: new Date().toISOString()
                         }));
                     } catch(err) {}
-
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
                 } else {
-                    // Server returned an error (e.g. order not found, unpaid, email mismatch)
-                    let title = 'Verification Failed';
-                    let msg = data.message || 'Unable to verify order with provided credentials.';
+                    let title = 'Code Verification Failed';
+                    let msg = data.message || 'Verification failed. Please try again.';
 
-                    if (data.code === 'ORDER_NOT_FOUND') {
-                        title = 'Order Not Found';
-                        msg = 'No order found matching this Order ID. Please check your purchase receipt or contact WhatsApp support.';
-                    } else if (data.code === 'PAYMENT_PENDING') {
-                        title = 'Payment Pending';
-                        msg = 'This order has not yet been marked as PAID. If you just completed checkout, please wait 15 seconds and try again.';
-                    } else if (data.code === 'EMAIL_MISMATCH') {
-                        title = 'Email Mismatch';
-                        msg = 'The email provided does not match the billing email registered for this order.';
+                    if (data.code === 'INVALID_OTP') {
+                        title = 'Incorrect Code';
+                        msg = data.message || 'Invalid verification code. Please check your email.';
+                    } else if (data.code === 'OTP_EXPIRED') {
+                        title = 'Code Expired';
+                        msg = 'This verification code has expired (15-minute validity). Please request a new code.';
+                    } else if (data.code === 'MAX_ATTEMPTS_EXCEEDED') {
+                        title = 'Maximum Attempts Exceeded';
+                        msg = 'Too many incorrect attempts. For security, please request a new verification code.';
+                    } else if (data.code === 'TOKEN_ALREADY_USED') {
+                        title = 'Code Already Used';
+                        msg = 'This code was already used. Please request a new code if needed.';
                     }
 
-                    errorTitle.innerText = title;
-                    errorMessage.innerText = msg;
-                    errorBox.classList.remove('hidden');
+                    showError(title, msg);
                 }
             } catch (err) {
-                errorTitle.innerText = 'Network Error';
-                errorMessage.innerText = 'Could not reach the verification server. Please check your internet connection.';
-                errorBox.classList.remove('hidden');
+                showError('Network Error', 'Could not connect to the verification server. Please check your connection.');
             } finally {
-                submitBtn.disabled = false;
-                submitLabel.innerText = 'Verify & Retrieve License Key';
+                confirmBtn.disabled = false;
+                confirmLabel.innerText = 'Verify & Reveal License Key';
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
+        }
+
+        // Resend Verification OTP
+        async function handleResendOtp() {
+            if (activeClaimSession.resendCooldown > 0) return;
+            await handleRequestOtp(null);
+        }
+
+        function startResendTimer(seconds) {
+            activeClaimSession.resendCooldown = seconds;
+            const resendBtn = document.getElementById('resendOtpBtn');
+            if (!resendBtn) return;
+
+            const interval = setInterval(() => {
+                activeClaimSession.resendCooldown--;
+                if (activeClaimSession.resendCooldown <= 0) {
+                    clearInterval(interval);
+                    resendBtn.innerText = 'Resend Code';
+                    resendBtn.classList.remove('opacity-50', 'pointer-events-none');
+                } else {
+                    resendBtn.innerText = `Resend Code (${activeClaimSession.resendCooldown}s)`;
+                    resendBtn.classList.add('opacity-50', 'pointer-events-none');
+                }
+            }, 1000);
+        }
+
+        // Back from Step 2 to Step 1
+        function backToStep1() {
+            hideError();
+            document.getElementById('claimOtpForm').classList.add('hidden');
+            document.getElementById('claimKeyForm').classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // Reset Entire Claim Flow to check another order
+        function resetClaimForm() {
+            try { localStorage.removeItem('motionbydk_claimed_key'); } catch(e) {}
+            activeClaimSession = { orderId: '', email: '', resendCooldown: 0 };
+            hideError();
+            document.getElementById('claimSuccessBox').classList.add('hidden');
+            document.getElementById('claimOtpForm').classList.add('hidden');
+            document.getElementById('claimKeyForm').classList.remove('hidden');
+            document.getElementById('claimOrderId').value = '';
+            document.getElementById('claimOtpInput').value = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         // Handle License Verification & Device Lookup
@@ -531,31 +707,26 @@
             document.body.removeChild(ta);
         }
 
-        // Reset Claim Form to check a new order
-        function resetClaimForm() {
-            try { localStorage.removeItem('motionbydk_claimed_key'); } catch(e) {}
-            document.getElementById('claimKeyForm').classList.remove('hidden');
-            document.getElementById('claimSuccessBox').classList.add('hidden');
-            document.getElementById('claimErrorBox').classList.add('hidden');
-            document.getElementById('claimOrderId').value = '';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        // Auto-fill from URL params or previous storage
+        // Auto-fill from URL params (Order ID only, NEVER email) or previous storage
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const paramOrderId = urlParams.get('order_id') || urlParams.get('orderId');
-            const paramEmail = urlParams.get('email');
             const paramKey = urlParams.get('key');
 
-            if (paramOrderId && paramEmail) {
+            // Pre-fill Order ID if present in URL
+            if (paramOrderId) {
                 document.getElementById('claimOrderId').value = paramOrderId;
-                document.getElementById('claimBuyerEmail').value = paramEmail;
-                // Automatically trigger claim
-                handleClaimLicense(new Event('submit'));
-                return;
             }
 
+            // Pre-fill Billing Email from in-memory sessionStorage (never exposed in URL query params)
+            try {
+                const checkoutEmail = sessionStorage.getItem('checkout_email');
+                if (checkoutEmail) {
+                    document.getElementById('claimBuyerEmail').value = checkoutEmail;
+                }
+            } catch (e) {}
+
+            // Direct Key Verification link support
             if (paramKey) {
                 switchTab('verify');
                 document.getElementById('verifyKeyInput').value = paramKey;
@@ -563,7 +734,7 @@
                 return;
             }
 
-            // Restore from localStorage if previously claimed
+            // Restore from localStorage if previously claimed on this device
             try {
                 const prev = JSON.parse(localStorage.getItem('motionbydk_claimed_key') || 'null');
                 if (prev && prev.key) {
