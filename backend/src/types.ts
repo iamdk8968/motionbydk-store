@@ -156,6 +156,7 @@ export interface AdminUserRecord {
   salt: string;
   full_name: string;
   role: 'admin' | 'support';
+  is_active?: number;
   last_login_at: string | null;
   created_at: string;
 }
@@ -175,6 +176,8 @@ export interface AdminJwtPayload {
   sub: string;
   name: string;
   role: string;
+  iss?: string;
+  aud?: string;
   iat: number;
   exp: number;
 }

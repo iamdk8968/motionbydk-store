@@ -53,6 +53,7 @@ import {
   handleAdminResendEmail,
   handleAdminAuditLogs,
   handleAdminPaymentEvents,
+  handleAdminChangePassword,
   authenticateAdmin,
 } from './admin';
 
@@ -64,13 +65,17 @@ const ALLOWED_ORIGINS = [
   'http://localhost:8787',
 ];
 
+function isOriginAllowed(origin: string, envCorsOrigin?: string): boolean {
+  if (!origin) return false;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  if (envCorsOrigin && envCorsOrigin.split(',').map((o) => o.trim()).includes(origin)) return true;
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:[0-9]{1,5})?$/.test(origin)) return true;
+  return false;
+}
+
 function getCorsHeaders(request: Request, envCorsOrigin?: string): HeadersInit {
   const origin = request.headers.get('Origin') || '';
-  const allowed =
-    ALLOWED_ORIGINS.includes(origin) ||
-    (envCorsOrigin && envCorsOrigin.split(',').includes(origin)) ||
-    origin.startsWith('http://localhost:') ||
-    origin.startsWith('http://127.0.0.1:');
+  const allowed = isOriginAllowed(origin, envCorsOrigin);
 
   return {
     'Access-Control-Allow-Origin': allowed && origin ? origin : 'https://www.motionbydk.in',
@@ -847,6 +852,11 @@ export default {
         // 14. Admin Payment Webhook Events (GET /api/admin/payment-events)
         if (pathname === '/api/admin/payment-events' && request.method === 'GET') {
           return handleAdminPaymentEvents(request, env, corsHeaders);
+        }
+
+        // 15. Admin Change Password (POST /api/admin/change-password)
+        if (pathname === '/api/admin/change-password' && request.method === 'POST') {
+          return handleAdminChangePassword(request, env, clientIp, corsHeaders);
         }
 
         return jsonResponse(

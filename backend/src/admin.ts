@@ -21,6 +21,20 @@ export function getAdminJwtSecret(env: Env): string {
 // CRYPTOGRAPHY & TOKEN UTILITIES (Pure Web Crypto API)
 // =============================================================================
 
+export function maskLicenseKey(key: string): string {
+  if (!key || key.length <= 8) return '****';
+  const parts = key.split('-');
+  if (parts.length >= 3) {
+    return `${parts[0]}-${parts[1]}-****-${parts[parts.length - 1]}`;
+  }
+  return `${key.slice(0, 4)}****${key.slice(-4)}`;
+}
+
+export function maskToken(token: string): string {
+  if (!token || token.length <= 12) return '****';
+  return `${token.slice(0, 6)}...${token.slice(-6)}`;
+}
+
 function base64UrlEncode(data: Uint8Array | string): string {
   const str = typeof data === 'string' ? data : String.fromCharCode(...data);
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -92,9 +106,14 @@ export async function verifyPbkdf2Password(
  */
 export async function signAdminJwt(payload: AdminJwtPayload, secret: string): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' };
+  const fullPayload: AdminJwtPayload = {
+    ...payload,
+    iss: 'motionbydk-admin',
+    aud: 'motionbydk-api',
+  };
   const enc = new TextEncoder();
   const headerB64 = base64UrlEncode(JSON.stringify(header));
-  const payloadB64 = base64UrlEncode(JSON.stringify(payload));
+  const payloadB64 = base64UrlEncode(JSON.stringify(fullPayload));
   const dataToSign = `${headerB64}.${payloadB64}`;
   const key = await getHmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, enc.encode(dataToSign));
@@ -110,6 +129,13 @@ export async function verifyAdminJwt(token: string, secret: string): Promise<Adm
     const parts = token.split('.');
     if (parts.length !== 3) return null;
     const [headerB64, payloadB64, sigB64] = parts;
+
+    // 1. Validate Header Claims
+    const header = JSON.parse(base64UrlDecode(headerB64));
+    if (header.alg !== 'HS256' || header.typ !== 'JWT') {
+      return null;
+    }
+
     const dataToSign = `${headerB64}.${payloadB64}`;
     const enc = new TextEncoder();
     const key = await getHmacKey(secret);
@@ -120,14 +146,20 @@ export async function verifyAdminJwt(token: string, secret: string): Promise<Adm
       sigBytes[i] = rawSig.charCodeAt(i);
     }
 
+    // 2. Validate Cryptographic Signature
     const isValid = await crypto.subtle.verify('HMAC', key, sigBytes, enc.encode(dataToSign));
     if (!isValid) return null;
 
     const payload: AdminJwtPayload = JSON.parse(base64UrlDecode(payloadB64));
     const now = Math.floor(Date.now() / 1000);
-    if (payload.exp && payload.exp < now) {
-      return null; // Expired
-    }
+
+    // 3. Mandatory Security & Expiration Claims Validation
+    if (!payload.sub || typeof payload.sub !== 'string') return null;
+    if (!payload.exp || typeof payload.exp !== 'number' || payload.exp < now) return null;
+    if (!payload.iat || typeof payload.iat !== 'number' || payload.iat > now + 60) return null;
+    if (payload.exp > payload.iat + 86400 * 7) return null; // Reject abnormal token lifespans > 7 days
+    if (payload.iss && payload.iss !== 'motionbydk-admin') return null;
+    if (payload.aud && payload.aud !== 'motionbydk-api') return null;
 
     return payload;
   } catch {
@@ -163,7 +195,7 @@ export async function logAuditEvent(
 }
 
 /**
- * Middleware: Verify Admin Authorization
+ * Middleware: Verify Admin Authorization & Database Status
  */
 export async function authenticateAdmin(
   request: Request,
@@ -184,6 +216,26 @@ export async function authenticateAdmin(
 
   if (!payload) {
     return { valid: false, error: 'Invalid or expired admin session token' };
+  }
+
+  // Active Admin Record & Revocation Check in D1
+  try {
+    const adminUser = await env.DB.prepare(
+      `SELECT id, username, full_name, role, is_active FROM admin_users WHERE LOWER(username) = ?`
+    )
+      .bind(payload.sub.toLowerCase())
+      .first<AdminUserRecord>();
+
+    if (!adminUser || adminUser.is_active === 0) {
+      return { valid: false, error: 'Admin account is inactive, disabled, or no longer exists.' };
+    }
+
+    // Sync role and full_name with database record
+    payload.role = adminUser.role;
+    payload.name = adminUser.full_name;
+  } catch (err) {
+    console.error('Error verifying admin record in D1:', err);
+    return { valid: false, error: 'Authentication verification failure' };
   }
 
   return { valid: true, user: payload };
@@ -233,16 +285,38 @@ export async function handleAdminLogin(
       );
     }
 
+    // 1. D1-backed durable rate limiting & lockout across all Worker isolates
+    const recentFailures = await env.DB.prepare(
+      `SELECT count(*) as fail_count 
+       FROM audit_logs 
+       WHERE action = 'LOGIN_FAILED' 
+         AND (ip_address = ? OR target_id = ?) 
+         AND datetime(created_at) >= datetime('now', '-15 minutes')`
+    )
+      .bind(clientIp, username)
+      .first<{ fail_count: number }>();
+
+    if (recentFailures && Number(recentFailures.fail_count) >= 5) {
+      return adminJsonResponse(
+        {
+          success: false,
+          error: 'Account temporarily locked due to consecutive failed attempts. Please try again after 15 minutes.',
+        },
+        429,
+        corsHeaders
+      );
+    }
+
     const admin = await env.DB.prepare(
-      `SELECT id, username, password_hash, salt, full_name, role 
+      `SELECT id, username, password_hash, salt, full_name, role, is_active 
        FROM admin_users 
        WHERE LOWER(username) = ?`
     )
       .bind(username)
       .first<AdminUserRecord>();
 
-    if (!admin) {
-      await logAuditEvent(env.DB, username || 'UNKNOWN', 'LOGIN_FAILED', 'AUTH', username, { reason: 'USER_NOT_FOUND' }, clientIp);
+    if (!admin || admin.is_active === 0) {
+      await logAuditEvent(env.DB, username || 'UNKNOWN', 'LOGIN_FAILED', 'AUTH', username, { reason: 'USER_NOT_FOUND_OR_INACTIVE' }, clientIp);
       return adminJsonResponse(
         { success: false, error: 'Invalid username or password.' },
         401,
@@ -273,7 +347,7 @@ export async function handleAdminLogin(
         name: admin.full_name,
         role: admin.role,
         iat: now,
-        exp: now + 86400 * 7, // 7-day token
+        exp: now + 86400, // 24-hour token
       },
       secret
     );
@@ -296,7 +370,7 @@ export async function handleAdminLogin(
     );
   } catch (err: any) {
     console.error('Admin login error:', err);
-    return adminJsonResponse({ success: false, error: err.message || 'Login failed.' }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Login authentication error.' }, 500, corsHeaders);
   }
 }
 
@@ -694,7 +768,10 @@ export async function handleAdminOrderDetail(
               activeDevicesCount: licenseActivations.filter((a) => a.is_active === 1).length,
             }
           : null,
-        downloadTokens: downloadTokens.results || [],
+        downloadTokens: (downloadTokens.results || []).map((t: any) => ({
+          ...t,
+          token: maskToken(t.token),
+        })),
         emailLogs: emailLogs.results || [],
         paymentEvents: paymentEvents.results || [],
       },
@@ -703,7 +780,7 @@ export async function handleAdminOrderDetail(
     );
   } catch (err: any) {
     console.error('Admin order detail error:', err);
-    return adminJsonResponse({ success: false, error: err.message }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Failed to retrieve order dossier.' }, 500, corsHeaders);
   }
 }
 
@@ -876,8 +953,11 @@ export async function handleAdminResetDevices(
   corsHeaders: HeadersInit
 ): Promise<Response> {
   const auth = await authenticateAdmin(request, env);
-  if (!auth.valid) {
+  if (!auth.valid || !auth.user) {
     return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Insufficient privileges. Admin role required.' }, 403, corsHeaders);
   }
 
   try {
@@ -916,7 +996,7 @@ export async function handleAdminResetDevices(
       adminUser,
       'RESET_DEVICES',
       'LICENSE',
-      licenseKey,
+      maskLicenseKey(licenseKey),
       { reason, resetRows: updateRes.meta.changes },
       clientIp
     );
@@ -932,7 +1012,7 @@ export async function handleAdminResetDevices(
     );
   } catch (err: any) {
     console.error('Reset devices error:', err);
-    return adminJsonResponse({ success: false, error: err.message }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Failed to reset device hardware locks.' }, 500, corsHeaders);
   }
 }
 
@@ -948,8 +1028,11 @@ export async function handleAdminRevokeLicense(
   corsHeaders: HeadersInit
 ): Promise<Response> {
   const auth = await authenticateAdmin(request, env);
-  if (!auth.valid) {
+  if (!auth.valid || !auth.user) {
     return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Insufficient privileges. Admin role required.' }, 403, corsHeaders);
   }
 
   try {
@@ -1000,7 +1083,7 @@ export async function handleAdminRevokeLicense(
       adminUser,
       'REVOKE_LICENSE',
       'LICENSE',
-      licenseKey,
+      maskLicenseKey(licenseKey),
       { reason },
       clientIp
     );
@@ -1015,7 +1098,7 @@ export async function handleAdminRevokeLicense(
     );
   } catch (err: any) {
     console.error('Revoke license error:', err);
-    return adminJsonResponse({ success: false, error: err.message }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Failed to revoke license.' }, 500, corsHeaders);
   }
 }
 
@@ -1031,8 +1114,11 @@ export async function handleAdminReinstateLicense(
   corsHeaders: HeadersInit
 ): Promise<Response> {
   const auth = await authenticateAdmin(request, env);
-  if (!auth.valid) {
+  if (!auth.valid || !auth.user) {
     return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Insufficient privileges. Admin role required.' }, 403, corsHeaders);
   }
 
   try {
@@ -1061,7 +1147,7 @@ export async function handleAdminReinstateLicense(
       adminUser,
       'REINSTATE_LICENSE',
       'LICENSE',
-      licenseKey,
+      maskLicenseKey(licenseKey),
       { reason },
       clientIp
     );
@@ -1076,7 +1162,7 @@ export async function handleAdminReinstateLicense(
     );
   } catch (err: any) {
     console.error('Reinstate license error:', err);
-    return adminJsonResponse({ success: false, error: err.message }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Failed to reinstate license.' }, 500, corsHeaders);
   }
 }
 
@@ -1167,8 +1253,11 @@ export async function handleAdminResendEmail(
   corsHeaders: HeadersInit
 ): Promise<Response> {
   const auth = await authenticateAdmin(request, env);
-  if (!auth.valid) {
+  if (!auth.valid || !auth.user) {
     return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Insufficient privileges. Admin role required.' }, 403, corsHeaders);
   }
 
   try {
@@ -1408,6 +1497,122 @@ export async function handleAdminPaymentEvents(
     );
   } catch (err: any) {
     console.error('Admin payment events query error:', err);
-    return adminJsonResponse({ success: false, error: err.message }, 500, corsHeaders);
+    return adminJsonResponse({ success: false, error: 'Failed to retrieve payment webhook events.' }, 500, corsHeaders);
+  }
+}
+
+/**
+ * POST /api/admin/change-password
+ * Self-service password rotation with PBKDF2 derivation and complexity enforcement
+ */
+export async function handleAdminChangePassword(
+  request: Request,
+  env: Env,
+  clientIp: string,
+  corsHeaders: HeadersInit
+): Promise<Response> {
+  const auth = await authenticateAdmin(request, env);
+  if (!auth.valid || !auth.user) {
+    return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Insufficient privileges. Admin role required.' }, 403, corsHeaders);
+  }
+
+  try {
+    const body = (await request.json().catch(() => ({}))) as {
+      current_password?: string;
+      new_password?: string;
+    };
+
+    const currentPassword = body.current_password || '';
+    const newPassword = body.new_password || '';
+
+    if (!currentPassword || !newPassword) {
+      return adminJsonResponse(
+        { success: false, error: 'Both current password and new password are required.' },
+        400,
+        corsHeaders
+      );
+    }
+
+    // Password Complexity Validation:
+    // Minimum 10 characters, at least 1 uppercase, 1 lowercase, 1 digit, 1 special character
+    if (newPassword.length < 10) {
+      return adminJsonResponse(
+        { success: false, error: 'New password must be at least 10 characters long.' },
+        400,
+        corsHeaders
+      );
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword)) {
+      return adminJsonResponse(
+        { success: false, error: 'New password must contain uppercase, lowercase, numeric, and special characters.' },
+        400,
+        corsHeaders
+      );
+    }
+
+    // Fetch existing admin record
+    const admin = await env.DB.prepare(
+      `SELECT id, username, password_hash, salt FROM admin_users WHERE LOWER(username) = ?`
+    )
+      .bind(auth.user.sub.toLowerCase())
+      .first<AdminUserRecord>();
+
+    if (!admin) {
+      return adminJsonResponse({ success: false, error: 'Admin record not found.' }, 404, corsHeaders);
+    }
+
+    // Verify current password
+    const isCurrentValid = await verifyPbkdf2Password(currentPassword, admin.salt, admin.password_hash);
+    if (!isCurrentValid) {
+      await logAuditEvent(env.DB, auth.user.sub, 'PASSWORD_CHANGE_FAILED', 'AUTH', auth.user.sub, { reason: 'CURRENT_PASSWORD_INCORRECT' }, clientIp);
+      return adminJsonResponse({ success: false, error: 'Current password is incorrect.' }, 400, corsHeaders);
+    }
+
+    // Generate new random 16-byte binary salt
+    const saltBytes = new Uint8Array(16);
+    crypto.getRandomValues(saltBytes);
+    const saltHex = Array.from(saltBytes).map((b) => b.toString(16).padStart(2, '0')).join('');
+
+    // Derive new PBKDF2-SHA256 hash
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(newPassword),
+      'PBKDF2',
+      false,
+      ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: saltBytes,
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      key,
+      256
+    );
+    const newHashHex = Array.from(new Uint8Array(bits)).map((b) => b.toString(16).padStart(2, '0')).join('');
+
+    // Update admin_users in D1
+    await env.DB.prepare(
+      `UPDATE admin_users SET password_hash = ?, salt = ? WHERE id = ?`
+    )
+      .bind(newHashHex, saltHex, admin.id)
+      .run();
+
+    await logAuditEvent(env.DB, auth.user.sub, 'PASSWORD_CHANGED', 'AUTH', auth.user.sub, { updatedBy: auth.user.sub }, clientIp);
+
+    return adminJsonResponse(
+      { success: true, message: 'Admin password changed successfully. Please sign in with your new credentials on your next session.' },
+      200,
+      corsHeaders
+    );
+  } catch (err: any) {
+    console.error('Password change error:', err);
+    return adminJsonResponse({ success: false, error: 'Failed to update password.' }, 500, corsHeaders);
   }
 }
