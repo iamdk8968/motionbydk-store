@@ -364,10 +364,24 @@
 
     <!-- Logic Script -->
     <script>
-        // API Base configuration
-        // In staging/testing, points to the Cloudflare Worker staging URL
-        // In production, will point to https://api.motionbydk.in once DNS cutover is performed
-        const API_BASE = window.MOTIONBYDK_API_BASE || 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+        // Explicit Environment Configuration with Safe Defaults
+        function resolveApiBase() {
+            if (typeof window !== 'undefined' && window.MOTIONBYDK_API_BASE) {
+                return window.MOTIONBYDK_API_BASE;
+            }
+            if (typeof window !== 'undefined' && window.MOTIONBYDK_CONFIG && window.MOTIONBYDK_CONFIG.apiBase) {
+                return window.MOTIONBYDK_CONFIG.apiBase;
+            }
+            const host = (typeof window !== 'undefined' && window.location && window.location.hostname)
+                ? window.location.hostname.toLowerCase()
+                : '';
+            const isProdDomain = host === 'www.motionbydk.in' || host === 'motionbydk.in';
+            if (isProdDomain) {
+                return 'https://api.motionbydk.in';
+            }
+            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+        }
+        const API_BASE = resolveApiBase();
 
         if (typeof lucide !== 'undefined') lucide.createIcons();
 

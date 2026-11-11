@@ -6,7 +6,8 @@
 import { Env, CashfreeOrderResponse } from './types';
 
 export function getCashfreeBaseUrl(env: Env): string {
-  const mode = (env.CASHFREE_ENV || 'SANDBOX').toUpperCase();
+  const defaultMode = (env.ENVIRONMENT || '').toLowerCase() === 'production' ? 'PRODUCTION' : 'SANDBOX';
+  const mode = (env.CASHFREE_ENV || defaultMode).toUpperCase();
   return mode === 'PRODUCTION' ? 'https://api.cashfree.com/pg' : 'https://sandbox.cashfree.com/pg';
 }
 
@@ -25,8 +26,11 @@ export async function createCashfreeOrder(
     notifyUrl: string;
   }
 ): Promise<CashfreeOrderResponse> {
-  // If Cashfree credentials are not configured yet, return a mock sandbox response for safe testing
+  // Never allow mock fallback in production environment (fail closed)
   if (!env.CASHFREE_APP_ID || !env.CASHFREE_SECRET_KEY) {
+    if ((env.ENVIRONMENT || '').toLowerCase() === 'production') {
+      throw new Error('CONFIGURATION_ERROR: Cashfree API credentials are not configured for production.');
+    }
     console.warn('[Cashfree] CASHFREE_APP_ID or CASHFREE_SECRET_KEY not set. Running in MOCK SANDBOX mode.');
     return {
       order_id: params.orderId,

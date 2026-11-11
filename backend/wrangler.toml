@@ -29,6 +29,7 @@ workers_dev = true
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
+CASHFREE_ENV = "SANDBOX"
 CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in,http://localhost:3000,http://127.0.0.1:5500"
 EMAIL_FROM = "Motion By DK <delivery@motionbydk.in>"
 EMAIL_REPLY_TO = "motionbydk@gmail.com"
@@ -53,6 +54,7 @@ workers_dev = true
 
 [env.production.vars]
 ENVIRONMENT = "production"
+CASHFREE_ENV = "PRODUCTION"
 CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in"
 
 [[env.production.d1_databases]]

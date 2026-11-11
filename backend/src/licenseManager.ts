@@ -468,6 +468,7 @@ export async function requestClaimVerification(
     .prepare(
       `SELECT 
         o.id as order_uuid, o.order_id, o.status as order_status, o.customer_id, o.product_id,
+        o.final_amount_inr, o.currency,
         c.email as customer_email, c.full_name as customer_name,
         p.name as product_name
        FROM orders o
@@ -482,6 +483,8 @@ export async function requestClaimVerification(
       order_status: string;
       customer_id: string;
       product_id: string;
+      final_amount_inr: number;
+      currency: string;
       customer_email: string;
       customer_name: string;
       product_name: string;
@@ -500,8 +503,16 @@ export async function requestClaimVerification(
     try {
       const cfOrder = await getCashfreeOrder(env, cleanOrderId);
       if (cfOrder && cfOrder.order_status === 'PAID') {
-        await updateOrderStatus(db, cleanOrderId, 'PAID', new Date().toISOString());
-        record.order_status = 'PAID';
+        const expectedAmountPaise = record.final_amount_inr;
+        const receivedAmountPaise = Math.round((cfOrder.order_amount || 0) * 100);
+        const orderCurrency = cfOrder.order_currency || 'INR';
+
+        if (orderCurrency === 'INR' && receivedAmountPaise >= expectedAmountPaise) {
+          await updateOrderStatus(db, cleanOrderId, 'PAID', new Date().toISOString());
+          record.order_status = 'PAID';
+        } else {
+          console.error(`[Claim Verification] Cashfree amount/currency mismatch for ${cleanOrderId}: expected ${expectedAmountPaise} paise INR, got ${receivedAmountPaise} paise ${orderCurrency}`);
+        }
       }
     } catch (e) {
       console.error('[Claim Verification] Cashfree status check error:', e);

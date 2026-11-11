@@ -186,7 +186,7 @@ export default {
               storage: { bucket: 'motionbydk-products', status: r2Status },
             },
             cashfree: {
-              mode: (env.CASHFREE_ENV || 'SANDBOX').toLowerCase(),
+              mode: (env.CASHFREE_ENV || ((env.ENVIRONMENT || '').toLowerCase() === 'production' ? 'PRODUCTION' : 'SANDBOX')).toLowerCase(),
               configured: !!(env.CASHFREE_APP_ID && env.CASHFREE_SECRET_KEY),
             },
           },
@@ -312,7 +312,7 @@ export default {
               email: customer.email,
               phone: cleanPhone,
             },
-            mode: (env.CASHFREE_ENV || 'SANDBOX').toLowerCase(),
+            mode: (env.CASHFREE_ENV || ((env.ENVIRONMENT || '').toLowerCase() === 'production' ? 'PRODUCTION' : 'SANDBOX')).toLowerCase(),
           },
           200,
           corsHeaders
@@ -337,19 +337,27 @@ export default {
         if (order.status === 'PENDING') {
           const cfOrder = await getCashfreeOrder(env, orderId);
           if (cfOrder && cfOrder.order_status === 'PAID') {
-            await updateOrderStatus(env.DB, orderId, 'PAID', new Date().toISOString());
-            order.status = 'PAID';
+            const expectedAmountPaise = order.final_amount_inr;
+            const receivedAmountPaise = Math.round((cfOrder.order_amount || 0) * 100);
+            const orderCurrency = cfOrder.order_currency || 'INR';
 
-            // Auto-issue license and download token if product warrants
-            const product = await getProduct(env.DB, order.product_id);
-            if (product && product.has_license) {
-              await issueLicenseForOrder(env.DB, order.order_id, order.customer_id, product.id);
-            }
-            if (product && product.r2_object_key) {
-              await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
-            }
-            if (order.coupon_code) {
-              await incrementCouponUsage(env.DB, order.coupon_code);
+            if (orderCurrency === 'INR' && receivedAmountPaise >= expectedAmountPaise) {
+              await updateOrderStatus(env.DB, orderId, 'PAID', new Date().toISOString());
+              order.status = 'PAID';
+
+              // Auto-issue license and download token if product warrants
+              const product = await getProduct(env.DB, order.product_id);
+              if (product && product.has_license) {
+                await issueLicenseForOrder(env.DB, order.order_id, order.customer_id, product.id);
+              }
+              if (product && product.r2_object_key) {
+                await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
+              }
+              if (order.coupon_code) {
+                await incrementCouponUsage(env.DB, order.coupon_code);
+              }
+            } else {
+              console.error(`[Reconcile] Amount/currency mismatch for ${orderId}: expected ${expectedAmountPaise} paise INR, got ${receivedAmountPaise} paise ${orderCurrency}`);
             }
           }
         }
@@ -394,6 +402,10 @@ export default {
             return jsonResponse({ error: 'INVALID_SIGNATURE', message: 'Signature verification failed.' }, 401, corsHeaders);
           }
         } else {
+          if ((env.ENVIRONMENT || '').toLowerCase() === 'production') {
+            console.error('[Webhook] CRITICAL: CASHFREE_SECRET_KEY is not configured in production environment.');
+            return jsonResponse({ error: 'SERVER_MISCONFIGURED', message: 'Webhook signature verification secret is missing in production.' }, 500, corsHeaders);
+          }
           console.warn('[Webhook] CASHFREE_SECRET_KEY not set. Skipping signature verification in mock test mode.');
         }
 
@@ -451,6 +463,26 @@ export default {
 
         // Handle SUCCESSFUL Payment
         if (orderStatus === 'PAID' || paymentStatus === 'SUCCESS') {
+          const paidAmountPaise = Math.round(paymentAmount * 100);
+          const orderCurrency = cfOrder.order_currency || cfPayment.payment_currency || 'INR';
+
+          // Strict server-side verification: currency must be INR and paid amount must be >= order.final_amount_inr
+          if (orderCurrency !== 'INR' || (paidAmountPaise > 0 && paidAmountPaise < order.final_amount_inr)) {
+            console.error(`[Webhook] Payment amount/currency mismatch for order ${orderId}: expected ${order.final_amount_inr} paise INR, got ${paidAmountPaise} paise ${orderCurrency}`);
+            await updateOrderStatus(env.DB, orderId, 'FAILED');
+            await recordPayment(env.DB, {
+              orderId,
+              cfPaymentId,
+              paymentMethod,
+              paymentAmountInr: paidAmountPaise,
+              paymentStatus: 'FAILED',
+              paymentTime: new Date().toISOString(),
+              bankReference: bankRef,
+              rawResponse: JSON.stringify({ error: 'AMOUNT_OR_CURRENCY_MISMATCH', payment: cfPayment, order: cfOrder }),
+            });
+            return jsonResponse({ error: 'AMOUNT_MISMATCH', message: 'Payment amount or currency mismatch.' }, 400, corsHeaders);
+          }
+
           const paidAt = new Date().toISOString();
           await updateOrderStatus(env.DB, orderId, 'PAID', paidAt);
 
@@ -514,6 +546,19 @@ export default {
           }
 
           console.log(`[Webhook] Order ${orderId} marked PAID. License: ${licenseKey ? 'ISSUED' : 'N/A'}, Token: ${downloadToken ? 'GENERATED' : 'N/A'}`);
+        } else if (['CANCELLED', 'USER_DROPPED', 'VOID', 'NOT_ATTEMPTED'].includes(paymentStatus) || ['CANCELLED', 'TERMINATED'].includes(orderStatus)) {
+          await updateOrderStatus(env.DB, orderId, 'CANCELLED');
+          await recordPayment(env.DB, {
+            orderId,
+            cfPaymentId,
+            paymentMethod,
+            paymentAmountInr: Math.round(paymentAmount * 100),
+            paymentStatus: paymentStatus === 'USER_DROPPED' ? 'USER_DROPPED' : 'FAILED',
+            paymentTime: new Date().toISOString(),
+            bankReference: bankRef,
+            rawResponse: JSON.stringify(cfPayment),
+          });
+          console.log(`[Webhook] Order ${orderId} marked CANCELLED (${paymentStatus || orderStatus}).`);
         } else if (paymentStatus === 'FAILED' || orderStatus === 'EXPIRED') {
           await updateOrderStatus(env.DB, orderId, 'FAILED');
           await recordPayment(env.DB, {

@@ -6,7 +6,28 @@
 (function () {
   'use strict';
 
-  var API_BASE = window.MOTIONBYDK_API_BASE || 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+  // Explicit Environment Configuration with Safe Defaults
+  // Production host (www.motionbydk.in, motionbydk.in): Strictly routes to production API (https://api.motionbydk.in)
+  // and NEVER falls back to staging worker, preventing accidental staging pollution in production.
+  // Staging/dev/local hosts: Safely routes to staging worker (https://motionbydk-api-staging.motionbydk-api.workers.dev).
+  function resolveApiBase() {
+    if (typeof window !== 'undefined' && window.MOTIONBYDK_API_BASE) {
+      return window.MOTIONBYDK_API_BASE;
+    }
+    if (typeof window !== 'undefined' && window.MOTIONBYDK_CONFIG && window.MOTIONBYDK_CONFIG.apiBase) {
+      return window.MOTIONBYDK_CONFIG.apiBase;
+    }
+    var host = (typeof window !== 'undefined' && window.location && window.location.hostname)
+      ? window.location.hostname.toLowerCase()
+      : '';
+    var isProdDomain = host === 'www.motionbydk.in' || host === 'motionbydk.in';
+    if (isProdDomain) {
+      return 'https://api.motionbydk.in';
+    }
+    return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+  }
+
+  var API_BASE = resolveApiBase();
   var activeProductId = 'ae-workflow-pro';
   var appliedCoupon = '';
   var isSubmitting = false;
