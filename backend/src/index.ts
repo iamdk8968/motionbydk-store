@@ -21,6 +21,7 @@ import {
   incrementCouponUsage,
 } from './db';
 import { createCashfreeOrder, getCashfreeOrder, verifyCashfreeWebhookSignature } from './cashfree';
+import { handleDownloadRequest } from './download';
 import { hashString } from './license';
 
 const ALLOWED_ORIGINS = [
@@ -453,10 +454,11 @@ export default {
       }
 
       // =======================================================================
-      // 5. PLACEHOLDER ROUTES FOR SUBSEQUENT PHASES
+      // 5. SECURE DIGITAL ASSET STREAMING (GET & POST /api/download/:token)
       // =======================================================================
       if (pathname.startsWith('/api/download/')) {
-        return jsonResponse({ error: 'PHASE_4_PENDING', message: 'R2 secure streaming will be enabled in Phase 4.' }, 501, corsHeaders);
+        const token = pathname.replace('/api/download/', '').trim();
+        return await handleDownloadRequest(request, env, token, corsHeaders);
       }
 
       if (pathname.startsWith('/api/license/')) {
