@@ -11,6 +11,7 @@ import {
   createPendingOrder,
   getOrder,
   updateOrderStatus,
+  claimPendingOrderAsPaid,
   recordPayment,
   isEventProcessed,
   recordPaymentEvent,
@@ -343,19 +344,21 @@ export default {
             const orderCurrency = cfOrder.order_currency || 'INR';
 
             if (orderCurrency === 'INR' && receivedAmountPaise >= expectedAmountPaise) {
-              await updateOrderStatus(env.DB, orderId, 'PAID', new Date().toISOString());
+              const claimed = await claimPendingOrderAsPaid(env.DB, orderId, new Date().toISOString());
               order.status = 'PAID';
 
-              // Auto-issue license and download token if product warrants
-              const product = await getProduct(env.DB, order.product_id);
-              if (product && product.has_license) {
-                await issueLicenseForOrder(env.DB, order.order_id, order.customer_id, product.id);
-              }
-              if (product && product.r2_object_key) {
-                await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
-              }
-              if (order.coupon_code) {
-                await incrementCouponUsage(env.DB, order.coupon_code);
+              if (claimed) {
+                // Auto-issue license and download token if product warrants
+                const product = await getProduct(env.DB, order.product_id);
+                if (product && product.has_license) {
+                  await issueLicenseForOrder(env.DB, order.order_id, order.customer_id, product.id);
+                }
+                if (product && product.r2_object_key) {
+                  await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
+                }
+                if (order.coupon_code) {
+                  await incrementCouponUsage(env.DB, order.coupon_code);
+                }
               }
             } else {
               console.error(`[Reconcile] Amount/currency mismatch for ${orderId}: expected ${expectedAmountPaise} paise INR, got ${receivedAmountPaise} paise ${orderCurrency}`);
@@ -426,7 +429,14 @@ export default {
         const cfPaymentId = String(cfPayment.cf_payment_id || cfOrder.cf_order_id || Date.now());
         const orderStatus = cfOrder.order_status || payload.order_status;
         const paymentStatus = cfPayment.payment_status || (orderStatus === 'PAID' ? 'SUCCESS' : 'PENDING');
-        const paymentMethod = cfPayment.payment_group || cfPayment.payment_method || 'online';
+        const paymentMethod =
+          typeof cfPayment.payment_group === 'string' && cfPayment.payment_group
+            ? cfPayment.payment_group
+            : typeof cfPayment.payment_method === 'string' && cfPayment.payment_method
+              ? cfPayment.payment_method
+              : cfPayment.payment_method && typeof cfPayment.payment_method === 'object'
+                ? Object.keys(cfPayment.payment_method)[0] || 'online'
+                : 'online';
         const paymentAmount = cfPayment.payment_amount || cfOrder.order_amount || 0;
         const bankRef = cfPayment.bank_reference || null;
 
@@ -485,7 +495,11 @@ export default {
           }
 
           const paidAt = new Date().toISOString();
-          await updateOrderStatus(env.DB, orderId, 'PAID', paidAt);
+          const claimed = await claimPendingOrderAsPaid(env.DB, orderId, paidAt);
+          if (!claimed) {
+            console.log(`[Webhook] Order ${orderId} already claimed PAID concurrently. Returning idempotent 200.`);
+            return jsonResponse({ received: true, already_paid: true }, 200, corsHeaders);
+          }
 
           // Record payment record
           await recordPayment(env.DB, {

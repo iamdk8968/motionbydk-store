@@ -143,6 +143,26 @@ export async function updateOrderStatus(
     .run();
 }
 
+/**
+ * Atomically transition a non-PAID order to PAID using SQLite single-statement CAS semantics
+ * so concurrent webhook deliveries (e.g. 2023-08-01 and 2021-09-21) cannot double-issue fulfillment.
+ */
+export async function claimPendingOrderAsPaid(
+  db: D1Database,
+  orderId: string,
+  paidAt: string
+): Promise<boolean> {
+  const result = await db
+    .prepare(
+      `UPDATE orders
+       SET status = 'PAID', paid_at = COALESCE(paid_at, ?), updated_at = datetime('now')
+       WHERE order_id = ? AND status != 'PAID'`
+    )
+    .bind(paidAt, orderId)
+    .run();
+  return (result.meta?.changes ?? 0) > 0;
+}
+
 export async function recordPayment(
   db: D1Database,
   params: {

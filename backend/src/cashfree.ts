@@ -114,10 +114,16 @@ export async function verifyCashfreeWebhookSignature(
       return false;
     }
 
-    // Reject webhooks older than 5 minutes (prevent replay attacks)
-    const webhookTime = parseInt(timestamp, 10);
+    // Reject missing/non-numeric timestamps or webhooks older than 5 minutes (prevent replay attacks).
+    // Cashfree sends x-webhook-timestamp in Unix milliseconds (13 digits), while synthetic/legacy callers may send seconds (10 digits).
+    const parsedTime = Number(timestamp);
+    if (!Number.isFinite(parsedTime) || parsedTime <= 0) {
+      console.warn('[Webhook] Invalid webhook timestamp format');
+      return false;
+    }
+    const webhookSeconds = parsedTime >= 1e12 ? Math.floor(parsedTime / 1000) : Math.floor(parsedTime);
     const now = Math.floor(Date.now() / 1000);
-    if (Number.isFinite(webhookTime) && Math.abs(now - webhookTime) > 300) {
+    if (Math.abs(now - webhookSeconds) > 300) {
       console.warn('[Webhook] Webhook timestamp expired or clock skewed > 300s');
       return false;
     }
