@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Merchant Admin &amp; Observability | Motion by DK</title>
-    <meta name="description" content="Merchant administration, revenue analytics, license hardware locker, order dossier, and email observability for MotionByDK.">
+    <title>Motion By DK — Merchant Admin &amp; Command Center</title>
+    <meta name="description" content="Merchant administration, revenue analytics, products CMS, version release manager, coupons, license hardware locker, and order dossier for MotionByDK.">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 
     <!-- Fonts -->
@@ -107,7 +107,7 @@
                     <img src="assets/icon.svg" alt="Motion By DK" class="w-full h-full object-contain">
                 </div>
                 <h1 class="font-heading font-black text-2xl tracking-tight text-white">MOTION<span class="text-brand">BY DK</span></h1>
-                <p class="text-xs text-gray-400 font-mono mt-1 uppercase tracking-wider">Merchant Admin &amp; Observability</p>
+                <p class="text-xs text-gray-400 font-mono mt-1 uppercase tracking-wider">Merchant Command &amp; Control Center</p>
             </div>
 
             <div id="login-error" class="hidden mb-6 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
@@ -169,7 +169,7 @@
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">OPERATIONAL</span>
                             <span id="env-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider bg-brand/10 text-brand border border-brand/20">STAGING</span>
                         </div>
-                        <span class="text-[11px] text-gray-400 hidden sm:block">Merchant Control Center &amp; Observability</span>
+                        <span class="text-[11px] text-gray-400 hidden sm:block">Merchant Command Center &amp; Observability</span>
                     </div>
                 </div>
 
@@ -199,31 +199,54 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation Bar -->
+            <!-- Tab Navigation Bar: 10 Tabs -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/5">
-                <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2">
-                    <button data-tab="overview" class="nav-tab active flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto py-2" id="admin-nav-bar">
+                    <button data-tab="overview" class="nav-tab active flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
                         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                        <span>Overview &amp; KPIs</span>
+                        <span>1. Overview</span>
                     </button>
-                    <button data-tab="orders" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                    <button data-tab="products" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>2. Products</span>
+                        <span id="badge-total-products" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="releases" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+                        <span>3. Releases</span>
+                        <span id="badge-total-releases" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="coupons" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="ticket" class="w-4 h-4"></i>
+                        <span>4. Coupons</span>
+                        <span id="badge-total-coupons" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    </button>
+                    <button data-tab="orders" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
                         <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                        <span>Orders Directory</span>
+                        <span>5. Orders</span>
                         <span id="badge-total-orders" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
                     </button>
-                    <button data-tab="licenses" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                    <button data-tab="licenses" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
                         <i data-lucide="key" class="w-4 h-4"></i>
-                        <span>Licenses &amp; Hardware</span>
+                        <span>6. Licenses</span>
                         <span id="badge-total-licenses" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
                     </button>
-                    <button data-tab="emails" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
-                        <i data-lucide="mail" class="w-4 h-4"></i>
-                        <span>Email Observability</span>
-                        <span id="badge-total-emails" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
+                    <button data-tab="customers" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>7. Customers</span>
+                        <span id="badge-total-customers" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-gray-300">0</span>
                     </button>
-                    <button data-tab="audit" class="nav-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
-                        <i data-lucide="shield-alert" class="w-4 h-4"></i>
-                        <span>Security &amp; Audit Trail</span>
+                    <button data-tab="cms" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="layout-template" class="w-4 h-4"></i>
+                        <span>8. Store CMS</span>
+                    </button>
+                    <button data-tab="analytics" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="line-chart" class="w-4 h-4"></i>
+                        <span>9. Analytics</span>
+                    </button>
+                    <button data-tab="settings" class="nav-tab flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gray-300 border border-transparent transition-all whitespace-nowrap">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        <span>10. Settings</span>
                     </button>
                 </nav>
             </div>
@@ -232,32 +255,34 @@
         <!-- Main Content Area -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
 
-            <!-- TAB 1: OVERVIEW & ANALYTICS -->
+            <!-- ===================================================================== -->
+            <!-- TAB 1: OVERVIEW & KPIS -->
+            <!-- ===================================================================== -->
             <section id="tab-overview" class="tab-pane space-y-8">
                 <!-- 6 Top KPI Cards -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <!-- Total Revenue -->
+                    <!-- Total Revenue INR -->
                     <div class="studio-card rounded-xl p-4 border border-white/5">
                         <div class="flex items-center justify-between text-gray-400 mb-2">
-                            <span class="text-[11px] font-semibold uppercase tracking-wider">Gross Revenue</span>
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Gross INR</span>
                             <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                                 <i data-lucide="indian-rupee" class="w-3.5 h-3.5"></i>
                             </div>
                         </div>
                         <div id="metric-revenue-total" class="font-heading font-extrabold text-xl text-white">₹0.00</div>
-                        <div class="text-[10px] text-emerald-400 font-mono mt-1">Paid Cashfree Volume</div>
+                        <div class="text-[10px] text-emerald-400 font-mono mt-1">Paid Domestic Volume</div>
                     </div>
 
-                    <!-- 24h Revenue -->
+                    <!-- Total Revenue USD -->
                     <div class="studio-card rounded-xl p-4 border border-white/5">
                         <div class="flex items-center justify-between text-gray-400 mb-2">
-                            <span class="text-[11px] font-semibold uppercase tracking-wider">24h Revenue</span>
-                            <div class="w-7 h-7 rounded-lg bg-brand/10 text-brand flex items-center justify-center">
-                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                            <span class="text-[11px] font-semibold uppercase tracking-wider">Gross USD</span>
+                            <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i data-lucide="dollar-sign" class="w-3.5 h-3.5"></i>
                             </div>
                         </div>
-                        <div id="metric-revenue-24h" class="font-heading font-extrabold text-xl text-brand">₹0.00</div>
-                        <div class="text-[10px] text-gray-400 font-mono mt-1">Last 24 Hours</div>
+                        <div id="metric-revenue-usd" class="font-heading font-extrabold text-xl text-emerald-400">$0.00</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-1">Paid International</div>
                     </div>
 
                     <!-- Paid Orders -->
@@ -309,7 +334,7 @@
                     </div>
                 </div>
 
-                <!-- Secondary Panels: Products Breakdown + Recent Feeds -->
+                <!-- Secondary Panels: Products Breakdown + Recent Orders Feed -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Product Sales Performance -->
                     <div class="studio-card rounded-xl p-6 border border-white/5 lg:col-span-1">
@@ -352,13 +377,184 @@
                 </div>
             </section>
 
-            <!-- TAB 2: ORDERS DIRECTORY -->
+            <!-- ===================================================================== -->
+            <!-- TAB 2: PRODUCTS & PLUGINS CATALOG -->
+            <!-- ===================================================================== -->
+            <section id="tab-products" class="tab-pane hidden space-y-6">
+                <!-- Search, Filters & Add Product Action -->
+                <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="product-search-input" placeholder="Search products..."
+                                class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                        </div>
+                        <select id="product-category-filter" class="px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white focus:outline-none focus:border-brand">
+                            <option value="ALL">All Categories</option>
+                            <option value="plugin">Plugins</option>
+                            <option value="preset">Presets</option>
+                            <option value="template">Templates</option>
+                            <option value="bundle">Bundles</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                        <button onclick="openAddProductModal()" class="px-3.5 py-2 rounded-lg bg-brand text-dark-base text-xs font-bold hover:bg-brand-hover transition-colors flex items-center gap-1.5 shadow-lg shadow-brand/10">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Add New Product</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Product</th>
+                                    <th class="py-3 px-4">Category</th>
+                                    <th class="py-3 px-4">Price INR</th>
+                                    <th class="py-3 px-4">Price USD</th>
+                                    <th class="py-3 px-4">Max Devices</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Compatibility</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="8" class="py-8 text-center text-gray-500">Loading products catalog...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 3: VERSION RELEASES & UPDATER -->
+            <!-- ===================================================================== -->
+            <section id="tab-releases" class="tab-pane hidden space-y-6">
+                <!-- Info banner on R2 & Updater -->
+                <div class="studio-card rounded-xl p-4 border border-brand/20 bg-brand/5 flex items-start gap-3">
+                    <i data-lucide="info" class="w-5 h-5 text-brand flex-shrink-0 mt-0.5"></i>
+                    <div class="text-xs space-y-1">
+                        <span class="font-bold text-white block">Automated Extension Updater &amp; R2 Storage Engine</span>
+                        <p class="text-gray-400">
+                            Releases uploaded here are stored securely in Cloudflare R2 bucket <code class="text-brand font-mono">motionbydk-products</code>. The public updater endpoint <code class="text-brand font-mono">/api/releases/latest</code> feeds After Effects extensions securely without exposing public Google Drive links.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Controls & Actions -->
+                <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="text-xs text-gray-400">
+                        Showing all published and draft version packages.
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="openRollbackModal()" class="px-3.5 py-2 rounded-lg bg-dark-card border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/10 transition-colors flex items-center gap-1.5">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                            <span>Rollback Version</span>
+                        </button>
+                        <button onclick="openAddReleaseModal()" class="px-3.5 py-2 rounded-lg bg-brand text-dark-base text-xs font-bold hover:bg-brand-hover transition-colors flex items-center gap-1.5 shadow-lg shadow-brand/10">
+                            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                            <span>Upload New Release</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Releases Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Version</th>
+                                    <th class="py-3 px-4">Product ID</th>
+                                    <th class="py-3 px-4">Release Title</th>
+                                    <th class="py-3 px-4">Release Date</th>
+                                    <th class="py-3 px-4">Min AE</th>
+                                    <th class="py-3 px-4">Package Size</th>
+                                    <th class="py-3 px-4">Downloads</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="releases-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="9" class="py-8 text-center text-gray-500">Loading version releases...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 4: COUPONS & OFFERS -->
+            <!-- ===================================================================== -->
+            <section id="tab-coupons" class="tab-pane hidden space-y-6">
+                <!-- KPI Summary cards for Coupons -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="coupon-kpi-container">
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Active Coupons</span>
+                        <div id="metric-coupons-active" class="font-heading font-extrabold text-xl text-white">0</div>
+                    </div>
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Total Times Redeemed</span>
+                        <div id="metric-coupons-redeemed" class="font-heading font-extrabold text-xl text-brand">0</div>
+                    </div>
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1">Total Savings Granted</span>
+                        <div id="metric-coupons-savings" class="font-heading font-extrabold text-xl text-emerald-400">₹0.00</div>
+                    </div>
+                </div>
+
+                <!-- Controls & Add Coupon -->
+                <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full sm:w-80">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="coupon-search-input" placeholder="Search coupon code..."
+                            class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                    </div>
+
+                    <button onclick="openCreateCouponModal()" class="px-3.5 py-2 rounded-lg bg-brand text-dark-base text-xs font-bold hover:bg-brand-hover transition-colors flex items-center gap-1.5 shadow-lg shadow-brand/10">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Create New Coupon</span>
+                    </button>
+                </div>
+
+                <!-- Coupons Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Coupon Code</th>
+                                    <th class="py-3 px-4">Discount Type</th>
+                                    <th class="py-3 px-4">INR Discount</th>
+                                    <th class="py-3 px-4">USD Discount</th>
+                                    <th class="py-3 px-4">Percentage</th>
+                                    <th class="py-3 px-4">Redemptions</th>
+                                    <th class="py-3 px-4">Per Customer</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coupons-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="9" class="py-8 text-center text-gray-500">Loading coupons...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 5: ORDERS DIRECTORY -->
+            <!-- ===================================================================== -->
             <section id="tab-orders" class="tab-pane hidden space-y-6">
                 <!-- Search & Filters -->
                 <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <div class="relative w-full sm:w-80">
                         <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                        <input type="text" id="order-search-input" placeholder="Search order ID, email, customer..."
+                        <input type="text" id="order-search-input" placeholder="Search order ID, email, customer, phone..."
                             class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
                     </div>
                     <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
@@ -400,7 +596,9 @@
                 </div>
             </section>
 
-            <!-- TAB 3: LICENSES & HARDWARE LOCKER -->
+            <!-- ===================================================================== -->
+            <!-- TAB 6: LICENSES & HARDWARE LOCKER -->
+            <!-- ===================================================================== -->
             <section id="tab-licenses" class="tab-pane hidden space-y-6">
                 <!-- Search & Filters -->
                 <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -412,7 +610,7 @@
                     <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
                         <button class="license-filter-btn filter-btn active px-3 py-1.5 rounded-lg text-xs" data-type="ALL">All</button>
                         <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="COMMERCIAL">Commercial (New)</button>
-                        <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="LEGACY">Legacy (105)</button>
+                        <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="LEGACY">Legacy</button>
                         <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="REVOKED">Revoked</button>
                     </div>
                 </div>
@@ -448,25 +646,227 @@
                 </div>
             </section>
 
-            <!-- TAB 4: EMAIL OBSERVABILITY & RETRY -->
-            <section id="tab-emails" class="tab-pane hidden space-y-6">
-                <!-- Search & Filters -->
+            <!-- ===================================================================== -->
+            <!-- TAB 7: CUSTOMERS DIRECTORY -->
+            <!-- ===================================================================== -->
+            <section id="tab-customers" class="tab-pane hidden space-y-6">
+                <!-- Search Customer -->
                 <div class="studio-card rounded-xl p-4 border border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <div class="relative w-full sm:w-80">
                         <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                        <input type="text" id="email-search-input" placeholder="Search recipient email, order ID..."
+                        <input type="text" id="customer-search-input" placeholder="Search customer name, email, phone..."
                             class="w-full pl-9 pr-4 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
                     </div>
-                    <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
-                        <button class="email-filter-btn filter-btn active px-3 py-1.5 rounded-lg text-xs" data-status="ALL">All</button>
-                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="SENT">Sent</button>
-                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="MOCK_SENT">Mock Sent</button>
-                        <button class="email-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-status="FAILED">Failed</button>
+                    <div class="text-xs text-gray-400 font-mono">
+                        Aggregated lifetime metrics from D1
                     </div>
                 </div>
 
-                <!-- Email Logs Table -->
+                <!-- Customers Table -->
                 <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
+                                <tr>
+                                    <th class="py-3 px-4">Customer</th>
+                                    <th class="py-3 px-4">Contact</th>
+                                    <th class="py-3 px-4">Total Orders</th>
+                                    <th class="py-3 px-4">Paid Orders</th>
+                                    <th class="py-3 px-4">Lifetime Spend INR</th>
+                                    <th class="py-3 px-4">Lifetime Spend USD</th>
+                                    <th class="py-3 px-4">Active Licenses</th>
+                                    <th class="py-3 px-4">Joined Date</th>
+                                    <th class="py-3 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-tbody" class="divide-y divide-white/5 text-gray-300">
+                                <tr><td colspan="9" class="py-8 text-center text-gray-500">Loading customers directory...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 8: STOREFRONT CMS -->
+            <!-- ===================================================================== -->
+            <section id="tab-cms" class="tab-pane hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- 1. Top Announcement Banner -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="megaphone" class="w-4 h-4 text-brand"></i>
+                                <h3 class="font-bold text-sm text-white">Top Announcement Banner</h3>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono">key: top_banner</span>
+                        </div>
+
+                        <form id="cms-form-top-banner" class="space-y-3 text-xs">
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-dark-base">
+                                <label class="font-semibold text-gray-300">Display Banner on Website:</label>
+                                <input type="checkbox" id="cms-top-banner-active" class="w-4 h-4 accent-brand rounded">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Banner Headline / Title:</label>
+                                <input type="text" id="cms-top-banner-title" placeholder="e.g. SPECIAL LAUNCH OFFER"
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Banner Content Message:</label>
+                                <textarea id="cms-top-banner-content" rows="2" placeholder="e.g. Get 20% off with coupon SAVE20 at checkout!"
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white"></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block font-semibold text-gray-300 mb-1">CTA Button Text:</label>
+                                    <input type="text" id="cms-top-banner-cta-text" placeholder="e.g. Claim Offer"
+                                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-gray-300 mb-1">CTA Button Link:</label>
+                                    <input type="text" id="cms-top-banner-cta-url" placeholder="e.g. #plugin"
+                                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Badge Tag Text:</label>
+                                <input type="text" id="cms-top-banner-badge" placeholder="e.g. LIMITED TIME"
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                            </div>
+                            <div class="pt-2 text-right">
+                                <button type="button" onclick="saveCmsBlock('top_banner')" class="px-4 py-2 rounded-lg bg-brand text-dark-base font-bold text-xs hover:bg-brand-hover transition-colors">Save Announcement Banner</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 2. Hero Section Promo -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+                                <h3 class="font-bold text-sm text-white">Hero Call-To-Action Deal</h3>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono">key: hero_cta</span>
+                        </div>
+
+                        <form id="cms-form-hero-cta" class="space-y-3 text-xs">
+                            <div class="flex items-center justify-between p-2 rounded-lg bg-dark-base">
+                                <label class="font-semibold text-gray-300">Enable Hero Promo Pill:</label>
+                                <input type="checkbox" id="cms-hero-cta-active" class="w-4 h-4 accent-brand rounded">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Promo Pill Headline:</label>
+                                <input type="text" id="cms-hero-cta-title" placeholder="e.g. AE Workflow Pro v3.7.0 Released"
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Promo Description:</label>
+                                <textarea id="cms-hero-cta-content" rows="2" placeholder="e.g. Instant motion easing curves, dock animator, and 3D carousels."
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white"></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block font-semibold text-gray-300 mb-1">CTA Button Text:</label>
+                                    <input type="text" id="cms-hero-cta-cta-text" placeholder="e.g. Instant Download"
+                                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-gray-300 mb-1">CTA URL:</label>
+                                    <input type="text" id="cms-hero-cta-cta-url" placeholder="e.g. #plugin"
+                                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-gray-300 mb-1">Badge Tag:</label>
+                                <input type="text" id="cms-hero-cta-badge" placeholder="e.g. v3.7.0"
+                                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white">
+                            </div>
+                            <div class="pt-2 text-right">
+                                <button type="button" onclick="saveCmsBlock('hero_cta')" class="px-4 py-2 rounded-lg bg-purple-500 text-white font-bold text-xs hover:bg-purple-600 transition-colors">Save Hero Promo</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 9: ANALYTICS & OBSERVABILITY -->
+            <!-- ===================================================================== -->
+            <section id="tab-analytics" class="tab-pane hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Domestic Volume</span>
+                        <div id="analytics-rev-inr" class="font-heading font-extrabold text-xl text-white">₹0.00</div>
+                        <div class="text-[10px] text-emerald-400 font-mono mt-1">100% Cashfree INR</div>
+                    </div>
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">International Volume</span>
+                        <div id="analytics-rev-usd" class="font-heading font-extrabold text-xl text-brand">$0.00</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-1">Cashfree Global USD</div>
+                    </div>
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Order Conversion</span>
+                        <div id="analytics-conv-rate" class="font-heading font-extrabold text-xl text-amber-400">0.0%</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-1">Paid / Total Checkouts</div>
+                    </div>
+                    <div class="studio-card rounded-xl p-4 border border-white/5">
+                        <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Hardware Lock Ratio</span>
+                        <div id="analytics-hardware-ratio" class="font-heading font-extrabold text-xl text-cyan-400">0.0%</div>
+                        <div class="text-[10px] text-gray-400 font-mono mt-1">Active Slots Utilized</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Email Delivery Observability -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="mail-check" class="w-4 h-4 text-emerald-400"></i>
+                                <span>Resend Email Delivery Observability</span>
+                            </h3>
+                            <span class="text-[10px] text-gray-400 font-mono">Resend API</span>
+                        </div>
+                        <div id="analytics-email-stats" class="space-y-3 text-xs">
+                            <div class="text-gray-500 py-4 text-center">Loading email dispatch metrics...</div>
+                        </div>
+                    </div>
+
+                    <!-- Security & Audit Trail Summary -->
+                    <div class="studio-card rounded-xl p-6 border border-white/5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/5 pb-3">
+                            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-brand"></i>
+                                <span>Security Audit &amp; Webhook Trail</span>
+                            </h3>
+                            <span class="text-[10px] text-gray-400 font-mono">D1 audit_logs</span>
+                        </div>
+                        <div id="analytics-audit-summary" class="space-y-3 text-xs font-mono">
+                            <div class="text-gray-500 py-4 text-center font-sans">Loading recent audit events...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dispatched Email Logs Table -->
+                <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
+                    <div class="p-4 border-b border-white/5 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4 text-brand"></i>
+                            <h3 class="font-bold text-sm text-white">Dispatched Transactional Emails</h3>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <div class="relative w-full sm:w-64">
+                                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                                <input type="text" id="email-search-input" placeholder="Search email, order ID..."
+                                    class="w-full pl-9 pr-4 py-1.5 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button class="email-filter-btn filter-btn active px-2.5 py-1 rounded text-xs" data-status="ALL">All</button>
+                                <button class="email-filter-btn filter-btn px-2.5 py-1 rounded text-xs bg-dark-card text-gray-300 border border-white/5" data-status="SENT">Sent</button>
+                                <button class="email-filter-btn filter-btn px-2.5 py-1 rounded text-xs bg-dark-card text-gray-300 border border-white/5" data-status="FAILED">Failed</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px]">
@@ -481,13 +881,12 @@
                                     <th class="py-3 px-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="emails-tbody" class="divide-y divide-white/5 text-gray-300">
-                                <tr><td colspan="8" class="py-8 text-center text-gray-500">Loading email logs...</td></tr>
+                            <tbody id="emails-tbody" class="divide-y divide-white/5 text-gray-300 font-mono text-[11px]">
+                                <tr><td colspan="8" class="py-8 text-center text-gray-500 font-sans">Loading email logs...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <!-- Pagination Bar -->
-                    <div class="p-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                    <div class="p-3 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
                         <span id="emails-page-info">Showing page 1</span>
                         <div class="flex items-center gap-2">
                             <button id="emails-prev-btn" class="px-3 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 disabled:opacity-30 disabled:pointer-events-none">&larr; Prev</button>
@@ -495,39 +894,34 @@
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- TAB 5: SECURITY & AUDIT TRAIL -->
-            <section id="tab-audit" class="tab-pane hidden space-y-6">
+                <!-- Security Audit & Webhook Logs Detailed Tables -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Admin Audit Logs -->
                     <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
                         <div class="p-4 border-b border-white/5 flex items-center justify-between">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i data-lucide="shield" class="w-4 h-4 text-brand"></i>
-                                <span>Admin Actions Audit Log</span>
+                                <span>Admin Actions Audit Trail</span>
                             </h3>
-                            <span class="text-[10px] text-gray-400 font-mono">D1 audit_logs</span>
+                            <span class="text-[10px] text-gray-400 font-mono">audit_logs</span>
                         </div>
-                        <div class="overflow-x-auto max-h-[500px]">
+                        <div class="overflow-x-auto max-h-[350px]">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0">
+                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0 bg-dark-card">
                                     <tr>
                                         <th class="py-2.5 px-4">Action</th>
                                         <th class="py-2.5 px-4">Actor</th>
                                         <th class="py-2.5 px-4">Target</th>
-                                        <th class="py-2.5 px-4">Details</th>
                                         <th class="py-2.5 px-4">Timestamp</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-tbody" class="divide-y divide-white/5 text-gray-300 font-mono text-[11px]">
-                                    <tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>
+                                    <tr><td colspan="4" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Payment Webhook Events -->
                     <div class="studio-card rounded-xl border border-white/5 overflow-hidden">
                         <div class="p-4 border-b border-white/5 flex items-center justify-between">
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
@@ -536,29 +930,454 @@
                             </h3>
                             <span class="text-[10px] text-gray-400 font-mono">payment_events</span>
                         </div>
-                        <div class="overflow-x-auto max-h-[500px]">
+                        <div class="overflow-x-auto max-h-[350px]">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0">
+                                <thead class="bg-white/[0.02] border-b border-white/5 text-gray-400 uppercase tracking-wider text-[10px] sticky top-0 bg-dark-card">
                                     <tr>
                                         <th class="py-2.5 px-4">Event ID</th>
                                         <th class="py-2.5 px-4">Order ID</th>
-                                        <th class="py-2.5 px-4">Event Type</th>
+                                        <th class="py-2.5 px-4">Type</th>
                                         <th class="py-2.5 px-4">Signature</th>
-                                        <th class="py-2.5 px-4">Processed At</th>
+                                        <th class="py-2.5 px-4">Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="webhooks-tbody" class="divide-y divide-white/5 text-gray-300 font-mono text-[11px]">
-                                    <tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook logs...</td></tr>
+                                    <tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook events...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
+
+            <!-- ===================================================================== -->
+            <!-- TAB 10: SETTINGS & HEALTH -->
+            <!-- ===================================================================== -->
+            <section id="tab-settings" class="tab-pane hidden space-y-6">
+                <!-- System Environment Cards: 4 Services -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Cloudflare D1 Database -->
+                    <div class="studio-card rounded-xl p-5 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="database" class="w-4 h-4 text-brand"></i>
+                                <span>Cloudflare D1</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CONNECTED</span>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            Active binding:<br><code class="text-brand font-mono text-[10px]">motionbydk-db-staging</code>
+                        </p>
+                        <div class="text-[10px] text-gray-500 font-mono pt-2 border-t border-white/5">
+                            Production DB untouched.
+                        </div>
+                    </div>
+
+                    <!-- Cashfree Payment Gateway -->
+                    <div class="studio-card rounded-xl p-5 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="credit-card" class="w-4 h-4 text-purple-400"></i>
+                                <span>Cashfree PG</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-purple-500/10 text-purple-400 border border-purple-500/20">SANDBOX</span>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            API v2023-08-01 with HMAC-SHA256 &amp; INR / USD multi-currency support.
+                        </p>
+                        <div class="text-[10px] text-gray-500 font-mono pt-2 border-t border-white/5">
+                            Mode: SANDBOX (Testing)
+                        </div>
+                    </div>
+
+                    <!-- Resend Transactional Email -->
+                    <div class="studio-card rounded-xl p-5 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="send" class="w-4 h-4 text-emerald-400"></i>
+                                <span>Resend API</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">VERIFIED</span>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            Domain: <code class="text-brand font-mono text-[10px]">motionbydk.in</code><br>
+                            Sender: <span class="text-gray-300 font-mono text-[10px]">delivery@motionbydk.in</span>
+                        </p>
+                        <div class="text-[10px] text-gray-500 font-mono pt-2 border-t border-white/5">
+                            DKIM &amp; SPF configured.
+                        </div>
+                    </div>
+
+                    <!-- Cloudflare R2 Storage -->
+                    <div class="studio-card rounded-xl p-5 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                                <i data-lucide="hard-drive" class="w-4 h-4 text-cyan-400"></i>
+                                <span>Cloudflare R2</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">ACTIVE</span>
+                        </div>
+                        <p class="text-xs text-gray-400">
+                            Bucket:<br><code class="text-brand font-mono text-[10px]">motionbydk-products</code>
+                        </p>
+                        <div class="text-[10px] text-gray-500 font-mono pt-2 border-t border-white/5">
+                            Signed token streaming.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Master Password Management -->
+                <div class="studio-card rounded-xl p-6 border border-white/5 max-w-xl">
+                    <h3 class="font-bold text-sm text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="lock" class="w-4 h-4 text-brand"></i>
+                        <span>Master Password &amp; Session Security</span>
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-4">
+                        Secure PBKDF2-SHA256 derivation with 100,000 salt iterations and HMAC-SHA256 token verification.
+                    </p>
+                    <button onclick="openModal('modal-change-password')" class="px-4 py-2.5 rounded-lg bg-dark-card border border-brand/40 text-brand text-xs font-bold hover:bg-brand/10 transition-colors flex items-center gap-2">
+                        <i data-lucide="key-round" class="w-4 h-4"></i>
+                        <span>Change Master Password</span>
+                    </button>
+                </div>
+            </section>
+
         </main>
     </div>
 
-    <!-- MODAL: ORDER DOSSIER -->
+    <!-- ===================================================================== -->
+    <!-- MODALS SECTION -->
+    <!-- ===================================================================== -->
+
+    <!-- MODAL 1: ADD / EDIT PRODUCT -->
+    <div id="modal-product-form" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-brand/30 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 id="modal-product-title" class="font-heading font-extrabold text-base text-white">Add New Product</h3>
+                        <span class="text-[11px] text-gray-400">Configure catalog details, multi-currency pricing, and specs</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-product-form')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="product-form" class="space-y-4 text-xs">
+                <input type="hidden" id="prod-form-mode" value="create">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Product ID / Slug (immutable after creation):</label>
+                        <input type="text" id="prod-id-input" required placeholder="e.g. ae-speed-ramp"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Product Name:</label>
+                        <input type="text" id="prod-name-input" required placeholder="e.g. Speed Ramp Pro"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Category:</label>
+                        <select id="prod-category-input" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                            <option value="plugin">plugin</option>
+                            <option value="preset">preset</option>
+                            <option value="template">template</option>
+                            <option value="bundle">bundle</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Price INR (₹):</label>
+                        <input type="number" id="prod-price-inr-input" required min="0" step="1" placeholder="499"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Price USD ($):</label>
+                        <input type="number" id="prod-price-usd-input" required min="0" step="1" placeholder="15"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Status:</label>
+                        <select id="prod-status-input" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                            <option value="PUBLISHED">PUBLISHED</option>
+                            <option value="DRAFT">DRAFT</option>
+                            <option value="ARCHIVED">ARCHIVED</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Max Workstation Devices:</label>
+                        <input type="number" id="prod-max-devices-input" required min="1" max="10" value="2"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                    <div class="flex items-center pt-5">
+                        <label class="flex items-center gap-2 text-gray-300 cursor-pointer">
+                            <input type="checkbox" id="prod-is-free-input" class="w-4 h-4 accent-brand rounded">
+                            <span>Free / Open Access</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Description:</label>
+                    <textarea id="prod-desc-input" rows="2" placeholder="Brief product summary for store listing..."
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand"></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Compatibility String:</label>
+                    <input type="text" id="prod-compat-input" placeholder="e.g. After Effects CC 2018 - 2026, Win/Mac"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                </div>
+
+                <!-- Thumbnail Upload to R2 -->
+                <div class="p-3 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
+                    <label class="block font-semibold text-gray-300">Thumbnail Image (Cloudflare R2):</label>
+                    <div class="flex items-center gap-3">
+                        <input type="text" id="prod-thumb-url-input" placeholder="https://..."
+                            class="flex-1 px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono text-[11px] focus:border-brand">
+                        <label class="px-3 py-2 rounded-lg bg-dark-card border border-brand/40 text-brand font-semibold cursor-pointer hover:bg-brand/10 transition-colors whitespace-nowrap">
+                            <span id="upload-thumb-btn-text">Upload Image</span>
+                            <input type="file" id="prod-thumb-file-picker" accept="image/*" class="hidden" onchange="uploadThumbnailToR2(this)">
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Features (One per line):</label>
+                    <textarea id="prod-features-input" rows="3" placeholder="3D Carousel Animator&#10;Dynamic Spring Easing&#10;Hardware-locked 2-PC License"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t border-white/10">
+                    <button type="button" onclick="closeModal('modal-product-form')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="save-product-btn" class="px-5 py-2 rounded-lg bg-brand text-dark-base font-bold text-xs hover:bg-brand-hover transition-colors">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: UPLOAD NEW RELEASE -->
+    <div id="modal-release-form" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-brand/30 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-extrabold text-base text-white">Upload New Release Package</h3>
+                        <span class="text-[11px] text-gray-400">Direct binary upload to Cloudflare R2 bucket</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-release-form')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="release-form" class="space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Target Product:</label>
+                        <select id="rel-product-select" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                            <option value="ae-workflow-pro">AE Workflow Pro (ae-workflow-pro)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Version String:</label>
+                        <input type="text" id="rel-version-input" required placeholder="e.g. 3.7.0"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono focus:border-brand">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Release Title:</label>
+                    <input type="text" id="rel-title-input" required placeholder="e.g. MotionByDk AE Workflow Pro v3.7.0 Stable"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Release Date:</label>
+                        <input type="date" id="rel-date-input" required
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Minimum AE Version:</label>
+                        <input type="text" id="rel-min-ae-input" value="15.0"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono focus:border-brand">
+                    </div>
+                </div>
+
+                <!-- File Uploader to R2 -->
+                <div class="p-4 rounded-xl bg-dark-base/80 border border-brand/20 space-y-2">
+                    <label class="block font-semibold text-white">Plugin .ZIP Package:</label>
+                    <input type="file" id="rel-zip-file-picker" accept=".zip,.tar.gz" required class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand file:text-dark-base hover:file:bg-brand-hover cursor-pointer">
+                    <div id="rel-upload-status" class="text-[11px] text-gray-400 font-mono">Select a zip archive to stream to R2.</div>
+                    <input type="hidden" id="rel-r2-key-hidden">
+                    <input type="hidden" id="rel-file-size-hidden" value="0">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Release Notes / Changelog:</label>
+                    <textarea id="rel-notes-input" rows="3" placeholder="• Added feature X&#10;• Fixed stability issue Y&#10;• Performance enhancements"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand"></textarea>
+                </div>
+
+                <div class="flex items-center gap-6 p-2 rounded-lg bg-dark-base">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="rel-published-check" checked class="w-4 h-4 accent-brand rounded">
+                        <span class="text-white font-semibold">Publish Release</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="rel-latest-check" checked class="w-4 h-4 accent-brand rounded">
+                        <span class="text-white font-semibold">Set as Latest Active Version</span>
+                    </label>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t border-white/10">
+                    <button type="button" onclick="closeModal('modal-release-form')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="save-release-btn" class="px-5 py-2 rounded-lg bg-brand text-dark-base font-bold text-xs hover:bg-brand-hover transition-colors">Upload &amp; Save Release</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: ROLLBACK RELEASE -->
+    <div id="modal-release-rollback" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-amber-500/30 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-amber-400">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-white">Rollback Active Version</h3>
+                    <span class="text-xs text-amber-400">Emergency version reversion</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">
+                Select a previously published release to immediately activate as the current version on the updater manifest:
+            </p>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Select Target Version:</label>
+                <select id="rollback-release-select" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white focus:border-amber-400 font-mono">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-release-rollback')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                <button id="confirm-rollback-btn" class="px-4 py-2 rounded-lg bg-amber-500 text-dark-base text-xs font-bold hover:bg-amber-400 transition-colors">Confirm Rollback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: CREATE COUPON -->
+    <div id="modal-coupon-form" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-brand/30 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                        <i data-lucide="ticket" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-heading font-extrabold text-base text-white">Create New Coupon</h3>
+                        <span class="text-[11px] text-gray-400">Multi-currency fixed or percentage discount</span>
+                    </div>
+                </div>
+                <button onclick="closeModal('modal-coupon-form')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="coupon-form" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Coupon Code (e.g. FLASH30):</label>
+                    <input type="text" id="coupon-code-input" required placeholder="LAUNCH20"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono uppercase focus:border-brand">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Discount Type:</label>
+                    <select id="coupon-type-input" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                        <option value="FIXED">Fixed Amount (₹ INR &amp; $ USD)</option>
+                        <option value="PERCENTAGE">Percentage (%)</option>
+                    </select>
+                </div>
+
+                <div id="coupon-fixed-fields" class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Fixed Discount INR (₹):</label>
+                        <input type="number" id="coupon-inr-input" min="0" step="1" value="100"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Fixed Discount USD ($):</label>
+                        <input type="number" id="coupon-usd-input" min="0" step="0.5" value="3.00"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                </div>
+
+                <div id="coupon-percentage-fields" class="hidden">
+                    <label class="block font-semibold text-gray-300 mb-1">Discount Percentage (1 - 100%):</label>
+                    <input type="number" id="coupon-pct-input" min="1" max="100" step="1" value="20"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Max Redemptions:</label>
+                        <input type="number" id="coupon-max-uses-input" min="1" value="500"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-300 mb-1">Per-Customer Limit:</label>
+                        <input type="number" id="coupon-per-cust-input" min="1" value="1"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-gray-300 mb-1">Expiry Date (Optional):</label>
+                    <input type="date" id="coupon-expiry-input"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-4 border-t border-white/10">
+                    <button type="button" onclick="closeModal('modal-coupon-form')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="save-coupon-btn" class="px-5 py-2 rounded-lg bg-brand text-dark-base font-bold text-xs hover:bg-brand-hover transition-colors">Create Coupon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 5: CUSTOMER DOSSIER -->
+    <div id="modal-customer-detail" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/10 p-6 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                    <h3 class="font-heading font-extrabold text-lg text-white">Customer Profile</h3>
+                    <span id="modal-customer-email-display" class="font-mono text-xs text-brand"></span>
+                </div>
+                <button onclick="closeModal('modal-customer-detail')" class="p-2 text-gray-400 hover:text-white rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div id="modal-customer-content" class="space-y-4 text-xs">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: ORDER DOSSIER -->
     <div id="modal-order-dossier" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="studio-card rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-white/10 p-6 space-y-6">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
@@ -576,7 +1395,7 @@
         </div>
     </div>
 
-    <!-- MODAL: DEVICE INSPECTION & RESET -->
+    <!-- MODAL 7: DEVICE INSPECTION & RESET -->
     <div id="modal-license-devices" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="studio-card rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-white/10 p-6 space-y-6">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
@@ -594,7 +1413,7 @@
         </div>
     </div>
 
-    <!-- MODAL: REVOKE LICENSE -->
+    <!-- MODAL 8: REVOKE LICENSE -->
     <div id="modal-revoke-license" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="studio-card rounded-2xl max-w-md w-full border border-rose-500/30 p-6 space-y-4">
             <div class="flex items-center gap-3 text-rose-400">
@@ -621,7 +1440,7 @@
         </div>
     </div>
 
-    <!-- MODAL: RESEND EMAIL -->
+    <!-- MODAL 9: RESEND EMAIL -->
     <div id="modal-resend-email" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="studio-card rounded-2xl max-w-md w-full border border-brand/30 p-6 space-y-4">
             <div class="flex items-center gap-3 text-brand">
@@ -645,7 +1464,7 @@
                 <label class="block text-xs font-semibold text-gray-300 mb-1">Recipient Override (Optional):</label>
                 <input type="email" id="resend-recipient-override" placeholder="Leave empty for customer billing email"
                     class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
-                <p class="text-[10px] text-gray-500 mt-1">In staging, recipient must be in approved allowlist (iamdk8968@gmail.com, motionbydk@gmail.com).</p>
+                <p class="text-[10px] text-gray-500 mt-1">In staging, recipient must be in approved allowlist.</p>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-resend-email')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
@@ -654,7 +1473,7 @@
         </div>
     </div>
 
-    <!-- MODAL: CHANGE MASTER PASSWORD -->
+    <!-- MODAL 10: CHANGE MASTER PASSWORD -->
     <div id="modal-change-password" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="studio-card rounded-2xl max-w-md w-full border border-brand/30 p-6 space-y-4">
             <div class="flex items-center gap-3 text-brand">
@@ -669,31 +1488,33 @@
 
             <div id="pwd-modal-error" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs"></div>
 
-            <form id="change-pwd-form" class="space-y-3">
+            <form id="change-pwd-form" class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Current Password:</label>
+                    <label class="block font-semibold text-gray-300 mb-1">Current Password:</label>
                     <input type="password" id="current-pwd-input" required placeholder="••••••••••••"
-                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">New Password (Min 10 chars, mixed case, number &amp; symbol):</label>
+                    <label class="block font-semibold text-gray-300 mb-1">New Password (Min 10 chars, mixed case, number &amp; symbol):</label>
                     <input type="password" id="new-pwd-input" required placeholder="••••••••••••"
-                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Confirm New Password:</label>
+                    <label class="block font-semibold text-gray-300 mb-1">Confirm New Password:</label>
                     <input type="password" id="confirm-pwd-input" required placeholder="••••••••••••"
-                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-change-password')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
-                    <button type="submit" id="submit-change-pwd-btn" class="px-4 py-2 rounded-lg bg-brand text-dark-base text-xs font-bold hover:bg-brand-hover transition-colors">Update Password</button>
+                    <button type="button" onclick="closeModal('modal-change-password')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 font-semibold text-gray-300 hover:text-white">Cancel</button>
+                    <button type="submit" id="submit-change-pwd-btn" class="px-4 py-2 rounded-lg bg-brand text-dark-base font-bold hover:bg-brand-hover transition-colors">Update Password</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- CORE ADMIN LOGIC SCRIPT -->
+    <!-- ===================================================================== -->
+    <!-- CORE SCRIPT LOGIC -->
+    <!-- ===================================================================== -->
     <script>
         // API Base URL - Automatically detects staging vs production vs local
         function resolveAdminApiBase() {
@@ -705,13 +1526,17 @@
         }
         const API_BASE = resolveAdminApiBase();
 
-        let adminToken = sessionStorage.getItem('mdk_admin_token') || '';
+        let adminToken = sessionStorage.getItem('mdk_admin_token') || localStorage.getItem('mdk_admin_token') || '';
         let currentAdmin = null;
 
-        // Active State
+        // Active States
         let ordersState = { page: 1, limit: 25, status: 'ALL', search: '', total: 0 };
         let licensesState = { page: 1, limit: 25, type: 'ALL', search: '', total: 0 };
-        let emailsState = { page: 1, limit: 25, status: 'ALL', search: '', total: 0 };
+        let emailsState = { page: 1, limit: 15, status: 'ALL', search: '', total: 0 };
+        let productsCache = [];
+        let releasesCache = [];
+        let couponsCache = [];
+        let customersCache = [];
 
         // DOM Elements
         const loginView = document.getElementById('login-view');
@@ -740,41 +1565,30 @@
         // Modal Helpers
         function openModal(id) {
             const m = document.getElementById(id);
-            if (m) m.classList.remove('hidden');
+            if (m) {
+                m.classList.remove('hidden');
+                lucide.createIcons();
+            }
         }
         function closeModal(id) {
             const m = document.getElementById(id);
             if (m) m.classList.add('hidden');
         }
 
-        // Tab Switching
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-
-            const targetPane = document.getElementById(`tab-${tabId}`);
-            const targetTab = document.querySelector(`[data-tab="${tabId}"]`);
-            if (targetPane) targetPane.classList.remove('hidden');
-            if (targetTab) targetTab.classList.add('active');
-
-            if (tabId === 'overview') fetchMetrics();
-            if (tabId === 'orders') fetchOrders();
-            if (tabId === 'licenses') fetchLicenses();
-            if (tabId === 'emails') fetchEmails();
-            if (tabId === 'audit') fetchAuditTrail();
-        }
-
         // Authenticated API Fetch Wrapper
         async function adminFetch(endpoint, options = {}) {
             const headers = options.headers || {};
             headers['Authorization'] = `Bearer ${adminToken}`;
-            headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+            if (!options.isFormData) {
+                headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+            }
 
             const url = `${API_BASE}${endpoint}`;
             const res = await fetch(url, { ...options, headers });
 
             if (res.status === 401) {
                 sessionStorage.removeItem('mdk_admin_token');
+                localStorage.removeItem('mdk_admin_token');
                 adminToken = '';
                 showToast('Admin session expired. Please sign in again.', 'error');
                 showLogin();
@@ -812,26 +1626,48 @@
             loginView.classList.add('hidden');
             dashboardView.classList.remove('hidden');
             if (currentAdmin) {
-                document.getElementById('admin-user-display').textContent = currentAdmin.name || currentAdmin.sub;
+                document.getElementById('admin-user-display').textContent = currentAdmin.full_name || currentAdmin.name || currentAdmin.username;
             }
             fetchMetrics();
+            fetchProducts();
+            fetchReleases();
+            fetchCoupons();
+            lucide.createIcons();
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            const targetPane = document.getElementById(`tab-${tabId}`);
+            const targetTab = document.querySelector(`[data-tab="${tabId}"]`);
+            if (targetPane) targetPane.classList.remove('hidden');
+            if (targetTab) targetTab.classList.add('active');
+
+            if (tabId === 'overview') fetchMetrics();
+            if (tabId === 'products') fetchProducts();
+            if (tabId === 'releases') fetchReleases();
+            if (tabId === 'coupons') fetchCoupons();
+            if (tabId === 'orders') fetchOrders();
+            if (tabId === 'licenses') fetchLicenses();
+            if (tabId === 'customers') fetchCustomers();
+            if (tabId === 'cms') fetchCmsBlocks();
+            if (tabId === 'analytics') fetchAnalyticsData();
             lucide.createIcons();
         }
 
         // ---------------------------------------------------------------------
-        // DATA FETCHING & RENDERING
+        // 1. OVERVIEW & KPIS
         // ---------------------------------------------------------------------
-
-        // 1. Metrics & Overview
         async function fetchMetrics() {
             try {
                 const data = await adminFetch('/api/admin/metrics');
                 if (!data.success || !data.metrics) return;
 
                 const m = data.metrics;
-                // Top KPI Cards
                 document.getElementById('metric-revenue-total').textContent = m.revenue.totalInrFormatted;
-                document.getElementById('metric-revenue-24h').textContent = m.revenue.revenue24hInr;
+                document.getElementById('metric-revenue-usd').textContent = m.revenue.totalUsdFormatted || '$0.00';
                 document.getElementById('metric-orders-paid').textContent = m.orders.paid;
                 document.getElementById('metric-orders-breakdown').textContent = `${m.orders.total} total • ${m.orders.pending} pend • ${m.orders.failed} fail`;
                 document.getElementById('metric-conversion-rate').textContent = `${m.orders.conversionRatePercent}%`;
@@ -840,16 +1676,15 @@
                 document.getElementById('metric-devices-active').textContent = m.devices.activeHardwareSlots;
                 document.getElementById('metric-devices-licenses').textContent = `${m.devices.licensesWithDevices} keys active`;
 
-                // Header Badges
+                // Badges
                 document.getElementById('badge-total-orders').textContent = m.orders.total;
                 document.getElementById('badge-total-licenses').textContent = m.licenses.total;
-                document.getElementById('badge-total-emails').textContent = m.emails.totalDispatched;
 
-                // Product Breakdown
+                // Products breakdown list
                 const pbContainer = document.getElementById('product-breakdown-list');
                 pbContainer.innerHTML = '';
                 if (m.productsBreakdown.length === 0) {
-                    pbContainer.innerHTML = '<div class="text-xs text-gray-500 py-2">No product sales yet.</div>';
+                    pbContainer.innerHTML = '<div class="text-xs text-gray-500 py-2">No product sales recorded yet.</div>';
                 } else {
                     m.productsBreakdown.forEach(p => {
                         const item = document.createElement('div');
@@ -874,6 +1709,7 @@
                     m.recentOrders.forEach(o => {
                         const tr = document.createElement('tr');
                         const statusBadge = getStatusBadgeHtml(o.status);
+                        const sym = o.currency === 'USD' ? '$' : '₹';
                         tr.innerHTML = `
                             <td class="py-2.5 font-mono text-brand font-semibold cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(o.order_id)}')">${escapeHtml(o.order_id)}</td>
                             <td class="py-2.5">
@@ -881,7 +1717,7 @@
                                 <span class="text-gray-400 text-[10px]">${escapeHtml(o.customer_email)}</span>
                             </td>
                             <td class="py-2.5 text-gray-300 max-w-[160px] truncate" title="${escapeHtml(o.product_name)}">${escapeHtml(o.product_name)}</td>
-                            <td class="py-2.5 font-bold text-white">₹${(o.final_amount_inr / 100).toFixed(2)}</td>
+                            <td class="py-2.5 font-bold text-white">${sym}${(o.final_amount_inr / 100).toFixed(2)}</td>
                             <td class="py-2.5">${statusBadge}</td>
                             <td class="py-2.5 text-gray-400 font-mono text-[10px]">${escapeHtml(o.created_at)}</td>
                         `;
@@ -893,7 +1729,639 @@
             }
         }
 
-        // 2. Orders List
+        // ---------------------------------------------------------------------
+        // 2. PRODUCTS & PLUGINS
+        // ---------------------------------------------------------------------
+        async function fetchProducts() {
+            const tbody = document.getElementById('products-tbody');
+            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">Loading products...</td></tr>';
+
+            try {
+                const data = await adminFetch('/api/admin/products');
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                productsCache = data.products || [];
+                document.getElementById('badge-total-products').textContent = productsCache.length;
+                renderProductsTable(productsCache);
+
+                // Populate product selects in Release Modal
+                const relProdSelect = document.getElementById('rel-product-select');
+                if (relProdSelect) {
+                    relProdSelect.innerHTML = productsCache.map(p => `
+                        <option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (${escapeHtml(p.id)})</option>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed to fetch products:', err);
+            }
+        }
+
+        function renderProductsTable(products) {
+            const tbody = document.getElementById('products-tbody');
+            tbody.innerHTML = '';
+
+            const search = (document.getElementById('product-search-input')?.value || '').toLowerCase();
+            const catFilter = document.getElementById('product-category-filter')?.value || 'ALL';
+
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search);
+                const matchesCat = catFilter === 'ALL' || (p.category || 'plugin') === catFilter;
+                return matchesSearch && matchesCat;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">No products matching filters.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                const isPub = (p.status || 'PUBLISHED') === 'PUBLISHED';
+                const statusBadge = isPub
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PUBLISHED</span>'
+                    : (p.status === 'ARCHIVED'
+                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">ARCHIVED</span>'
+                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">DRAFT</span>');
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-dark-base border border-white/10 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                ${p.thumbnail_url ? `<img src="${escapeHtml(p.thumbnail_url)}" class="w-full h-full object-cover">` : '<i data-lucide="package" class="w-4 h-4 text-brand"></i>'}
+                            </div>
+                            <div>
+                                <span class="font-bold text-white block">${escapeHtml(p.name)}</span>
+                                <span class="font-mono text-gray-400 text-[10px]">${escapeHtml(p.id)}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-white/5 text-gray-300">${escapeHtml(p.category || 'plugin')}</span>
+                    </td>
+                    <td class="py-3 px-4 font-bold text-white">₹${(p.price_inr / 100).toFixed(2)}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-400">$${Number(p.price_usd || 0).toFixed(2)}</td>
+                    <td class="py-3 px-4 font-mono text-gray-300">${p.max_devices} PC</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-gray-400 text-[11px] max-w-[160px] truncate" title="${escapeHtml(p.compatibility || 'Win/Mac')}">${escapeHtml(p.compatibility || 'All CC')}</td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="editProduct('${escapeHtml(p.id)}')" class="px-2 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-semibold text-gray-300 hover:text-brand">Edit</button>
+                            <button onclick="toggleArchiveProduct('${escapeHtml(p.id)}', '${p.status}')" class="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 text-[11px] font-semibold text-rose-400">
+                                ${p.status === 'ARCHIVED' ? 'Restore' : 'Archive'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function openAddProductModal() {
+            document.getElementById('modal-product-title').textContent = 'Add New Product';
+            document.getElementById('prod-form-mode').value = 'create';
+            document.getElementById('prod-id-input').disabled = false;
+            document.getElementById('prod-id-input').value = '';
+            document.getElementById('prod-name-input').value = '';
+            document.getElementById('prod-category-input').value = 'plugin';
+            document.getElementById('prod-price-inr-input').value = '499';
+            document.getElementById('prod-price-usd-input').value = '15';
+            document.getElementById('prod-max-devices-input').value = '2';
+            document.getElementById('prod-status-input').value = 'PUBLISHED';
+            document.getElementById('prod-is-free-input').checked = false;
+            document.getElementById('prod-desc-input').value = '';
+            document.getElementById('prod-compat-input').value = 'After Effects CC 2018 - 2026, Win/Mac';
+            document.getElementById('prod-thumb-url-input').value = '';
+            document.getElementById('prod-features-input').value = '';
+            openModal('modal-product-form');
+        }
+
+        function editProduct(productId) {
+            const p = productsCache.find(x => x.id === productId);
+            if (!p) return;
+
+            document.getElementById('modal-product-title').textContent = `Edit Product: ${p.name}`;
+            document.getElementById('prod-form-mode').value = 'edit';
+            document.getElementById('prod-id-input').disabled = true;
+            document.getElementById('prod-id-input').value = p.id;
+            document.getElementById('prod-name-input').value = p.name;
+            document.getElementById('prod-category-input').value = p.category || 'plugin';
+            document.getElementById('prod-price-inr-input').value = (p.price_inr / 100).toFixed(0);
+            document.getElementById('prod-price-usd-input').value = Number(p.price_usd || 0).toFixed(0);
+            document.getElementById('prod-max-devices-input').value = p.max_devices || 2;
+            document.getElementById('prod-status-input').value = p.status || 'PUBLISHED';
+            document.getElementById('prod-is-free-input').checked = !!p.is_free;
+            document.getElementById('prod-desc-input').value = p.description || '';
+            document.getElementById('prod-compat-input').value = p.compatibility || '';
+            document.getElementById('prod-thumb-url-input').value = p.thumbnail_url || '';
+
+            let feats = '';
+            if (p.features_list) {
+                try {
+                    const parsed = JSON.parse(p.features_list);
+                    if (Array.isArray(parsed)) feats = parsed.join('\n');
+                } catch { feats = p.features_list; }
+            }
+            document.getElementById('prod-features-input').value = feats;
+            openModal('modal-product-form');
+        }
+
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mode = document.getElementById('prod-form-mode').value;
+            const id = document.getElementById('prod-id-input').value.trim();
+            const name = document.getElementById('prod-name-input').value.trim();
+            const category = document.getElementById('prod-category-input').value;
+            const priceInr = Math.round(parseFloat(document.getElementById('prod-price-inr-input').value) * 100);
+            const priceUsd = parseFloat(document.getElementById('prod-price-usd-input').value) || 0;
+            const maxDevices = parseInt(document.getElementById('prod-max-devices-input').value, 10) || 2;
+            const status = document.getElementById('prod-status-input').value;
+            const isFree = document.getElementById('prod-is-free-input').checked ? 1 : 0;
+            const description = document.getElementById('prod-desc-input').value.trim();
+            const compatibility = document.getElementById('prod-compat-input').value.trim();
+            const thumbnailUrl = document.getElementById('prod-thumb-url-input').value.trim();
+            const rawFeatures = document.getElementById('prod-features-input').value.trim();
+            const featuresList = JSON.stringify(rawFeatures.split('\n').map(s => s.trim()).filter(Boolean));
+
+            const payload = {
+                id,
+                name,
+                category,
+                price_inr: priceInr,
+                price_usd: priceUsd,
+                max_devices: maxDevices,
+                status,
+                is_free: isFree,
+                description,
+                compatibility,
+                thumbnail_url: thumbnailUrl,
+                features_list: featuresList,
+            };
+
+            try {
+                const endpoint = mode === 'create' ? '/api/admin/products' : `/api/admin/products/${id}`;
+                const method = mode === 'create' ? 'POST' : 'PUT';
+                const data = await adminFetch(endpoint, {
+                    method,
+                    body: JSON.stringify(payload)
+                });
+
+                if (data.success) {
+                    showToast(mode === 'create' ? 'Product created successfully!' : 'Product updated successfully!', 'success');
+                    closeModal('modal-product-form');
+                    fetchProducts();
+                    fetchMetrics();
+                } else {
+                    showToast(data.error || 'Failed to save product.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        async function toggleArchiveProduct(productId, currentStatus) {
+            const isArchived = currentStatus === 'ARCHIVED';
+            const actionText = isArchived ? 'restore' : 'archive';
+            if (!confirm(`Are you sure you want to ${actionText} product "${productId}"?`)) return;
+
+            try {
+                if (!isArchived) {
+                    const data = await adminFetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
+                    if (data.success) {
+                        showToast(`Product ${productId} archived.`, 'success');
+                        fetchProducts();
+                    } else {
+                        showToast(data.error || 'Failed to archive.', 'error');
+                    }
+                } else {
+                    const data = await adminFetch(`/api/admin/products/${productId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ status: 'PUBLISHED' })
+                    });
+                    if (data.success) {
+                        showToast(`Product ${productId} restored to PUBLISHED.`, 'success');
+                        fetchProducts();
+                    }
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function uploadThumbnailToR2(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            const btnText = document.getElementById('upload-thumb-btn-text');
+            btnText.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', 'thumbnails');
+
+            try {
+                const res = await adminFetch('/api/admin/upload', {
+                    method: 'POST',
+                    body: formData,
+                    isFormData: true,
+                });
+                if (res.success && res.objectKey) {
+                    const publicUrl = `https://www.motionbydk.in/${res.objectKey}`;
+                    document.getElementById('prod-thumb-url-input').value = publicUrl;
+                    showToast('Thumbnail uploaded to Cloudflare R2!', 'success');
+                } else {
+                    showToast(res.error || 'Upload failed', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btnText.textContent = 'Upload Image';
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 3. VERSION RELEASES & UPDATER
+        // ---------------------------------------------------------------------
+        async function fetchReleases() {
+            const tbody = document.getElementById('releases-tbody');
+            tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">Loading version releases...</td></tr>';
+
+            try {
+                const data = await adminFetch('/api/admin/releases');
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                releasesCache = data.releases || [];
+                document.getElementById('badge-total-releases').textContent = releasesCache.length;
+                renderReleasesTable(releasesCache);
+
+                // Populate Rollback select
+                const rollbackSelect = document.getElementById('rollback-release-select');
+                if (rollbackSelect) {
+                    rollbackSelect.innerHTML = releasesCache.map(r => `
+                        <option value="${escapeHtml(r.id)}">v${escapeHtml(r.version)} — ${escapeHtml(r.title)} (${escapeHtml(r.release_date)})</option>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed to fetch releases:', err);
+            }
+        }
+
+        function renderReleasesTable(releases) {
+            const tbody = document.getElementById('releases-tbody');
+            tbody.innerHTML = '';
+
+            if (releases.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">No version packages published yet.</td></tr>';
+                return;
+            }
+
+            releases.forEach(r => {
+                const tr = document.createElement('tr');
+                const isLatest = r.is_latest === 1;
+                const isPub = r.is_published === 1;
+
+                const latestBadge = isLatest
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-brand/20 text-brand border border-brand/40">LATEST ACTIVE</span>'
+                    : '';
+                const pubBadge = isPub
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">PUBLISHED</span>'
+                    : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-500/10 text-gray-400">DRAFT</span>';
+
+                const sizeMb = (r.file_size_bytes / (1024 * 1024)).toFixed(2);
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-brand">
+                        v${escapeHtml(r.version)} ${latestBadge}
+                    </td>
+                    <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">${escapeHtml(r.product_id)}</td>
+                    <td class="py-3 px-4 text-white font-semibold">${escapeHtml(r.title)}</td>
+                    <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">${escapeHtml(r.release_date)}</td>
+                    <td class="py-3 px-4 font-mono text-gray-300">AE ${escapeHtml(r.min_ae_version || '15.0')}+</td>
+                    <td class="py-3 px-4 font-mono text-gray-400">${sizeMb > 0.05 ? `${sizeMb} MB` : `${Math.round(r.file_size_bytes / 1024)} KB`}</td>
+                    <td class="py-3 px-4 font-mono text-emerald-400 font-bold">${r.download_count}</td>
+                    <td class="py-3 px-4">${pubBadge}</td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            ${!isLatest ? `<button onclick="makeReleaseLatest('${escapeHtml(r.id)}')" class="px-2 py-1 rounded bg-brand/10 border border-brand/20 text-brand text-[11px] font-semibold hover:bg-brand/20">Set Latest</button>` : ''}
+                            <button onclick="togglePublishRelease('${escapeHtml(r.id)}', ${r.is_published})" class="px-2 py-1 rounded bg-dark-card border border-white/10 text-gray-300 text-[11px] font-semibold hover:text-white">
+                                ${isPub ? 'Unpublish' : 'Publish'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function openAddReleaseModal() {
+            document.getElementById('rel-version-input').value = '';
+            document.getElementById('rel-title-input').value = '';
+            document.getElementById('rel-date-input').value = new Date().toISOString().split('T')[0];
+            document.getElementById('rel-min-ae-input').value = '15.0';
+            document.getElementById('rel-notes-input').value = '';
+            document.getElementById('rel-r2-key-hidden').value = '';
+            document.getElementById('rel-file-size-hidden').value = '0';
+            document.getElementById('rel-upload-status').textContent = 'Select a zip archive to stream to R2.';
+            openModal('modal-release-form');
+        }
+
+        function openRollbackModal() {
+            openModal('modal-release-rollback');
+        }
+
+        // Release Zip Direct Upload
+        document.getElementById('rel-zip-file-picker').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('rel-upload-status');
+            statusEl.innerHTML = `<span class="text-brand flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Streaming ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB) directly to R2...</span>`;
+            lucide.createIcons();
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', 'releases');
+
+            try {
+                const res = await adminFetch('/api/admin/upload', {
+                    method: 'POST',
+                    body: formData,
+                    isFormData: true,
+                });
+                if (res.success && res.objectKey) {
+                    document.getElementById('rel-r2-key-hidden').value = res.objectKey;
+                    document.getElementById('rel-file-size-hidden').value = res.sizeBytes;
+                    statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✓ Uploaded to R2: ${escapeHtml(res.objectKey)} (${(res.sizeBytes / 1024).toFixed(1)} KB)</span>`;
+                } else {
+                    statusEl.innerHTML = `<span class="text-rose-400">Upload failed: ${escapeHtml(res.error || 'Server error')}</span>`;
+                }
+            } catch (err) {
+                statusEl.innerHTML = `<span class="text-rose-400">Error: ${escapeHtml(err.message)}</span>`;
+            }
+        });
+
+        document.getElementById('release-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productId = document.getElementById('rel-product-select').value;
+            const version = document.getElementById('rel-version-input').value.trim();
+            const title = document.getElementById('rel-title-input').value.trim();
+            const releaseDate = document.getElementById('rel-date-input').value;
+            const minAeVersion = document.getElementById('rel-min-ae-input').value.trim();
+            const releaseNotes = document.getElementById('rel-notes-input').value.trim();
+            const r2ObjectKey = document.getElementById('rel-r2-key-hidden').value;
+            const fileSizeBytes = parseInt(document.getElementById('rel-file-size-hidden').value, 10) || 0;
+            const isPublished = document.getElementById('rel-published-check').checked ? 1 : 0;
+            const isLatest = document.getElementById('rel-latest-check').checked ? 1 : 0;
+
+            if (!r2ObjectKey) {
+                alert('Please upload a valid .zip release package to R2 first.');
+                return;
+            }
+
+            const payload = {
+                product_id: productId,
+                version,
+                title,
+                release_date: releaseDate,
+                min_ae_version: minAeVersion,
+                release_notes: releaseNotes,
+                r2_object_key: r2ObjectKey,
+                file_size_bytes: fileSizeBytes,
+                is_published: isPublished,
+                is_latest: isLatest,
+            };
+
+            try {
+                const data = await adminFetch('/api/admin/releases', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                if (data.success) {
+                    showToast(`Release v${version} published successfully!`, 'success');
+                    closeModal('modal-release-form');
+                    fetchReleases();
+                } else {
+                    showToast(data.error || 'Failed to create release.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        async function makeReleaseLatest(releaseId) {
+            if (!confirm('Set this release as the LATEST active version for all extension updates?')) return;
+            try {
+                const data = await adminFetch(`/api/admin/releases/${releaseId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ is_latest: 1, is_published: 1 })
+                });
+                if (data.success) {
+                    showToast('Version set as latest active release!', 'success');
+                    fetchReleases();
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function togglePublishRelease(releaseId, currentPublished) {
+            const newPub = currentPublished === 1 ? 0 : 1;
+            try {
+                const data = await adminFetch(`/api/admin/releases/${releaseId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ is_published: newPub })
+                });
+                if (data.success) {
+                    showToast(`Release ${newPub === 1 ? 'published' : 'unpublished'}.`, 'success');
+                    fetchReleases();
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        document.getElementById('confirm-rollback-btn').addEventListener('click', async () => {
+            const targetReleaseId = document.getElementById('rollback-release-select').value;
+            if (!targetReleaseId) return;
+
+            try {
+                const data = await adminFetch('/api/admin/releases/rollback', {
+                    method: 'POST',
+                    body: JSON.stringify({ targetReleaseId })
+                });
+                if (data.success) {
+                    showToast('Updater successfully rolled back to chosen release!', 'success');
+                    closeModal('modal-release-rollback');
+                    fetchReleases();
+                } else {
+                    showToast(data.error || 'Rollback failed.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        // ---------------------------------------------------------------------
+        // 4. COUPONS & OFFERS
+        // ---------------------------------------------------------------------
+        async function fetchCoupons() {
+            const tbody = document.getElementById('coupons-tbody');
+            tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">Loading coupons...</td></tr>';
+
+            try {
+                const [couponsData, reportsData] = await Promise.all([
+                    adminFetch('/api/admin/coupons'),
+                    adminFetch('/api/admin/coupons/reports')
+                ]);
+
+                if (reportsData.success && reportsData.report) {
+                    const r = reportsData.report;
+                    document.getElementById('metric-coupons-active').textContent = r.activeCoupons;
+                    document.getElementById('metric-coupons-redeemed').textContent = r.totalTimesRedeemed;
+                    const totalSavings = r.couponStats.reduce((acc, c) => acc + (c.totalSavingsInr || 0), 0);
+                    document.getElementById('metric-coupons-savings').textContent = `₹${(totalSavings / 100).toFixed(2)}`;
+                }
+
+                if (!couponsData.success) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-rose-400">Error: ${escapeHtml(couponsData.error)}</td></tr>`;
+                    return;
+                }
+
+                couponsCache = couponsData.coupons || [];
+                document.getElementById('badge-total-coupons').textContent = couponsCache.length;
+                renderCouponsTable(couponsCache);
+            } catch (err) {
+                console.error('Failed to fetch coupons:', err);
+            }
+        }
+
+        function renderCouponsTable(coupons) {
+            const tbody = document.getElementById('coupons-tbody');
+            tbody.innerHTML = '';
+
+            const search = (document.getElementById('coupon-search-input')?.value || '').toUpperCase();
+            const filtered = coupons.filter(c => c.code.toUpperCase().includes(search));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">No coupons matching criteria.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(c => {
+                const tr = document.createElement('tr');
+                const isPct = c.discount_type === 'PERCENTAGE';
+                const isActive = c.is_active === 1;
+
+                const statusBadge = isActive
+                    ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ACTIVE</span>'
+                    : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">DISABLED</span>';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-brand">${escapeHtml(c.code)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono ${isPct ? 'bg-purple-500/10 text-purple-400' : 'bg-cyan-500/10 text-cyan-400'}">${escapeHtml(c.discount_type)}</span>
+                    </td>
+                    <td class="py-3 px-4 font-bold text-white">${c.discount_inr > 0 ? `₹${(c.discount_inr / 100).toFixed(2)}` : '-'}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-400">${c.discount_usd > 0 ? `$${c.discount_usd.toFixed(2)}` : '-'}</td>
+                    <td class="py-3 px-4 font-mono text-purple-400 font-bold">${isPct ? `${c.discount_percentage}%` : '-'}</td>
+                    <td class="py-3 px-4 font-mono text-gray-300">${c.times_used} / ${c.max_uses || '∞'}</td>
+                    <td class="py-3 px-4 font-mono text-gray-400">${c.per_customer_limit || 1}x</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="toggleCouponActive('${escapeHtml(c.code)}', ${c.is_active})" class="px-2.5 py-1 rounded text-[11px] font-semibold ${isActive ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">
+                            ${isActive ? 'Disable' : 'Enable'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function openCreateCouponModal() {
+            document.getElementById('coupon-code-input').value = '';
+            document.getElementById('coupon-type-input').value = 'FIXED';
+            document.getElementById('coupon-inr-input').value = '100';
+            document.getElementById('coupon-usd-input').value = '3.00';
+            document.getElementById('coupon-pct-input').value = '20';
+            document.getElementById('coupon-max-uses-input').value = '500';
+            document.getElementById('coupon-per-cust-input').value = '1';
+            document.getElementById('coupon-expiry-input').value = '';
+            document.getElementById('coupon-fixed-fields').classList.remove('hidden');
+            document.getElementById('coupon-percentage-fields').classList.add('hidden');
+            openModal('modal-coupon-form');
+        }
+
+        document.getElementById('coupon-type-input').addEventListener('change', (e) => {
+            const isPct = e.target.value === 'PERCENTAGE';
+            document.getElementById('coupon-percentage-fields').classList.toggle('hidden', !isPct);
+            document.getElementById('coupon-fixed-fields').classList.toggle('hidden', isPct);
+        });
+
+        document.getElementById('coupon-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+            const discountType = document.getElementById('coupon-type-input').value;
+            const discountInr = discountType === 'FIXED' ? Math.round(parseFloat(document.getElementById('coupon-inr-input').value) * 100) : 0;
+            const discountUsd = discountType === 'FIXED' ? parseFloat(document.getElementById('coupon-usd-input').value) : 0;
+            const discountPct = discountType === 'PERCENTAGE' ? parseFloat(document.getElementById('coupon-pct-input').value) : 0;
+            const maxUses = parseInt(document.getElementById('coupon-max-uses-input').value, 10) || 500;
+            const perCustomerLimit = parseInt(document.getElementById('coupon-per-cust-input').value, 10) || 1;
+            const expiry = document.getElementById('coupon-expiry-input').value || null;
+
+            const payload = {
+                code,
+                discount_type: discountType,
+                discount_amount_inr: discountInr,
+                discount_usd: discountUsd,
+                discount_percentage: discountPct,
+                max_uses: maxUses,
+                per_customer_limit: perCustomerLimit,
+                expires_at: expiry,
+            };
+
+            try {
+                const data = await adminFetch('/api/admin/coupons', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                if (data.success) {
+                    showToast(`Coupon ${code} created successfully!`, 'success');
+                    closeModal('modal-coupon-form');
+                    fetchCoupons();
+                } else {
+                    showToast(data.error || 'Failed to create coupon.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        });
+
+        async function toggleCouponActive(code, currentActive) {
+            const newActive = currentActive === 1 ? false : true;
+            try {
+                const data = await adminFetch('/api/admin/coupons/toggle', {
+                    method: 'POST',
+                    body: JSON.stringify({ code, isActive: newActive })
+                });
+                if (data.success) {
+                    showToast(`Coupon ${code} is now ${newActive ? 'active' : 'disabled'}.`, 'success');
+                    fetchCoupons();
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 5. ORDERS DIRECTORY
+        // ---------------------------------------------------------------------
         async function fetchOrders() {
             const tbody = document.getElementById('orders-tbody');
             tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading orders...</td></tr>';
@@ -918,6 +2386,7 @@
                     data.orders.forEach(o => {
                         const tr = document.createElement('tr');
                         const statusBadge = getStatusBadgeHtml(o.status);
+                        const sym = o.currency === 'USD' ? '$' : '₹';
                         tr.innerHTML = `
                             <td class="py-3 px-4 font-mono text-brand font-bold cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(o.order_id)}')">${escapeHtml(o.order_id)}</td>
                             <td class="py-3 px-4">
@@ -929,7 +2398,7 @@
                                 ${escapeHtml(o.product_name)}
                                 ${o.coupon_code ? `<span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-brand/10 text-brand font-mono">${escapeHtml(o.coupon_code)}</span>` : ''}
                             </td>
-                            <td class="py-3 px-4 font-bold text-white">${escapeHtml(o.finalAmountInrFormatted)}</td>
+                            <td class="py-3 px-4 font-bold text-white">${sym}${(o.final_amount_inr / 100).toFixed(2)}</td>
                             <td class="py-3 px-4">${statusBadge}</td>
                             <td class="py-3 px-4 text-gray-400 font-mono text-[10px]">${escapeHtml(o.created_at)}</td>
                             <td class="py-3 px-4 text-right">
@@ -943,7 +2412,6 @@
                     });
                 }
 
-                // Update Pagination Controls
                 ordersState.total = data.pagination.total;
                 document.getElementById('orders-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} orders)`;
                 document.getElementById('orders-prev-btn').disabled = data.pagination.page <= 1;
@@ -953,7 +2421,6 @@
             }
         }
 
-        // 3. Order Dossier
         async function viewOrderDossier(orderId) {
             openModal('modal-order-dossier');
             document.getElementById('modal-order-id-display').textContent = orderId;
@@ -970,8 +2437,8 @@
                 const o = data.order;
                 const lic = data.license;
                 const payments = data.payments || [];
-                const tokens = data.downloadTokens || [];
                 const emails = data.emailLogs || [];
+                const sym = o.currency === 'USD' ? '$' : '₹';
 
                 container.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -981,7 +2448,7 @@
                             <div class="text-gray-300 font-mono">${escapeHtml(o.customer_email)}</div>
                             <div class="text-gray-400 font-mono">${escapeHtml(o.customer_phone || 'No phone provided')}</div>
                             <div class="pt-2 text-gray-400 text-[11px]">
-                                Amount: <strong class="text-white">${escapeHtml(o.finalAmountInrFormatted)}</strong> (${escapeHtml(o.currency)})
+                                Amount: <strong class="text-white">${sym}${(o.final_amount_inr / 100).toFixed(2)}</strong> (${escapeHtml(o.currency)})
                                 &bull; Status: ${getStatusBadgeHtml(o.status)}
                             </div>
                         </div>
@@ -1033,10 +2500,9 @@
                                         <div>
                                             <span class="text-white font-bold">CF ID: ${escapeHtml(p.cf_payment_id)}</span>
                                             <span class="text-gray-400 ml-2">(${escapeHtml(p.payment_method || 'UPI')})</span>
-                                            ${p.bank_reference ? `<span class="text-gray-500 block text-[10px]">Bank UTR: ${escapeHtml(p.bank_reference)}</span>` : ''}
                                         </div>
                                         <div class="text-right">
-                                            <span class="font-bold text-emerald-400">₹${(p.payment_amount_inr / 100).toFixed(2)}</span>
+                                            <span class="font-bold text-emerald-400">${sym}${(p.payment_amount_inr / 100).toFixed(2)}</span>
                                             <span class="block text-[10px] text-gray-400">${escapeHtml(p.payment_status)}</span>
                                         </div>
                                     </div>
@@ -1045,7 +2511,7 @@
                         `}
                     </div>
 
-                    <!-- Email History for this Order -->
+                    <!-- Email History -->
                     <div class="p-4 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Dispatched Email History</span>
                         ${emails.length === 0 ? '<div class="text-gray-500 text-xs">No emails sent for this order yet.</div>' : `
@@ -1054,11 +2520,10 @@
                                     <div class="p-2 rounded bg-dark-elevated flex items-center justify-between">
                                         <div>
                                             <span class="text-brand font-bold">${escapeHtml(e.email_type)}</span>
-                                            <span class="text-gray-400 block text-[10px]">${escapeHtml(e.recipient_email)} &bull; ${escapeHtml(e.resend_message_id || 'mock')}</span>
+                                            <span class="text-gray-400 block text-[10px]">${escapeHtml(e.recipient_email)}</span>
                                         </div>
                                         <div class="text-right">
                                             <span class="text-xs px-2 py-0.5 rounded ${e.status === 'SENT' || e.status === 'MOCK_SENT' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'} font-bold">${escapeHtml(e.status)}</span>
-                                            <span class="block text-[10px] text-gray-500">${escapeHtml(e.created_at)}</span>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -1072,7 +2537,9 @@
             }
         }
 
-        // 4. Licenses List
+        // ---------------------------------------------------------------------
+        // 6. LICENSES & HARDWARE LOCKER
+        // ---------------------------------------------------------------------
         async function fetchLicenses() {
             const tbody = document.getElementById('licenses-tbody');
             tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading licenses...</td></tr>';
@@ -1136,7 +2603,6 @@
                     });
                 }
 
-                // Update Pagination
                 licensesState.total = data.pagination.total;
                 document.getElementById('licenses-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} keys)`;
                 document.getElementById('licenses-prev-btn').disabled = data.pagination.page <= 1;
@@ -1146,7 +2612,6 @@
             }
         }
 
-        // 5. Inspect Hardware Devices
         async function inspectDevices(licenseKey) {
             openModal('modal-license-devices');
             document.getElementById('modal-license-key-display').textContent = licenseKey;
@@ -1190,7 +2655,6 @@
                                             </div>
                                             <span class="text-gray-400 block text-[10px] mt-0.5">Hash: ${escapeHtml(a.machine_id)}</span>
                                             <span class="text-gray-500 block text-[10px]">OS: ${escapeHtml(a.os || 'Desktop')} &bull; Activated: ${escapeHtml(a.activated_at)}</span>
-                                            ${a.deactivated_at ? `<span class="text-rose-400/80 block text-[10px]">Deactivated: ${escapeHtml(a.deactivated_at)}</span>` : ''}
                                         </div>
                                     </div>
                                 `).join('')}
@@ -1203,11 +2667,8 @@
             }
         }
 
-        // 6. Reset Device Hardware Locks
         async function promptResetDevices(licenseKey) {
-            if (!confirm(`Are you sure you want to reset all active hardware locks for license ${licenseKey}?\n\nThis will free up the 2-PC slots so the customer can activate on a new computer.`)) {
-                return;
-            }
+            if (!confirm(`Are you sure you want to reset all active hardware locks for license ${licenseKey}?\n\nThis will free up the 2-PC slots so the customer can activate on a new computer.`)) return;
             try {
                 const data = await adminFetch('/api/admin/licenses/reset-devices', {
                     method: 'POST',
@@ -1226,7 +2687,6 @@
             }
         }
 
-        // 7. Revoke & Reinstate License
         let pendingRevokeKey = '';
         function promptRevokeLicense(licenseKey) {
             pendingRevokeKey = licenseKey;
@@ -1278,10 +2738,276 @@
             }
         }
 
-        // 8. Emails List & Manual Resend
+        // ---------------------------------------------------------------------
+        // 7. CUSTOMERS DIRECTORY
+        // ---------------------------------------------------------------------
+        async function fetchCustomers() {
+            const tbody = document.getElementById('customers-tbody');
+            tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">Loading customers...</td></tr>';
+
+            try {
+                const search = document.getElementById('customer-search-input')?.value || '';
+                const params = new URLSearchParams({ limit: 50, offset: 0, search });
+                const data = await adminFetch(`/api/admin/customers?${params.toString()}`);
+
+                if (!data.success) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    return;
+                }
+
+                customersCache = data.customers || [];
+                document.getElementById('badge-total-customers').textContent = data.total || customersCache.length;
+                tbody.innerHTML = '';
+
+                if (customersCache.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">No customers found.</td></tr>';
+                    return;
+                }
+
+                customersCache.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="py-3 px-4">
+                            <span class="font-bold text-white block">${escapeHtml(c.fullName || 'Customer')}</span>
+                            <span class="font-mono text-gray-400 text-[10px]">${escapeHtml(c.email)}</span>
+                        </td>
+                        <td class="py-3 px-4 font-mono text-gray-400 text-[11px]">${escapeHtml(c.phone || '-')}</td>
+                        <td class="py-3 px-4 font-mono text-gray-300">${c.totalOrders}</td>
+                        <td class="py-3 px-4 font-mono text-emerald-400 font-bold">${c.paidOrders}</td>
+                        <td class="py-3 px-4 font-bold text-white">₹${Number(c.totalSpentInr || 0).toFixed(2)}</td>
+                        <td class="py-3 px-4 font-bold text-emerald-400">$${Number(c.totalSpentUsd || 0).toFixed(2)}</td>
+                        <td class="py-3 px-4 font-mono text-brand font-bold">${c.activeLicensesCount}</td>
+                        <td class="py-3 px-4 font-mono text-gray-400 text-[10px]">${escapeHtml(c.createdAt)}</td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="viewCustomerDetail('${escapeHtml(c.id)}')" class="px-2.5 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-semibold text-brand">Profile</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                lucide.createIcons();
+            } catch (err) {
+                console.error('Failed to fetch customers:', err);
+            }
+        }
+
+        async function viewCustomerDetail(customerId) {
+            openModal('modal-customer-detail');
+            const container = document.getElementById('modal-customer-content');
+            container.innerHTML = '<div class="py-8 text-center text-gray-500">Loading customer profile...</div>';
+
+            try {
+                const data = await adminFetch(`/api/admin/customers/${customerId}`);
+                if (!data.success || !data.customer) {
+                    container.innerHTML = `<div class="py-6 text-center text-rose-400">Failed to load customer: ${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+
+                const c = data.customer;
+                const orders = data.orders || [];
+                const licenses = data.licenses || [];
+                document.getElementById('modal-customer-email-display').textContent = c.email;
+
+                const paidCount = c.paidOrders !== undefined ? c.paidOrders : orders.filter(o => o.status === 'PAID').length;
+                const totalCount = c.totalOrders !== undefined ? c.totalOrders : orders.length;
+                const spentInr = c.totalSpentInr !== undefined ? c.totalSpentInr : (orders.filter(o => o.status === 'PAID' && (o.currency === 'INR' || !o.currency)).reduce((acc, o) => acc + (o.final_amount_inr || 0), 0) / 100);
+                const spentUsd = c.totalSpentUsd !== undefined ? c.totalSpentUsd : (orders.filter(o => o.status === 'PAID' && o.currency === 'USD').reduce((acc, o) => acc + (o.final_amount_inr || 0), 0) / 100);
+                const activeLics = c.activeLicensesCount !== undefined ? c.activeLicensesCount : licenses.filter(l => l.is_active === 1).length;
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-xl bg-dark-base border border-white/5">
+                        <div>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold block">Lifetime INR</span>
+                            <span class="font-extrabold text-white text-base">₹${Number(spentInr || 0).toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold block">Lifetime USD</span>
+                            <span class="font-extrabold text-emerald-400 text-base">$${Number(spentUsd || 0).toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold block">Paid Orders</span>
+                            <span class="font-extrabold text-brand text-base">${paidCount} / ${totalCount}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-gray-400 uppercase font-bold block">Licenses</span>
+                            <span class="font-extrabold text-cyan-400 text-base">${activeLics} active</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Order History (${orders.length})</span>
+                        ${orders.length === 0 ? '<div class="text-gray-500 py-2">No orders recorded.</div>' : `
+                            <div class="space-y-1.5 font-mono text-[11px]">
+                                ${orders.map(o => `
+                                    <div class="p-2.5 rounded bg-dark-base border border-white/5 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-brand font-bold cursor-pointer hover:underline" onclick="viewOrderDossier('${escapeHtml(o.order_id)}')">${escapeHtml(o.order_id)}</span>
+                                            <span class="text-gray-400 ml-2">${escapeHtml(o.product_name)}</span>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold text-white mr-2">${o.currency === 'USD' ? '$' : '₹'}${(o.final_amount_inr / 100).toFixed(2)}</span>
+                                            ${getStatusBadgeHtml(o.status)}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-[10px] font-bold text-brand uppercase tracking-wider block">Commercial Licenses Owned (${licenses.length})</span>
+                        ${licenses.length === 0 ? '<div class="text-gray-500 py-2">No licenses issued.</div>' : `
+                            <div class="space-y-1.5 font-mono text-[11px]">
+                                ${licenses.map(l => `
+                                    <div class="p-2.5 rounded bg-dark-base border border-brand/20 flex items-center justify-between">
+                                        <span class="text-brand font-bold">${escapeHtml(l.license_key)}</span>
+                                        <button onclick="inspectDevices('${escapeHtml(l.license_key)}')" class="text-gray-300 hover:text-white font-semibold">Inspect Workstations &rarr;</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
+                    </div>
+                `;
+            } catch (err) {
+                container.innerHTML = `<div class="py-4 text-center text-rose-400">Error: ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 8. STOREFRONT CMS
+        // ---------------------------------------------------------------------
+        async function fetchCmsBlocks() {
+            try {
+                const data = await adminFetch('/api/admin/cms/homepage');
+                if (!data.success || !data.blocks) return;
+
+                const blocks = data.blocks;
+                const topBanner = blocks.find(b => b.key === 'top_banner');
+                if (topBanner) {
+                    document.getElementById('cms-top-banner-active').checked = topBanner.is_active === 1;
+                    document.getElementById('cms-top-banner-title').value = topBanner.title || '';
+                    document.getElementById('cms-top-banner-content').value = topBanner.content || '';
+                    document.getElementById('cms-top-banner-cta-text').value = topBanner.cta_text || '';
+                    document.getElementById('cms-top-banner-cta-url').value = topBanner.cta_url || '';
+                    document.getElementById('cms-top-banner-badge').value = topBanner.badge_text || '';
+                }
+
+                const heroCta = blocks.find(b => b.key === 'hero_cta');
+                if (heroCta) {
+                    document.getElementById('cms-hero-cta-active').checked = heroCta.is_active === 1;
+                    document.getElementById('cms-hero-cta-title').value = heroCta.title || '';
+                    document.getElementById('cms-hero-cta-content').value = heroCta.content || '';
+                    document.getElementById('cms-hero-cta-cta-text').value = heroCta.cta_text || '';
+                    document.getElementById('cms-hero-cta-cta-url').value = heroCta.cta_url || '';
+                    document.getElementById('cms-hero-cta-badge').value = heroCta.badge_text || '';
+                }
+            } catch (err) {
+                console.error('Failed to fetch CMS:', err);
+            }
+        }
+
+        async function saveCmsBlock(key) {
+            let payload = { key };
+            if (key === 'top_banner') {
+                payload = {
+                    key: 'top_banner',
+                    is_active: document.getElementById('cms-top-banner-active').checked ? 1 : 0,
+                    title: document.getElementById('cms-top-banner-title').value.trim(),
+                    content: document.getElementById('cms-top-banner-content').value.trim(),
+                    cta_text: document.getElementById('cms-top-banner-cta-text').value.trim(),
+                    cta_url: document.getElementById('cms-top-banner-cta-url').value.trim(),
+                    badge_text: document.getElementById('cms-top-banner-badge').value.trim(),
+                };
+            } else if (key === 'hero_cta') {
+                payload = {
+                    key: 'hero_cta',
+                    is_active: document.getElementById('cms-hero-cta-active').checked ? 1 : 0,
+                    title: document.getElementById('cms-hero-cta-title').value.trim(),
+                    content: document.getElementById('cms-hero-cta-content').value.trim(),
+                    cta_text: document.getElementById('cms-hero-cta-cta-text').value.trim(),
+                    cta_url: document.getElementById('cms-hero-cta-cta-url').value.trim(),
+                    badge_text: document.getElementById('cms-hero-cta-badge').value.trim(),
+                };
+            }
+
+            try {
+                const data = await adminFetch('/api/admin/cms/homepage', {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+                if (data.success) {
+                    showToast(`CMS block "${key}" saved successfully!`, 'success');
+                } else {
+                    showToast(data.error || 'Failed to update CMS block.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 9. ANALYTICS & OBSERVABILITY
+        // ---------------------------------------------------------------------
+        async function fetchAnalyticsData() {
+            try {
+                const [metricsData, auditData, emailsData] = await Promise.all([
+                    adminFetch('/api/admin/metrics'),
+                    adminFetch('/api/admin/audit-logs?limit=5'),
+                    adminFetch('/api/admin/emails?limit=1')
+                ]);
+
+                if (metricsData.success && metricsData.metrics) {
+                    const m = metricsData.metrics;
+                    document.getElementById('analytics-rev-inr').textContent = m.revenue.totalInrFormatted;
+                    document.getElementById('analytics-rev-usd').textContent = m.revenue.totalUsdFormatted || '$0.00';
+                    document.getElementById('analytics-conv-rate').textContent = `${m.orders.conversionRatePercent}%`;
+
+                    const totalDevicesPossible = m.licenses.total * 2;
+                    const utilPct = totalDevicesPossible > 0 ? ((m.devices.activeHardwareSlots / totalDevicesPossible) * 100).toFixed(1) : '0.0';
+                    document.getElementById('analytics-hardware-ratio').textContent = `${utilPct}%`;
+
+                    // Email Observability Panel
+                    const emailContainer = document.getElementById('analytics-email-stats');
+                    emailContainer.innerHTML = `
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="p-3 rounded-lg bg-dark-base border border-white/5">
+                                <span class="text-white font-bold block text-sm">${m.emails.totalDispatched}</span>
+                                <span class="text-gray-400 text-[10px]">Dispatched</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-dark-base border border-white/5">
+                                <span class="text-emerald-400 font-bold block text-sm">${m.emails.successful}</span>
+                                <span class="text-gray-400 text-[10px]">Delivered</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-dark-base border border-white/5">
+                                <span class="text-rose-400 font-bold block text-sm">${m.emails.failed}</span>
+                                <span class="text-gray-400 text-[10px]">Failed</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (auditData.success && auditData.auditLogs) {
+                    const auditSummary = document.getElementById('analytics-audit-summary');
+                    auditSummary.innerHTML = auditData.auditLogs.map(a => `
+                        <div class="p-2.5 rounded bg-dark-base border border-white/5 flex items-center justify-between text-[11px]">
+                            <div>
+                                <span class="text-brand font-bold">${escapeHtml(a.action)}</span>
+                                <span class="text-gray-400 ml-2">${escapeHtml(a.actor_id)}</span>
+                            </div>
+                            <span class="text-gray-500 text-[10px]">${escapeHtml(a.created_at)}</span>
+                        </div>
+                    `).join('');
+                }
+                fetchEmails();
+                fetchAuditTrail();
+            } catch (err) {
+                console.error('Failed to load analytics:', err);
+            }
+        }
+
         async function fetchEmails() {
             const tbody = document.getElementById('emails-tbody');
-            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">Loading email logs...</td></tr>';
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500 font-sans">Loading email logs...</td></tr>';
 
             try {
                 const params = new URLSearchParams({
@@ -1292,21 +3018,21 @@
                 });
                 const data = await adminFetch(`/api/admin/emails?${params.toString()}`);
                 if (!data.success) {
-                    tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error)}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-rose-400 font-sans">Error: ${escapeHtml(data.error)}</td></tr>`;
                     return;
                 }
 
                 tbody.innerHTML = '';
                 if (data.emails.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500">No email logs matching filter.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-gray-500 font-sans">No email logs matching filter.</td></tr>';
                 } else {
                     data.emails.forEach(e => {
                         const tr = document.createElement('tr');
                         const statusBadge = e.status === 'SENT' || e.status === 'ACCEPTED'
-                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SENT</span>'
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">SENT</span>'
                             : e.status === 'MOCK_SENT'
-                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">MOCK_SENT</span>'
-                            : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">FAILED</span>';
+                            ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-400">MOCK_SENT</span>'
+                            : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400">FAILED</span>';
 
                         tr.innerHTML = `
                             <td class="py-3 px-4 font-mono text-white">${escapeHtml(e.recipient_email)}</td>
@@ -1324,7 +3050,6 @@
                     });
                 }
 
-                // Pagination
                 emailsState.total = data.pagination.total;
                 document.getElementById('emails-page-info').textContent = `Page ${data.pagination.page} of ${data.pagination.totalPages} (${data.pagination.total} emails)`;
                 document.getElementById('emails-prev-btn').disabled = data.pagination.page <= 1;
@@ -1334,6 +3059,68 @@
             }
         }
 
+        async function fetchAuditTrail() {
+            const auditTbody = document.getElementById('audit-tbody');
+            const webhooksTbody = document.getElementById('webhooks-tbody');
+            if (!auditTbody || !webhooksTbody) return;
+
+            auditTbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>';
+            webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook logs...</td></tr>';
+
+            try {
+                const [auditData, webhookData] = await Promise.all([
+                    adminFetch('/api/admin/audit-logs?limit=50'),
+                    adminFetch('/api/admin/payment-events?limit=50')
+                ]);
+
+                if (auditData.success && auditData.auditLogs) {
+                    auditTbody.innerHTML = '';
+                    if (auditData.auditLogs.length === 0) {
+                        auditTbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500 font-sans">No admin actions recorded yet.</td></tr>';
+                    } else {
+                        auditData.auditLogs.forEach(a => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td class="py-2.5 px-4 font-bold text-brand">${escapeHtml(a.action)}</td>
+                                <td class="py-2.5 px-4 text-white">${escapeHtml(a.actor_id)}</td>
+                                <td class="py-2.5 px-4 text-gray-300 max-w-[120px] truncate" title="${escapeHtml(a.target_id || '')}">${escapeHtml(a.target_id || 'N/A')}</td>
+                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(a.created_at)}</td>
+                            `;
+                            auditTbody.appendChild(tr);
+                        });
+                    }
+                }
+
+                if (webhookData.success && webhookData.paymentEvents) {
+                    webhooksTbody.innerHTML = '';
+                    if (webhookData.paymentEvents.length === 0) {
+                        webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">No webhook events logged yet.</td></tr>';
+                    } else {
+                        webhookData.paymentEvents.forEach(w => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td class="py-2.5 px-4 text-gray-300 max-w-[100px] truncate" title="${escapeHtml(w.event_id)}">${escapeHtml(w.event_id)}</td>
+                                <td class="py-2.5 px-4 text-brand">${escapeHtml(w.order_id)}</td>
+                                <td class="py-2.5 px-4 text-purple-400 text-[10px]">${escapeHtml(w.event_type)}</td>
+                                <td class="py-2.5 px-4 text-center">
+                                    <span class="px-1.5 py-0.2 rounded text-[9px] ${w.signature_verified ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'} font-bold">
+                                        ${w.signature_verified ? 'VERIFIED' : 'RAW'}
+                                    </span>
+                                </td>
+                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(w.processed_at)}</td>
+                            `;
+                            webhooksTbody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load audit trail:', err);
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // RESEND TRANSACTIONAL EMAIL MODAL HANDLERS
+        // ---------------------------------------------------------------------
         let pendingResendOrderId = '';
         function promptResendEmail(orderId, customerEmail, emailType = 'ORDER_RECEIPT') {
             pendingResendOrderId = orderId;
@@ -1360,7 +3147,6 @@
                 if (data.success) {
                     showToast(data.message, 'success');
                     closeModal('modal-resend-email');
-                    fetchEmails();
                     fetchMetrics();
                 } else {
                     showToast(data.error || 'Failed to dispatch email.', 'error');
@@ -1370,269 +3156,9 @@
             }
         });
 
-        // 9. Audit Trail & Events
-        async function fetchAuditTrail() {
-            const auditTbody = document.getElementById('audit-tbody');
-            const webhooksTbody = document.getElementById('webhooks-tbody');
-            auditTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading audit trail...</td></tr>';
-            webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">Loading webhook logs...</td></tr>';
-
-            try {
-                const [auditData, webhookData] = await Promise.all([
-                    adminFetch('/api/admin/audit-logs?limit=50'),
-                    adminFetch('/api/admin/payment-events?limit=50')
-                ]);
-
-                // Render Audit Logs
-                if (auditData.success && auditData.auditLogs) {
-                    auditTbody.innerHTML = '';
-                    if (auditData.auditLogs.length === 0) {
-                        auditTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">No admin actions recorded yet.</td></tr>';
-                    } else {
-                        auditData.auditLogs.forEach(a => {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td class="py-2.5 px-4 font-bold text-brand">${escapeHtml(a.action)}</td>
-                                <td class="py-2.5 px-4 text-white">${escapeHtml(a.actor_id)}</td>
-                                <td class="py-2.5 px-4 text-gray-300 max-w-[120px] truncate" title="${escapeHtml(a.target_id || '')}">${escapeHtml(a.target_id || 'N/A')}</td>
-                                <td class="py-2.5 px-4 text-gray-400 max-w-[160px] truncate" title="${escapeHtml(a.details || '')}">${escapeHtml(a.details || '-')}</td>
-                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(a.created_at)}</td>
-                            `;
-                            auditTbody.appendChild(tr);
-                        });
-                    }
-                }
-
-                // Render Webhook Events
-                if (webhookData.success && webhookData.paymentEvents) {
-                    webhooksTbody.innerHTML = '';
-                    if (webhookData.paymentEvents.length === 0) {
-                        webhooksTbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500 font-sans">No webhook events logged yet.</td></tr>';
-                    } else {
-                        webhookData.paymentEvents.forEach(w => {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td class="py-2.5 px-4 text-gray-300 max-w-[120px] truncate" title="${escapeHtml(w.event_id)}">${escapeHtml(w.event_id)}</td>
-                                <td class="py-2.5 px-4 text-brand">${escapeHtml(w.order_id)}</td>
-                                <td class="py-2.5 px-4 text-purple-400 text-[10px]">${escapeHtml(w.event_type)}</td>
-                                <td class="py-2.5 px-4 text-center">
-                                    <span class="px-1.5 py-0.2 rounded text-[9px] ${w.signature_verified ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'} font-bold">
-                                        ${w.signature_verified ? 'VERIFIED' : 'RAW'}
-                                    </span>
-                                </td>
-                                <td class="py-2.5 px-4 text-gray-500 text-[10px]">${escapeHtml(w.processed_at)}</td>
-                            `;
-                            webhooksTbody.appendChild(tr);
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to load audit trail:', err);
-            }
-        }
-
-        // Status Badge Helper
-        function getStatusBadgeHtml(status) {
-            if (status === 'PAID') {
-                return '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PAID</span>';
-            }
-            if (status === 'PENDING') {
-                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">PENDING</span>';
-            }
-            if (status === 'FAILED') {
-                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">FAILED</span>';
-            }
-            return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-white/5">${escapeHtml(status)}</span>`;
-        }
-
-        function escapeHtml(str) {
-            if (str === null || str === undefined) return '';
-            return String(str).replace(/[&<>"']/g, s => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            })[s]);
-        }
-
         // ---------------------------------------------------------------------
-        // EVENT LISTENERS
+        // CHANGE PASSWORD MODAL HANDLERS
         // ---------------------------------------------------------------------
-
-        // Login Form Submission
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const submitBtn = document.getElementById('login-submit-btn');
-
-            loginError.classList.add('hidden');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Verifying credentials...</span>';
-            lucide.createIcons();
-
-            try {
-                const res = await fetch(`${API_BASE}/api/admin/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await res.json();
-                if (data.success && data.token) {
-                    sessionStorage.setItem('mdk_admin_token', data.token);
-                    adminToken = data.token;
-                    currentAdmin = data.admin;
-                    showToast('Merchant authentication successful!', 'success');
-                    showDashboard();
-                } else {
-                    loginErrorText.textContent = data.error || 'Authentication failed.';
-                    loginError.classList.remove('hidden');
-                }
-            } catch (err) {
-                loginErrorText.textContent = err.message || 'Network error communicating with API.';
-                loginError.classList.remove('hidden');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4"></i><span>Authenticate Merchant Session</span>';
-                lucide.createIcons();
-            }
-        });
-
-        // Toggle Password Visibility
-        document.getElementById('toggle-pwd-btn').addEventListener('click', () => {
-            const pwdInput = document.getElementById('login-password');
-            const isPwd = pwdInput.type === 'password';
-            pwdInput.type = isPwd ? 'text' : 'password';
-        });
-
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            sessionStorage.removeItem('mdk_admin_token');
-            adminToken = '';
-            currentAdmin = null;
-            showToast('Signed out of Merchant Dashboard.', 'info');
-            showLogin();
-        });
-
-        // Refresh Data Button
-        document.getElementById('refresh-data-btn').addEventListener('click', () => {
-            const icon = document.getElementById('refresh-icon');
-            icon.classList.add('animate-spin');
-            const activeTab = document.querySelector('.nav-tab.active')?.getAttribute('data-tab') || 'overview';
-            switchTab(activeTab);
-            setTimeout(() => icon.classList.remove('animate-spin'), 600);
-            showToast('Dashboard data refreshed.', 'info');
-        });
-
-        // Navigation Tabs
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchTab(tab.getAttribute('data-tab'));
-            });
-        });
-
-        // Search & Filter Listeners: Orders
-        let orderSearchTimer;
-        document.getElementById('order-search-input').addEventListener('input', (e) => {
-            clearTimeout(orderSearchTimer);
-            orderSearchTimer = setTimeout(() => {
-                ordersState.search = e.target.value.trim();
-                ordersState.page = 1;
-                fetchOrders();
-            }, 300);
-        });
-
-        document.querySelectorAll('.order-filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
-                btn.classList.add('active', 'bg-brand', 'text-dark-base');
-                ordersState.status = btn.getAttribute('data-status');
-                ordersState.page = 1;
-                fetchOrders();
-            });
-        });
-
-        document.getElementById('orders-prev-btn').addEventListener('click', () => {
-            if (ordersState.page > 1) {
-                ordersState.page -= 1;
-                fetchOrders();
-            }
-        });
-
-        document.getElementById('orders-next-btn').addEventListener('click', () => {
-            ordersState.page += 1;
-            fetchOrders();
-        });
-
-        // Search & Filter Listeners: Licenses
-        let licenseSearchTimer;
-        document.getElementById('license-search-input').addEventListener('input', (e) => {
-            clearTimeout(licenseSearchTimer);
-            licenseSearchTimer = setTimeout(() => {
-                licensesState.search = e.target.value.trim();
-                licensesState.page = 1;
-                fetchLicenses();
-            }, 300);
-        });
-
-        document.querySelectorAll('.license-filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.license-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
-                btn.classList.add('active', 'bg-brand', 'text-dark-base');
-                licensesState.type = btn.getAttribute('data-type');
-                licensesState.page = 1;
-                fetchLicenses();
-            });
-        });
-
-        document.getElementById('licenses-prev-btn').addEventListener('click', () => {
-            if (licensesState.page > 1) {
-                licensesState.page -= 1;
-                fetchLicenses();
-            }
-        });
-
-        document.getElementById('licenses-next-btn').addEventListener('click', () => {
-            licensesState.page += 1;
-            fetchLicenses();
-        });
-
-        // Search & Filter Listeners: Emails
-        let emailSearchTimer;
-        document.getElementById('email-search-input').addEventListener('input', (e) => {
-            clearTimeout(emailSearchTimer);
-            emailSearchTimer = setTimeout(() => {
-                emailsState.search = e.target.value.trim();
-                emailsState.page = 1;
-                fetchEmails();
-            }, 300);
-        });
-
-        document.querySelectorAll('.email-filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.email-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
-                btn.classList.add('active', 'bg-brand', 'text-dark-base');
-                emailsState.status = btn.getAttribute('data-status');
-                emailsState.page = 1;
-                fetchEmails();
-            });
-        });
-
-        document.getElementById('emails-prev-btn').addEventListener('click', () => {
-            if (emailsState.page > 1) {
-                emailsState.page -= 1;
-                fetchEmails();
-            }
-        });
-
-        document.getElementById('emails-next-btn').addEventListener('click', () => {
-            emailsState.page += 1;
-            fetchEmails();
-        });
-
-        // Change Password Modal Handlers
         document.getElementById('open-change-pwd-btn').addEventListener('click', () => {
             document.getElementById('current-pwd-input').value = '';
             document.getElementById('new-pwd-input').value = '';
@@ -1673,6 +3199,216 @@
                 errDiv.classList.remove('hidden');
             }
         });
+
+        // ---------------------------------------------------------------------
+        // EVENT LISTENERS & INITIALIZATION
+        // ---------------------------------------------------------------------
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            loginError.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Verifying credentials...</span>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+                if (data.success && data.token) {
+                    sessionStorage.setItem('mdk_admin_token', data.token);
+                    localStorage.setItem('mdk_admin_token', data.token);
+                    adminToken = data.token;
+                    currentAdmin = data.admin;
+                    showToast('Merchant authentication successful!', 'success');
+                    showDashboard();
+                } else {
+                    loginErrorText.textContent = data.error || 'Authentication failed.';
+                    loginError.classList.remove('hidden');
+                }
+            } catch (err) {
+                loginErrorText.textContent = err.message || 'Network error communicating with API.';
+                loginError.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4"></i><span>Authenticate Merchant Session</span>';
+                lucide.createIcons();
+            }
+        });
+
+        document.getElementById('toggle-pwd-btn').addEventListener('click', () => {
+            const pwdInput = document.getElementById('login-password');
+            const isPwd = pwdInput.type === 'password';
+            pwdInput.type = isPwd ? 'text' : 'password';
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            sessionStorage.removeItem('mdk_admin_token');
+            localStorage.removeItem('mdk_admin_token');
+            adminToken = '';
+            currentAdmin = null;
+            showToast('Signed out of Merchant Dashboard.', 'info');
+            showLogin();
+        });
+
+        document.getElementById('refresh-data-btn').addEventListener('click', () => {
+            const icon = document.getElementById('refresh-icon');
+            icon.classList.add('animate-spin');
+            const activeTab = document.querySelector('.nav-tab.active')?.getAttribute('data-tab') || 'overview';
+            switchTab(activeTab);
+            setTimeout(() => icon.classList.remove('animate-spin'), 600);
+            showToast('Dashboard data refreshed.', 'info');
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.getAttribute('data-tab'));
+            });
+        });
+
+        // Search inputs
+        let orderSearchTimer;
+        document.getElementById('order-search-input').addEventListener('input', (e) => {
+            clearTimeout(orderSearchTimer);
+            orderSearchTimer = setTimeout(() => {
+                ordersState.search = e.target.value.trim();
+                ordersState.page = 1;
+                fetchOrders();
+            }, 300);
+        });
+
+        document.querySelectorAll('.order-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                ordersState.status = btn.getAttribute('data-status');
+                ordersState.page = 1;
+                fetchOrders();
+            });
+        });
+
+        document.getElementById('orders-prev-btn').addEventListener('click', () => {
+            if (ordersState.page > 1) {
+                ordersState.page -= 1;
+                fetchOrders();
+            }
+        });
+
+        document.getElementById('orders-next-btn').addEventListener('click', () => {
+            ordersState.page += 1;
+            fetchOrders();
+        });
+
+        let licenseSearchTimer;
+        document.getElementById('license-search-input').addEventListener('input', (e) => {
+            clearTimeout(licenseSearchTimer);
+            licenseSearchTimer = setTimeout(() => {
+                licensesState.search = e.target.value.trim();
+                licensesState.page = 1;
+                fetchLicenses();
+            }, 300);
+        });
+
+        document.querySelectorAll('.license-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.license-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                licensesState.type = btn.getAttribute('data-type');
+                licensesState.page = 1;
+                fetchLicenses();
+            });
+        });
+
+        document.getElementById('licenses-prev-btn').addEventListener('click', () => {
+            if (licensesState.page > 1) {
+                licensesState.page -= 1;
+                fetchLicenses();
+            }
+        });
+
+        document.getElementById('licenses-next-btn').addEventListener('click', () => {
+            licensesState.page += 1;
+            fetchLicenses();
+        });
+
+        let emailSearchTimer;
+        document.getElementById('email-search-input')?.addEventListener('input', (e) => {
+            clearTimeout(emailSearchTimer);
+            emailSearchTimer = setTimeout(() => {
+                emailsState.search = e.target.value.trim();
+                emailsState.page = 1;
+                fetchEmails();
+            }, 300);
+        });
+
+        document.querySelectorAll('.email-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.email-filter-btn').forEach(b => b.classList.remove('active', 'bg-brand', 'text-dark-base'));
+                btn.classList.add('active', 'bg-brand', 'text-dark-base');
+                emailsState.status = btn.getAttribute('data-status');
+                emailsState.page = 1;
+                fetchEmails();
+            });
+        });
+
+        document.getElementById('emails-prev-btn')?.addEventListener('click', () => {
+            if (emailsState.page > 1) {
+                emailsState.page -= 1;
+                fetchEmails();
+            }
+        });
+
+        document.getElementById('emails-next-btn')?.addEventListener('click', () => {
+            emailsState.page += 1;
+            fetchEmails();
+        });
+
+        document.getElementById('product-search-input')?.addEventListener('input', () => {
+            renderProductsTable(productsCache);
+        });
+        document.getElementById('product-category-filter')?.addEventListener('change', () => {
+            renderProductsTable(productsCache);
+        });
+        document.getElementById('coupon-search-input')?.addEventListener('input', () => {
+            renderCouponsTable(couponsCache);
+        });
+
+        let custSearchTimer;
+        document.getElementById('customer-search-input')?.addEventListener('input', () => {
+            clearTimeout(custSearchTimer);
+            custSearchTimer = setTimeout(() => fetchCustomers(), 300);
+        });
+
+        function getStatusBadgeHtml(status) {
+            if (status === 'PAID') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PAID</span>';
+            }
+            if (status === 'PENDING') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">PENDING</span>';
+            }
+            if (status === 'FAILED') {
+                return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">FAILED</span>';
+            }
+            return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-white/5">${escapeHtml(status)}</span>`;
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/[&<>"']/g, s => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[s]);
+        }
 
         // Initialize On Load
         document.addEventListener('DOMContentLoaded', () => {

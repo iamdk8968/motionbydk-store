@@ -15,7 +15,8 @@ export async function createCashfreeOrder(
   env: Env,
   params: {
     orderId: string;
-    orderAmount: number;             // Floating INR (e.g. 399.00)
+    orderAmount: number;             // Floating number (e.g. 399.00 or 15.00)
+    currency?: string;               // 'INR' | 'USD' (default 'INR')
     customerDetails: {
       customerId: string;
       customerName: string;
@@ -26,6 +27,8 @@ export async function createCashfreeOrder(
     notifyUrl: string;
   }
 ): Promise<CashfreeOrderResponse> {
+  const orderCurrency = (params.currency || 'INR').toUpperCase();
+
   // Never allow mock fallback in production environment (fail closed)
   if (!env.CASHFREE_APP_ID || !env.CASHFREE_SECRET_KEY) {
     if ((env.ENVIRONMENT || '').toLowerCase() === 'production') {
@@ -35,7 +38,7 @@ export async function createCashfreeOrder(
     return {
       order_id: params.orderId,
       order_amount: params.orderAmount,
-      order_currency: 'INR',
+      order_currency: orderCurrency,
       order_status: 'ACTIVE',
       payment_session_id: `mock_session_${Date.now()}_${params.orderId}`,
     };
@@ -53,7 +56,7 @@ export async function createCashfreeOrder(
     body: JSON.stringify({
       order_id: params.orderId,
       order_amount: params.orderAmount,
-      order_currency: 'INR',
+      order_currency: orderCurrency,
       customer_details: {
         customer_id: params.customerDetails.customerId,
         customer_name: params.customerDetails.customerName,

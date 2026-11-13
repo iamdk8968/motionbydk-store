@@ -1,15 +1,11 @@
 /**
- * Motion By DK — Cashfree Checkout Modal & SDK v3 Integration
- * Seamless trial-to-paid and in-store checkout engine
+ * Motion By DK — Native Multi-Currency Cashfree Checkout Modal & SDK v3 Integration
+ * Domestic & International checkout engine (Zero Gumroad, Zero Manual UPI)
  */
 
 (function () {
   'use strict';
 
-  // Explicit Environment Configuration with Safe Defaults
-  // Production host (www.motionbydk.in, motionbydk.in): Strictly routes to production API (https://api.motionbydk.in)
-  // and NEVER falls back to staging worker, preventing accidental staging pollution in production.
-  // Staging/dev/local hosts: Safely routes to staging worker (https://motionbydk-api-staging.motionbydk-api.workers.dev).
   function resolveApiBase() {
     if (typeof window !== 'undefined' && window.MOTIONBYDK_API_BASE) {
       return window.MOTIONBYDK_API_BASE;
@@ -28,11 +24,26 @@
   }
 
   var API_BASE = resolveApiBase();
+  if (typeof window !== 'undefined') {
+    window.MDK_API_BASE = API_BASE;
+  }
   var activeProductId = 'ae-workflow-pro';
   var appliedCoupon = '';
   var isSubmitting = false;
 
-  // Dynamically load Cashfree JS SDK v3 if not present
+  // Active Currency Helper
+  function getActiveCurrency() {
+    if (typeof window !== 'undefined' && window.currentCurrency) {
+      return window.currentCurrency;
+    }
+    try {
+      var saved = localStorage.getItem('mdk_currency');
+      if (saved === 'USD' || saved === 'INR') return saved;
+    } catch (e) {}
+    return 'INR';
+  }
+
+  // Load Cashfree JS SDK v3
   function loadCashfreeSDK(callback) {
     if (typeof window.Cashfree !== 'undefined') {
       if (callback) callback();
@@ -82,7 +93,7 @@
                 <div class="flex items-start justify-between gap-3">
                     <div>
                         <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#00F0FF]/10 text-[#00F0FF] text-[10px] font-bold uppercase tracking-wider mb-1">
-                            Lifetime Commercial License
+                            Lifetime Commercial License (2-PC)
                         </div>
                         <h4 id="cfModalProductName" class="text-sm font-bold text-white">MotionByDk AE Workflow Pro</h4>
                         <span id="cfModalProductDesc" class="text-[11px] text-gray-400 block">Valid on up to 2 Personal Computers (PC + Laptop)</span>
@@ -90,6 +101,15 @@
                     <div class="text-right flex-shrink-0">
                         <span id="cfModalProductPrice" class="text-xl font-black text-[#00F0FF] font-heading block">₹499</span>
                         <span id="cfModalOriginalPrice" class="text-[10px] text-gray-500 line-through block">₹999</span>
+                    </div>
+                </div>
+
+                <!-- Currency Switcher Row inside Modal -->
+                <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
+                    <span class="text-gray-400">Billing Currency:</span>
+                    <div class="inline-flex rounded-lg bg-[#131822] p-0.5 border border-white/10">
+                        <button type="button" id="cfModalCurrInr" onclick="window.setModalCurrency('INR')" class="px-2.5 py-1 rounded text-xs font-bold transition-all text-[#00F0FF] bg-[#00F0FF]/10">₹ INR</button>
+                        <button type="button" id="cfModalCurrUsd" onclick="window.setModalCurrency('USD')" class="px-2.5 py-1 rounded text-xs font-bold transition-all text-gray-400 hover:text-white">$ USD</button>
                     </div>
                 </div>
 
@@ -117,26 +137,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Mobile Number (10 digits for UPI / SMS confirmation):</label>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Mobile Number (For order confirmation):</label>
                     <div class="flex items-center gap-2">
-                        <span class="px-3 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-gray-400 text-xs sm:text-sm font-mono">+91</span>
-                        <input type="tel" id="cfCustomerPhone" required maxlength="10" pattern="[0-9]{10}" placeholder="9876543210" class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-[#00F0FF] focus:outline-none">
+                        <span id="cfPhonePrefix" class="px-3 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-gray-400 text-xs sm:text-sm font-mono">+91</span>
+                        <input type="tel" id="cfCustomerPhone" required maxlength="15" placeholder="9876543210" class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-[#00F0FF] focus:outline-none">
                     </div>
                 </div>
 
-                <!-- Error Display -->
-                <div id="cfCheckoutError" class="hidden p-3 rounded-lg bg-red-950/70 border border-red-500/50 text-red-200 text-xs leading-relaxed"></div>
+                <!-- Error / Gateway Fallback Display -->
+                <div id="cfCheckoutError" class="hidden p-3.5 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs leading-relaxed space-y-2"></div>
 
                 <!-- Submit Button -->
                 <button type="submit" id="cfSubmitBtn" class="w-full py-3.5 px-4 rounded-xl bg-[#00F0FF] hover:bg-[#33F3FF] text-black font-heading font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#00F0FF]/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2">
                     <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-                    <span id="cfSubmitBtnLabel">Proceed to Pay ₹499</span>
+                    <span id="cfSubmitBtnLabel">Proceed to Pay</span>
                 </button>
 
                 <!-- Supported Payment Rails -->
                 <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pt-2 text-[10px] text-gray-400">
                     <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> UPI (GPay, PhonePe, Paytm, QR)</span>
-                    <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> Debit / Credit Cards</span>
+                    <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> Cards (Visa, Mastercard, RuPay)</span>
                     <span class="flex items-center gap-1"><span class="text-emerald-400">✓</span> NetBanking</span>
                 </div>
             </form>
@@ -146,7 +166,6 @@
 
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // Close on backdrop click
     var modalEl = document.getElementById('cashfreeCheckoutModal');
     if (modalEl) {
       modalEl.addEventListener('click', function (e) {
@@ -154,6 +173,78 @@
       });
     }
   }
+
+  // Calculate pricing based on active currency & coupon
+  function getComputedPrice() {
+    var curr = getActiveCurrency();
+    var isUsd = curr === 'USD';
+
+    // Base prices for ae-workflow-pro
+    var basePrice = isUsd ? 15 : 499;
+    var origPrice = isUsd ? 30 : 999;
+    var discount = 0;
+
+    if (appliedCoupon === 'FIRST100') {
+      discount = isUsd ? 3 : 100;
+    } else if (appliedCoupon === 'SAVE20') {
+      discount = Math.round(basePrice * 0.20 * 100) / 100;
+    }
+
+    var finalPrice = Math.max(1, basePrice - discount);
+    return {
+      currency: curr,
+      symbol: isUsd ? '$' : '₹',
+      basePrice: basePrice,
+      origPrice: origPrice,
+      discount: discount,
+      finalPrice: finalPrice,
+      formattedFinal: (isUsd ? '$' : '₹') + (isUsd ? finalPrice.toFixed(2) : finalPrice.toFixed(0)),
+      formattedOrig: (isUsd ? '$' : '₹') + (isUsd ? origPrice.toFixed(2) : origPrice.toFixed(0)),
+    };
+  }
+
+  function updateModalPricingDisplay() {
+    var p = getComputedPrice();
+    var priceEl = document.getElementById('cfModalProductPrice');
+    var origEl = document.getElementById('cfModalOriginalPrice');
+    var btnLabel = document.getElementById('cfSubmitBtnLabel');
+    var prefixEl = document.getElementById('cfPhonePrefix');
+    var inrBtn = document.getElementById('cfModalCurrInr');
+    var usdBtn = document.getElementById('cfModalCurrUsd');
+
+    if (priceEl) priceEl.innerText = p.formattedFinal;
+    if (origEl) origEl.innerText = p.formattedOrig;
+    if (btnLabel) btnLabel.innerText = 'Proceed to Pay ' + p.formattedFinal;
+
+    if (prefixEl) {
+      prefixEl.innerText = p.currency === 'INR' ? '+91' : '+';
+    }
+
+    if (inrBtn && usdBtn) {
+      if (p.currency === 'INR') {
+        inrBtn.className = 'px-2.5 py-1 rounded text-xs font-bold transition-all text-[#00F0FF] bg-[#00F0FF]/10';
+        usdBtn.className = 'px-2.5 py-1 rounded text-xs font-bold transition-all text-gray-400 hover:text-white';
+      } else {
+        usdBtn.className = 'px-2.5 py-1 rounded text-xs font-bold transition-all text-[#00F0FF] bg-[#00F0FF]/10';
+        inrBtn.className = 'px-2.5 py-1 rounded text-xs font-bold transition-all text-gray-400 hover:text-white';
+      }
+    }
+  }
+
+  // Switch modal currency
+  window.setModalCurrency = function (curr) {
+    if (curr !== 'INR' && curr !== 'USD') return;
+    window.currentCurrency = curr;
+    try {
+      localStorage.setItem('mdk_currency', curr);
+    } catch (e) {}
+
+    // Synchronize page-level currency if function exists
+    if (typeof window.applyCurrencyUI === 'function') {
+      window.applyCurrencyUI();
+    }
+    updateModalPricingDisplay();
+  };
 
   // Open the Cashfree Checkout Modal
   window.openCashfreeModal = function (productId, initialCoupon) {
@@ -170,27 +261,18 @@
 
     var nameEl = document.getElementById('cfModalProductName');
     var descEl = document.getElementById('cfModalProductDesc');
-    var priceEl = document.getElementById('cfModalProductPrice');
-    var origEl = document.getElementById('cfModalOriginalPrice');
-    var btnLabel = document.getElementById('cfSubmitBtnLabel');
     var errEl = document.getElementById('cfCheckoutError');
     if (errEl) errEl.classList.add('hidden');
 
-    // Update pricing based on product
-    if (activeProductId === 'ae-workflow-pro') {
-      if (nameEl) nameEl.innerText = 'MotionByDk AE Workflow Pro';
-      if (descEl) descEl.innerText = 'Valid on up to 2 Personal Computers (PC + Laptop)';
-      if (origEl) origEl.innerText = '₹999';
-    }
+    if (nameEl) nameEl.innerText = 'MotionByDk AE Workflow Pro';
+    if (descEl) descEl.innerText = 'Valid on up to 2 Personal Computers (PC + Laptop)';
 
     if (initialCoupon) {
       var couponInput = document.getElementById('cfModalCouponInput');
       if (couponInput) couponInput.value = initialCoupon.trim().toUpperCase();
       window.applyModalCoupon();
     } else {
-      var currentPrice = appliedCoupon === 'FIRST100' ? '₹399' : '₹499';
-      if (priceEl) priceEl.innerText = currentPrice;
-      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ' + currentPrice;
+      updateModalPricingDisplay();
     }
 
     modal.classList.remove('opacity-0', 'pointer-events-none');
@@ -219,32 +301,33 @@
   window.applyModalCoupon = function () {
     var input = document.getElementById('cfModalCouponInput');
     var msg = document.getElementById('cfModalCouponMsg');
-    var priceEl = document.getElementById('cfModalProductPrice');
-    var btnLabel = document.getElementById('cfSubmitBtnLabel');
     var val = (input ? input.value : '').trim().toUpperCase();
 
     if (val === 'FIRST100') {
       appliedCoupon = 'FIRST100';
+      var p = getComputedPrice();
       if (msg) {
         msg.className = 'text-[11px] text-emerald-400 font-bold block';
-        msg.innerText = '✓ FIRST100 Applied! ₹100 Discount added (Final: ₹399).';
+        msg.innerText = '✓ FIRST100 Applied! ' + (p.currency === 'USD' ? '$3.00' : '₹100') + ' discount added (' + p.formattedFinal + ').';
       }
-      if (priceEl) priceEl.innerText = '₹399';
-      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ₹399';
+    } else if (val === 'SAVE20') {
+      appliedCoupon = 'SAVE20';
+      var p2 = getComputedPrice();
+      if (msg) {
+        msg.className = 'text-[11px] text-emerald-400 font-bold block';
+        msg.innerText = '✓ SAVE20 Applied! 20% discount added (' + p2.formattedFinal + ').';
+      }
     } else if (!val) {
       appliedCoupon = '';
       if (msg) msg.className = 'hidden';
-      if (priceEl) priceEl.innerText = '₹499';
-      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ₹499';
     } else {
       appliedCoupon = '';
       if (msg) {
         msg.className = 'text-[11px] text-red-400 font-bold block';
         msg.innerText = 'Coupon "' + val + '" is invalid or expired.';
       }
-      if (priceEl) priceEl.innerText = '₹499';
-      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ₹499';
     }
+    updateModalPricingDisplay();
   };
 
   // Handle Form Submission & Cashfree Checkout Initialization
@@ -261,7 +344,8 @@
 
     var customerName = nameInput ? nameInput.value.trim() : '';
     var customerEmail = emailInput ? emailInput.value.trim().toLowerCase() : '';
-    var customerPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, '').slice(-10) : '';
+    var rawPhone = phoneInput ? phoneInput.value.replace(/[^0-9]/g, '') : '';
+    var customerPhone = rawPhone.length > 10 ? rawPhone.slice(-10) : rawPhone;
 
     if (errEl) errEl.classList.add('hidden');
 
@@ -282,9 +366,9 @@
       return;
     }
 
-    if (customerPhone.length !== 10) {
+    if (customerPhone.length < 7) {
       if (errEl) {
-        errEl.innerText = 'Please enter a valid 10-digit mobile number.';
+        errEl.innerText = 'Please enter a valid mobile number.';
         errEl.classList.remove('hidden');
       }
       return;
@@ -293,6 +377,8 @@
     isSubmitting = true;
     if (btn) btn.disabled = true;
     if (btnLabel) btnLabel.innerText = 'Connecting to Cashfree Payments...';
+
+    var curr = getActiveCurrency();
 
     try {
       var res = await fetch(API_BASE + '/api/checkout/create-order', {
@@ -303,6 +389,7 @@
           customerName: customerName,
           customerEmail: customerEmail,
           customerPhone: customerPhone,
+          currency: curr,
           couponCode: appliedCoupon || undefined,
         }),
       });
@@ -310,12 +397,10 @@
       var data = await res.json();
 
       if (res.ok && data.success && data.paymentSessionId) {
-        // Save email in in-memory sessionStorage (never in URL) for seamless claim on activate.html
         try {
           sessionStorage.setItem('checkout_email', customerEmail);
         } catch (e) {}
 
-        // Close our form modal
         window.closeCashfreeModal();
 
         // Launch Cashfree SDK v3 Modal
@@ -338,8 +423,21 @@
               }
             });
         } else {
-          // If SDK failed to load, redirect directly
           window.location.href = 'activate.html?order_id=' + encodeURIComponent(data.orderId);
+        }
+      } else if (data.error === 'INTERNATIONAL_PAYMENT_PENDING') {
+        // Graceful international USD fallback to INR checkout
+        if (errEl) {
+          errEl.innerHTML = `
+            <div class="space-y-2">
+                <span class="font-bold text-amber-300 block">International Payment Notice</span>
+                <p class="text-amber-200">${data.message || 'Direct USD checkout is pending verification. You can complete your order in INR using any international credit or debit card.'}</p>
+                <button type="button" onclick="window.switchCurrencyAndPayInr()" class="w-full py-2.5 px-3 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs transition-colors">
+                    Switch to INR (₹499) &amp; Proceed Instantly
+                </button>
+            </div>
+          `;
+          errEl.classList.remove('hidden');
         }
       } else {
         var msg = data.message || 'Unable to initialize checkout session. Please try again.';
@@ -356,21 +454,20 @@
     } finally {
       isSubmitting = false;
       if (btn) btn.disabled = false;
-      var curPrice = appliedCoupon === 'FIRST100' ? '₹399' : '₹499';
-      if (btnLabel) btnLabel.innerText = 'Proceed to Pay ' + curPrice;
+      updateModalPricingDisplay();
     }
   };
 
+  window.switchCurrencyAndPayInr = function () {
+    window.setModalCurrency('INR');
+    var errEl = document.getElementById('cfCheckoutError');
+    if (errEl) errEl.classList.add('hidden');
+    window.handleCashfreeSubmit();
+  };
+
   // Intercept and handle global primary buy triggers
-  var originalPrimaryBuy = window.handlePrimaryBuy;
   window.handlePrimaryBuy = function () {
-    if (window.currentCurrency === 'INR' || !window.currentCurrency) {
-      window.openCashfreeModal('ae-workflow-pro');
-    } else if (typeof originalPrimaryBuy === 'function') {
-      originalPrimaryBuy();
-    } else {
-      window.open('https://gumroad.com/l/bbpskg', '_blank');
-    }
+    window.openCashfreeModal('ae-workflow-pro');
   };
 
   // Global event delegation for buy triggers

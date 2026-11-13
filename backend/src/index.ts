@@ -3,7 +3,7 @@
  * Worker Name: motionbydk-api
  */
 
-import { Env } from './types';
+import { Env, CashfreeOrderResponse } from './types';
 import {
   getProduct,
   getCoupon,
@@ -57,6 +57,40 @@ import {
   handleAdminChangePassword,
   authenticateAdmin,
 } from './admin';
+import {
+  listPublicProducts,
+  getPublicProduct,
+  listAdminProducts,
+  createProduct,
+  updateProduct,
+  archiveProduct,
+} from './productManager';
+import {
+  getLatestReleaseManifest,
+  listPublicReleases,
+  claimReleaseDownload,
+  listAdminReleases,
+  createRelease,
+  updateRelease,
+  rollbackRelease,
+} from './releaseManager';
+import {
+  listAdminCoupons,
+  createCoupon,
+  updateCoupon,
+  toggleCouponActive,
+  getCouponUsageReport,
+} from './couponManager';
+import {
+  listAdminCustomers,
+  getAdminCustomerDetail,
+} from './customerManager';
+import {
+  getPublicHomepageCms,
+  listAdminHomepageCms,
+  upsertCmsBlock,
+} from './cmsManager';
+import { handleAdminR2Upload } from './uploadManager';
 
 const ALLOWED_ORIGINS = [
   'https://www.motionbydk.in',
@@ -232,8 +266,16 @@ export default {
           return jsonResponse({ error: 'PRODUCT_NOT_FOUND', message: 'The requested product is inactive or does not exist.' }, 404, corsHeaders);
         }
 
-        const baseAmountInr = product.price_inr; // in paise
-        let discountInr = 0;
+        const reqCurrency = (body.currency || 'INR').toUpperCase();
+        const isUSD = reqCurrency === 'USD';
+        const currency = isUSD ? 'USD' : 'INR';
+
+        // Calculate Base Amount dynamically from D1 product prices (DO NOT HARDCODE!)
+        const baseAmountMinor = isUSD
+          ? Math.round(((product.price_usd !== null && product.price_usd !== undefined) ? product.price_usd : 15.00) * 100)
+          : product.price_inr;
+
+        let discountMinor = 0;
         let appliedCouponCode: string | null = null;
 
         // Validate Coupon if provided
@@ -245,15 +287,21 @@ export default {
             const productMatches = !coupon.applicable_product_id || coupon.applicable_product_id === productId;
 
             if (notExpired && notExhausted && productMatches) {
-              discountInr = coupon.discount_inr;
+              if (coupon.discount_type === 'PERCENTAGE' && coupon.discount_percentage) {
+                discountMinor = Math.round((baseAmountMinor * coupon.discount_percentage) / 100);
+              } else if (isUSD) {
+                discountMinor = Math.round((coupon.discount_usd || 0) * 100);
+              } else {
+                discountMinor = coupon.discount_inr;
+              }
               appliedCouponCode = coupon.code;
             }
           }
         }
 
-        // Calculate final payable amount in paise (minimum 100 paise = ₹1.00)
-        const finalAmountInr = Math.max(baseAmountInr - discountInr, 100);
-        const finalAmountRupees = Number((finalAmountInr / 100).toFixed(2));
+        // Calculate final payable amount (minimum 100 minor units: $1.00 or ₹1.00)
+        const finalAmountMinor = Math.max(baseAmountMinor - discountMinor, 100);
+        const finalAmountDecimal = Number((finalAmountMinor / 100).toFixed(2));
 
         // Generate Unique Order ID
         const orderId = generateOrderId();
@@ -273,18 +321,37 @@ export default {
         const returnUrl = `${returnOrigin}/activate.html?order_id=${orderId}`;
         const notifyUrl = `https://${url.host}/api/webhooks/cashfree`;
 
-        const cfOrder = await createCashfreeOrder(env, {
-          orderId,
-          orderAmount: finalAmountRupees,
-          customerDetails: {
-            customerId: customer.id,
-            customerName: customer.full_name,
-            customerEmail: customer.email,
-            customerPhone: cleanPhone,
-          },
-          returnUrl,
-          notifyUrl,
-        });
+        let cfOrder: CashfreeOrderResponse;
+        try {
+          cfOrder = await createCashfreeOrder(env, {
+            orderId,
+            orderAmount: finalAmountDecimal,
+            currency,
+            customerDetails: {
+              customerId: customer.id,
+              customerName: customer.full_name,
+              customerEmail: customer.email,
+              customerPhone: cleanPhone,
+            },
+            returnUrl,
+            notifyUrl,
+          });
+        } catch (cfErr: any) {
+          if (isUSD) {
+            console.warn('[Checkout] Cashfree USD order failed:', cfErr.message);
+            return jsonResponse(
+              {
+                error: 'INTERNATIONAL_PAYMENT_PENDING',
+                message: 'Direct USD payment is undergoing gateway verification. You can complete your order in INR using any international card.',
+                details: cfErr.message,
+                suggestedCurrency: 'INR'
+              },
+              422,
+              corsHeaders
+            );
+          }
+          throw cfErr;
+        }
 
         // Insert Pending Order in D1
         await createPendingOrder(env.DB, {
@@ -292,9 +359,10 @@ export default {
           customerId: customer.id,
           productId: product.id,
           couponCode: appliedCouponCode,
-          baseAmountInr,
-          discountInr,
-          finalAmountInr,
+          baseAmountInr: baseAmountMinor,
+          discountInr: discountMinor,
+          finalAmountInr: finalAmountMinor,
+          currency,
           cfPaymentSessionId: cfOrder.payment_session_id || null,
           ipAddress,
           userAgent,
@@ -305,10 +373,10 @@ export default {
             success: true,
             orderId,
             paymentSessionId: cfOrder.payment_session_id,
-            amountInr: finalAmountRupees,
-            baseAmountInr: Number((baseAmountInr / 100).toFixed(2)),
-            discountInr: Number((discountInr / 100).toFixed(2)),
-            currency: 'INR',
+            amount: finalAmountDecimal,
+            baseAmount: Number((baseAmountMinor / 100).toFixed(2)),
+            discount: Number((discountMinor / 100).toFixed(2)),
+            currency,
             customer: {
               name: customer.full_name,
               email: customer.email,
@@ -339,11 +407,12 @@ export default {
         if (order.status === 'PENDING') {
           const cfOrder = await getCashfreeOrder(env, orderId);
           if (cfOrder && cfOrder.order_status === 'PAID') {
-            const expectedAmountPaise = order.final_amount_inr;
-            const receivedAmountPaise = Math.round((cfOrder.order_amount || 0) * 100);
-            const orderCurrency = cfOrder.order_currency || 'INR';
+            const expectedAmountMinor = order.final_amount_inr;
+            const receivedAmountMinor = Math.round((cfOrder.order_amount || 0) * 100);
+            const orderCurrency = (cfOrder.order_currency || 'INR').toUpperCase();
+            const expectedCurrency = (order.currency || 'INR').toUpperCase();
 
-            if (orderCurrency === 'INR' && receivedAmountPaise >= expectedAmountPaise) {
+            if (orderCurrency === expectedCurrency && receivedAmountMinor >= expectedAmountMinor) {
               const claimed = await claimPendingOrderAsPaid(env.DB, orderId, new Date().toISOString());
               order.status = 'PAID';
 
@@ -361,7 +430,7 @@ export default {
                 }
               }
             } else {
-              console.error(`[Reconcile] Amount/currency mismatch for ${orderId}: expected ${expectedAmountPaise} paise INR, got ${receivedAmountPaise} paise ${orderCurrency}`);
+              console.error(`[Reconcile] Amount/currency mismatch for ${orderId}: expected ${expectedAmountMinor} ${expectedCurrency}, got ${receivedAmountMinor} ${orderCurrency}`);
             }
           }
         }
@@ -474,18 +543,20 @@ export default {
 
         // Handle SUCCESSFUL Payment
         if (orderStatus === 'PAID' || paymentStatus === 'SUCCESS') {
-          const paidAmountPaise = Math.round(paymentAmount * 100);
-          const orderCurrency = cfOrder.order_currency || cfPayment.payment_currency || 'INR';
+          const paidAmountMinor = Math.round(paymentAmount * 100);
+          const orderCurrency = (cfOrder.order_currency || cfPayment.payment_currency || 'INR').toUpperCase();
+          const expectedCurrency = (order.currency || 'INR').toUpperCase();
 
-          // Strict server-side verification: currency must be INR and paid amount must be >= order.final_amount_inr
-          if (orderCurrency !== 'INR' || (paidAmountPaise > 0 && paidAmountPaise < order.final_amount_inr)) {
-            console.error(`[Webhook] Payment amount/currency mismatch for order ${orderId}: expected ${order.final_amount_inr} paise INR, got ${paidAmountPaise} paise ${orderCurrency}`);
+          // Strict server-side verification: currency must match order.currency and paid amount must be >= order.final_amount_inr
+          if (orderCurrency !== expectedCurrency || (paidAmountMinor > 0 && paidAmountMinor < order.final_amount_inr)) {
+            console.error(`[Webhook] Payment amount/currency mismatch for order ${orderId}: expected ${order.final_amount_inr} ${expectedCurrency}, got ${paidAmountMinor} ${orderCurrency}`);
             await updateOrderStatus(env.DB, orderId, 'FAILED');
             await recordPayment(env.DB, {
               orderId,
               cfPaymentId,
               paymentMethod,
-              paymentAmountInr: paidAmountPaise,
+              paymentAmountInr: paidAmountMinor,
+              paymentCurrency: orderCurrency,
               paymentStatus: 'FAILED',
               paymentTime: new Date().toISOString(),
               bankReference: bankRef,
@@ -506,7 +577,8 @@ export default {
             orderId,
             cfPaymentId,
             paymentMethod,
-            paymentAmountInr: Math.round(paymentAmount * 100),
+            paymentAmountInr: paidAmountMinor,
+            paymentCurrency: orderCurrency,
             paymentStatus: 'SUCCESS',
             paymentTime: paidAt,
             bankReference: bankRef,
@@ -549,8 +621,9 @@ export default {
                 customerEmail: customer.email,
                 customerName: customer.full_name,
                 productName: product ? product.name : 'AE Workflow Pro',
-                amountInrPaise: Math.round(paymentAmount * 100) || order.final_amount_inr,
+                amountInrPaise: paidAmountMinor || order.final_amount_inr,
                 paymentId: cfPaymentId,
+                currency: expectedCurrency,
                 licenseKey,
                 downloadUrl,
               });
@@ -814,6 +887,63 @@ export default {
       }
 
       // =======================================================================
+      // 8. PRODUCT & PLUGIN PUBLIC CATALOG (/api/products)
+      // =======================================================================
+      if (pathname === '/api/products' && request.method === 'GET') {
+        const products = await listPublicProducts(env.DB);
+        return jsonResponse({ success: true, products }, 200, corsHeaders);
+      }
+
+      if (pathname.startsWith('/api/products/') && request.method === 'GET') {
+        const prodId = pathname.replace('/api/products/', '').trim();
+        const product = await getPublicProduct(env.DB, prodId);
+        if (!product) {
+          return jsonResponse({ error: 'PRODUCT_NOT_FOUND', message: 'Product not found.' }, 404, corsHeaders);
+        }
+        return jsonResponse({ success: true, product }, 200, corsHeaders);
+      }
+
+      // =======================================================================
+      // 9. RELEASES & UPDATER MANIFEST (/api/releases/*, /updates/version.json)
+      // =======================================================================
+      if ((pathname === '/api/releases/latest' || pathname === '/updates/version.json') && request.method === 'GET') {
+        const prodId = url.searchParams.get('product') || 'ae-workflow-pro';
+        const manifest = await getLatestReleaseManifest(env.DB, prodId);
+        if (!manifest) {
+          return jsonResponse({ error: 'NO_ACTIVE_RELEASE', message: 'No published release found.' }, 404, corsHeaders);
+        }
+        return jsonResponse(manifest, 200, corsHeaders);
+      }
+
+      if (pathname === '/api/releases' && request.method === 'GET') {
+        const prodId = url.searchParams.get('product') || 'ae-workflow-pro';
+        const releases = await listPublicReleases(env.DB, prodId);
+        return jsonResponse({ success: true, releases }, 200, corsHeaders);
+      }
+
+      if (pathname === '/api/releases/download' && request.method === 'POST') {
+        let body: any = {};
+        try { body = await request.json(); } catch {}
+        const { releaseId, licenseKey, orderId } = body;
+        if (!releaseId) {
+          return jsonResponse({ error: 'MISSING_RELEASE_ID', message: 'releaseId is required.' }, 400, corsHeaders);
+        }
+        const claim = await claimReleaseDownload(env.DB, releaseId, { licenseKey, orderId });
+        if (!claim.success) {
+          return jsonResponse({ error: 'DOWNLOAD_DENIED', message: claim.message }, 403, corsHeaders);
+        }
+        return jsonResponse(claim, 200, corsHeaders);
+      }
+
+      // =======================================================================
+      // 10. HOMEPAGE CMS (/api/cms/homepage)
+      // =======================================================================
+      if (pathname === '/api/cms/homepage' && request.method === 'GET') {
+        const blocks = await getPublicHomepageCms(env.DB);
+        return jsonResponse({ success: true, blocks }, 200, corsHeaders);
+      }
+
+      // =======================================================================
       // ADMIN & OBSERVABILITY ENDPOINTS (/api/admin/*)
       // =======================================================================
       if (pathname.startsWith('/api/admin/')) {
@@ -917,6 +1047,179 @@ export default {
         // 15. Admin Change Password (POST /api/admin/change-password)
         if (pathname === '/api/admin/change-password' && request.method === 'POST') {
           return handleAdminChangePassword(request, env, clientIp, corsHeaders);
+        }
+
+        // =====================================================================
+        // PRODUCT MANAGEMENT ADMIN APIs
+        // =====================================================================
+        if (pathname === '/api/admin/products' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const products = await listAdminProducts(env.DB);
+          return jsonResponse({ success: true, products }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/products' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const product = await createProduct(env.DB, body);
+          return jsonResponse({ success: true, product }, 201, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/products/') && request.method === 'PUT') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const prodId = pathname.replace('/api/admin/products/', '').trim();
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const product = await updateProduct(env.DB, prodId, body);
+          return jsonResponse({ success: true, product }, 200, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/products/') && request.method === 'DELETE') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const prodId = pathname.replace('/api/admin/products/', '').trim();
+          const archived = await archiveProduct(env.DB, prodId);
+          return jsonResponse({ success: archived }, 200, corsHeaders);
+        }
+
+        // =====================================================================
+        // RELEASE MANAGEMENT ADMIN APIs
+        // =====================================================================
+        if (pathname === '/api/admin/releases' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const releases = await listAdminReleases(env.DB);
+          return jsonResponse({ success: true, releases }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/releases' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const release = await createRelease(env.DB, body);
+          return jsonResponse({ success: true, release }, 201, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/releases/') && request.method === 'PUT') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const relId = pathname.replace('/api/admin/releases/', '').trim();
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const release = await updateRelease(env.DB, relId, body);
+          return jsonResponse({ success: true, release }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/releases/rollback' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          if (!body.targetReleaseId) return jsonResponse({ error: 'MISSING_TARGET_RELEASE_ID' }, 400, corsHeaders);
+          const release = await rollbackRelease(env.DB, body.targetReleaseId);
+          return jsonResponse({ success: true, release }, 200, corsHeaders);
+        }
+
+        // =====================================================================
+        // COUPON MANAGEMENT ADMIN APIs
+        // =====================================================================
+        if (pathname === '/api/admin/coupons' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const coupons = await listAdminCoupons(env.DB);
+          return jsonResponse({ success: true, coupons }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/coupons' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const coupon = await createCoupon(env.DB, body);
+          return jsonResponse({ success: true, coupon }, 201, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/coupons/') && request.method === 'PUT') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const code = pathname.replace('/api/admin/coupons/', '').trim();
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const coupon = await updateCoupon(env.DB, code, body);
+          return jsonResponse({ success: true, coupon }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/coupons/toggle' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          const toggled = await toggleCouponActive(env.DB, body.code, !!body.isActive);
+          return jsonResponse({ success: toggled }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/coupons/reports' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const report = await getCouponUsageReport(env.DB);
+          return jsonResponse({ success: true, report }, 200, corsHeaders);
+        }
+
+        // =====================================================================
+        // CUSTOMER MANAGEMENT ADMIN APIs
+        // =====================================================================
+        if (pathname === '/api/admin/customers' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const limit = parseInt(url.searchParams.get('limit') || '50', 10);
+          const offset = parseInt(url.searchParams.get('offset') || '0', 10);
+          const search = url.searchParams.get('search') || undefined;
+          const customers = await listAdminCustomers(env.DB, limit, offset, search);
+          return jsonResponse({ success: true, ...customers }, 200, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/customers/') && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const custId = pathname.replace('/api/admin/customers/', '').trim();
+          const detail = await getAdminCustomerDetail(env.DB, custId);
+          if (!detail) return jsonResponse({ error: 'CUSTOMER_NOT_FOUND' }, 404, corsHeaders);
+          return jsonResponse({ success: true, ...detail }, 200, corsHeaders);
+        }
+
+        // =====================================================================
+        // HOMEPAGE CMS ADMIN APIs
+        // =====================================================================
+        if (pathname === '/api/admin/cms/homepage' && request.method === 'GET') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const blocks = await listAdminHomepageCms(env.DB);
+          return jsonResponse({ success: true, blocks }, 200, corsHeaders);
+        }
+
+        if (pathname === '/api/admin/cms/homepage' && request.method === 'PUT') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          let body: any = {};
+          try { body = await request.json(); } catch {}
+          if (!body.key) return jsonResponse({ error: 'MISSING_CMS_KEY' }, 400, corsHeaders);
+          const updated = await upsertCmsBlock(env.DB, body.key, body);
+          return jsonResponse({ success: true, block: updated }, 200, corsHeaders);
+        }
+
+        // =====================================================================
+        // R2 FILE UPLOAD ADMIN API
+        // =====================================================================
+        if (pathname === '/api/admin/upload' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const uploadResult = await handleAdminR2Upload(request, env);
+          return jsonResponse(uploadResult, 200, corsHeaders);
         }
 
         return jsonResponse(

@@ -24,4 +24,6 @@ yarn-error.log*
 # Backups
 *.bak
 *.backup
+*.sql
+!backend/migrations/**/*.sql
 build_packages/

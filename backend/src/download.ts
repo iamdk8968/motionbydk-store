@@ -101,13 +101,15 @@ export async function handleDownloadRequest(
   let object: R2ObjectBody | null = null;
 
   try {
-    if (rangeHeader) {
-      object = await env.PRODUCTS_BUCKET.get(tokenRecord.r2_object_key, {
-        range: request.headers,
-        onlyIf: request.headers,
-      });
-    } else {
-      object = await env.PRODUCTS_BUCKET.get(tokenRecord.r2_object_key);
+    const rawObject = rangeHeader
+      ? await env.PRODUCTS_BUCKET.get(tokenRecord.r2_object_key, {
+          range: request.headers,
+          onlyIf: request.headers,
+        })
+      : await env.PRODUCTS_BUCKET.get(tokenRecord.r2_object_key);
+
+    if (rawObject && 'body' in rawObject) {
+      object = rawObject as R2ObjectBody;
     }
   } catch (err: any) {
     console.error('[R2 Download Error]:', err);
@@ -144,23 +146,24 @@ export async function handleDownloadRequest(
   responseHeaders.set('Accept-Ranges', 'bytes');
 
   // Handle Partial Content (Range Requests)
-  const isRangeRequest = !!rangeHeader && object.range;
+  const isRangeRequest = !!rangeHeader && !!object.range;
   const status = isRangeRequest ? 206 : 200;
 
   if (isRangeRequest && object.range) {
-    if ('offset' in object.range && 'length' in object.range) {
-      const start = object.range.offset;
-      const end = object.range.offset + object.range.length - 1;
-      responseHeaders.set('Content-Range', `bytes ${start}-${end}/${object.size}`);
-      responseHeaders.set('Content-Length', object.range.length.toString());
-    }
+    const offset = 'offset' in object.range && typeof object.range.offset === 'number' ? object.range.offset : 0;
+    const length = 'length' in object.range && typeof object.range.length === 'number' ? object.range.length : object.size;
+    const end = offset + length - 1;
+    responseHeaders.set('Content-Range', `bytes ${offset}-${end}/${object.size}`);
+    responseHeaders.set('Content-Length', length.toString());
   } else {
     responseHeaders.set('Content-Length', object.size.toString());
   }
 
   // Log successful download
-  const bytesSent = isRangeRequest && object.range && 'length' in object.range ? object.range.length : object.size;
-  await logDownloadAttempt(env.DB, cleanToken, bytesSent, ipAddress, userAgent, status);
+  const rangeLength = isRangeRequest && object.range && 'length' in object.range && typeof object.range.length === 'number'
+    ? object.range.length
+    : object.size;
+  await logDownloadAttempt(env.DB, cleanToken, rangeLength, ipAddress, userAgent, status);
 
   // Stream directly from R2 to client (Memory usage < 5MB)
   return new Response(object.body, {

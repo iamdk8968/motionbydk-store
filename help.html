@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Customer Help Center &amp; Adobe CEP Guide | MotionByDk</title>
+    <meta name="description" content="Technical support, Adobe CEP extension installation guide for macOS and Windows, license activation troubleshooting, and direct support for MotionByDk products.">
+    <link rel="canonical" href="https://motionbydk.in/help.html">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00F0FF',
+                            hover: '#33F3FF',
+                            dim: '#008b94'
+                        },
+                        dark: {
+                            base: '#07090e',
+                            surface: '#0d1117',
+                            card: '#131822',
+                            elevated: '#1a2230',
+                            border: '#232d3f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        body {
+            background-color: #07090e;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .studio-card {
+            background: linear-gradient(180deg, rgba(19, 24, 34, 0.8) 0%, rgba(13, 17, 23, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 1.25rem;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glow Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand/15 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 right-[-100px] w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-white/10 bg-dark-base/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-dark-card border border-brand/40 p-2 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="assets/icon.svg" alt="Motion by DK Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <span class="font-heading font-black text-xl tracking-tight text-white block">MOTION<span class="text-brand">BY DK</span></span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-wider uppercase block">Help &amp; Knowledge Base</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                    &larr; Storefront
+                </a>
+                <a href="activate.html" class="text-xs font-bold text-brand hover:text-white px-3 py-2 rounded-lg bg-brand/10 border border-brand/30 transition-all">
+                    License Portal
+                </a>
+                <a href="https://wa.me/919217282296" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 text-xs font-bold transition-all flex items-center gap-1.5">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-12 px-4 sm:px-6 lg:px-8 relative z-10 max-w-5xl mx-auto w-full">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-bold uppercase tracking-wider mb-4">
+                <i data-lucide="life-buoy" class="w-3.5 h-3.5"></i>
+                <span>Customer Support &amp; Technical Documentation</span>
+            </div>
+            <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-4">
+                How can we help you today?
+            </h1>
+            <p class="text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
+                Step-by-step guides for Adobe CEP installation, license key activation, hardware troubleshooting, and direct support.
+            </p>
+
+            <!-- Search Filter Bar -->
+            <div class="mt-8 max-w-lg mx-auto relative">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-4 top-3.5"></i>
+                <input type="text" id="helpSearch" onkeyup="filterHelpTopics()" placeholder="Search guides (e.g. install, CEP, license, Mac, reset)..." class="w-full pl-11 pr-4 py-3 bg-dark-card border border-white/10 rounded-2xl text-xs sm:text-sm text-white placeholder-gray-500 focus:border-brand focus:outline-none transition-all shadow-lg">
+            </div>
+        </div>
+
+        <!-- Quick Assistance Options Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <div class="studio-card p-5 text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-brand/15 text-brand flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="key" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-heading font-bold text-sm text-white">License Key Self-Service</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Retrieve lost keys, check active machines, or reset hardware slots via OTP.</p>
+                <a href="activate.html" class="inline-block pt-2 text-xs font-bold text-brand hover:underline">Open License Portal &rarr;</a>
+            </div>
+
+            <div class="studio-card p-5 text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-heading font-bold text-sm text-white">Latest Downloads</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Download latest stable installers and view release changelogs.</p>
+                <a href="updates.html" class="inline-block pt-2 text-xs font-bold text-emerald-400 hover:underline">View Updates &rarr;</a>
+            </div>
+
+            <div class="studio-card p-5 text-center space-y-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-heading font-bold text-sm text-white">Direct WhatsApp Support</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Chat directly with Dhananjay Kumar for instant 1-on-1 assistance.</p>
+                <a href="https://wa.me/919217282296" target="_blank" rel="noopener noreferrer" class="inline-block pt-2 text-xs font-bold text-amber-400 hover:underline">Chat on WhatsApp &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Comprehensive Step-by-Step Installation Guide -->
+        <div class="studio-card p-6 sm:p-10 border-white/10 mb-10 space-y-8 help-topic" data-keywords="install installation cep mac windows directory folder automated setup">
+            <div class="border-b border-white/10 pb-6">
+                <span class="text-xs font-mono font-bold text-brand uppercase tracking-wider block mb-1">OFFICIAL INSTALLATION GUIDE</span>
+                <h2 class="font-heading font-black text-2xl sm:text-3xl text-white">Installing MotionByDk AE Workflow Pro</h2>
+                <p class="text-xs sm:text-sm text-gray-400 mt-2">Works seamlessly on After Effects CC 2019 through CC 2026+ on both macOS &amp; Windows.</p>
+            </div>
+
+            <!-- Windows Section -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 font-heading font-bold text-base text-white">
+                    <span class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center text-xs">🪟</span>
+                    <span>Option A: Windows 10 / 11 Installation</span>
+                </div>
+                <div class="p-4 rounded-xl bg-dark-base border border-white/10 space-y-3 text-xs sm:text-sm text-gray-300">
+                    <p><strong>Method 1 (Automated 1-Click Batch):</strong></p>
+                    <ol class="list-decimal list-inside space-y-1.5 pl-2 text-gray-300">
+                        <li>Unzip the downloaded package.</li>
+                        <li>Right-click <code class="font-mono text-brand bg-white/5 px-2 py-0.5 rounded">install_windows.bat</code> and select <strong>Run as administrator</strong>.</li>
+                        <li>Restart Adobe After Effects.</li>
+                    </ol>
+                    <p class="pt-2 border-t border-white/5"><strong>Method 2 (Manual Copy to CEP folder):</strong></p>
+                    <p class="text-xs text-gray-400">Copy the extension folder into your Windows CEP directory:</p>
+                    <div class="p-2.5 rounded-lg bg-[#05070a] border border-white/10 font-mono text-xs text-brand select-all">
+                        C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\
+                    </div>
+                    <span class="text-[11px] text-gray-400 block">(Or user-specific directory: <code class="text-gray-300">%APPDATA%\Adobe\CEP\extensions\</code>)</span>
+                </div>
+            </div>
+
+            <!-- Mac Section -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 font-heading font-bold text-base text-white">
+                    <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs">🍎</span>
+                    <span>Option B: macOS (Apple Silicon M1-M4 &amp; Intel)</span>
+                </div>
+                <div class="p-4 rounded-xl bg-dark-base border border-white/10 space-y-3 text-xs sm:text-sm text-gray-300">
+                    <p><strong>Method 1 (Automated Terminal Script):</strong></p>
+                    <ol class="list-decimal list-inside space-y-1.5 pl-2 text-gray-300">
+                        <li>Unzip the downloaded package.</li>
+                        <li>Open Terminal, navigate to the folder, and run: <code class="font-mono text-brand bg-white/5 px-2 py-0.5 rounded">chmod +x install_mac.sh && ./install_mac.sh</code></li>
+                        <li>Restart Adobe After Effects.</li>
+                    </ol>
+                    <p class="pt-2 border-t border-white/5"><strong>Method 2 (Manual Copy in Finder):</strong></p>
+                    <p class="text-xs text-gray-400">In Finder, press <code class="text-white">Cmd + Shift + G</code> (Go to Folder) and paste:</p>
+                    <div class="p-2.5 rounded-lg bg-[#05070a] border border-white/10 font-mono text-xs text-brand select-all">
+                        ~/Library/Application Support/Adobe/CEP/extensions/
+                    </div>
+                    <span class="text-[11px] text-gray-400 block">Copy the extension folder directly into this directory, then restart After Effects.</span>
+                </div>
+            </div>
+
+            <!-- Launching in AE -->
+            <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs sm:text-sm text-emerald-300 space-y-1.5">
+                <span class="font-bold text-white block">🎉 Opening the Panel in After Effects:</span>
+                <p>After installing and restarting After Effects, open the top menu bar:</p>
+                <div class="font-mono font-bold text-white bg-dark-base/60 p-2 rounded-lg border border-emerald-500/20 inline-block">
+                    Window &rarr; Extensions &rarr; MotionByDk AE Workflow Pro
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting & FAQ Accordion -->
+        <div class="space-y-4 mb-12">
+            <h2 class="font-heading font-black text-2xl text-white mb-6">Frequently Asked Questions &amp; Troubleshooting</h2>
+
+            <!-- Item 1 -->
+            <div class="studio-card p-5 help-topic" data-keywords="playerdebugmode extensions not showing missing registry terminal">
+                <h3 class="font-heading font-bold text-base text-white mb-2 flex items-center justify-between cursor-pointer" onclick="toggleHelpAccordion(1)">
+                    <span>The extension does not appear under Window &rarr; Extensions. What should I do?</span>
+                    <i id="hIcon-1" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform"></i>
+                </h3>
+                <div id="hAns-1" class="text-xs sm:text-sm text-gray-300 space-y-2 border-t border-white/5 pt-3">
+                    <p>This is usually because Adobe CEP requires Developer Mode enabled to load unsigned or custom CEP panels.</p>
+                    <p><strong>For macOS:</strong> Open Terminal and execute this command:</p>
+                    <pre class="p-2 bg-dark-base rounded font-mono text-xs text-brand select-all">defaults write com.adobe.CSXS.10 PlayerDebugMode 1 && defaults write com.adobe.CSXS.11 PlayerDebugMode 1 && defaults write com.adobe.CSXS.12 PlayerDebugMode 1</pre>
+                    <p><strong>For Windows:</strong> Open Command Prompt as Administrator and run:</p>
+                    <pre class="p-2 bg-dark-base rounded font-mono text-xs text-brand select-all">reg add HKEY_CURRENT_USER\Software\Adobe\CSXS.10 /v PlayerDebugMode /t REG_SZ /d 1 /f</pre>
+                    <p>Then restart After Effects and check Window &rarr; Extensions.</p>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="studio-card p-5 help-topic" data-keywords="workstation limit machine reset 2 computers laptop desktop">
+                <h3 class="font-heading font-bold text-base text-white mb-2 flex items-center justify-between cursor-pointer" onclick="toggleHelpAccordion(2)">
+                    <span>How many computers can I activate with my license key?</span>
+                    <i id="hIcon-2" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform"></i>
+                </h3>
+                <div id="hAns-2" class="text-xs sm:text-sm text-gray-300 space-y-2 border-t border-white/5 pt-3">
+                    <p>Each commercial license permits activation on up to <strong>2 computers simultaneously</strong> (e.g. desktop workstation and laptop). You do not need to buy separate licenses for Windows and Mac.</p>
+                    <p>If you get a new computer or reinstall your OS, you can reset your active machine slots instantly through our <a href="activate.html" class="text-brand font-bold underline">Self-Service License Portal</a> using OTP verification to your purchase email.</p>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="studio-card p-5 help-topic" data-keywords="updates upgrade future versions free paid cost">
+                <h3 class="font-heading font-bold text-base text-white mb-2 flex items-center justify-between cursor-pointer" onclick="toggleHelpAccordion(3)">
+                    <span>Are future updates free or do I have to pay again?</span>
+                    <i id="hIcon-3" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform"></i>
+                </h3>
+                <div id="hAns-3" class="text-xs sm:text-sm text-gray-300 space-y-2 border-t border-white/5 pt-3">
+                    <p>All future updates — both minor feature upgrades and major compatibility releases for upcoming After Effects versions — are <strong>100% free for life</strong> for existing license holders.</p>
+                    <p>Your license key stays activated permanently. Visit <a href="updates.html" class="text-brand font-bold underline">Updates &amp; Downloads</a> anytime to grab the newest verified build.</p>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="studio-card p-5 help-topic" data-keywords="refund policy guarantee money back compatibility">
+                <h3 class="font-heading font-bold text-base text-white mb-2 flex items-center justify-between cursor-pointer" onclick="toggleHelpAccordion(4)">
+                    <span>What is your refund policy if the plugin does not work on my machine?</span>
+                    <i id="hIcon-4" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 transition-transform"></i>
+                </h3>
+                <div id="hAns-4" class="text-xs sm:text-sm text-gray-300 space-y-2 border-t border-white/5 pt-3">
+                    <p>We stand behind our tools with a <strong>7-Day Installation &amp; Compatibility Guarantee</strong>. If our extension cannot run on your supported operating system and After Effects version after troubleshooting with our developer, you are entitled to a full refund.</p>
+                    <p>Read our full terms on the <a href="refund.html" class="text-brand font-bold underline">Refund Policy Page &rarr;</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direct Contact Footer Box -->
+        <div class="p-8 rounded-3xl bg-gradient-to-r from-dark-card to-dark-surface border border-brand/30 text-center space-y-4">
+            <h3 class="font-heading font-black text-2xl text-white">Still need assistance?</h3>
+            <p class="text-xs sm:text-sm text-gray-400 max-w-md mx-auto">
+                Reach Dhananjay directly. Typical response time is under 2 hours during active working hours.
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <a href="https://wa.me/919217282296" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition-all flex items-center gap-2 shadow-lg">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Chat on WhatsApp (+91 92172 82296)</span>
+                </a>
+                <a href="mailto:support@motionbydk.in" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all flex items-center gap-2">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <span>Email support@motionbydk.in</span>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-dark-base py-8 relative z-10 text-center text-xs text-gray-500">
+        <div class="flex flex-wrap items-center justify-center gap-5 mb-3 text-gray-400">
+            <a href="index.html" class="hover:text-white">Store</a>
+            <a href="product.html?id=ae-workflow-pro" class="hover:text-white">AE Workflow Pro</a>
+            <a href="updates.html" class="hover:text-white">Updates &amp; Downloads</a>
+            <a href="activate.html" class="hover:text-white">License Portal</a>
+            <a href="refund.html" class="hover:text-white">Refund Policy</a>
+            <a href="license-policy.html" class="hover:text-white">License Terms</a>
+        </div>
+        <div>&copy; 2026 MotionByDk. All Rights Reserved.</div>
+    </footer>
+
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function toggleHelpAccordion(idx) {
+            var ans = document.getElementById('hAns-' + idx);
+            var icon = document.getElementById('hIcon-' + idx);
+            if (!ans) return;
+            var isHidden = ans.classList.contains('hidden');
+            if (isHidden) {
+                ans.classList.remove('hidden');
+                if (icon) icon.classList.add('rotate-180');
+            } else {
+                ans.classList.add('hidden');
+                if (icon) icon.classList.remove('rotate-180');
+            }
+        }
+
+        function filterHelpTopics() {
+            var q = (document.getElementById('helpSearch').value || '').toLowerCase().trim();
+            var topics = document.querySelectorAll('.help-topic');
+            topics.forEach(function(el) {
+                var kw = (el.getAttribute('data-keywords') || '') + ' ' + (el.innerText || '');
+                if (!q || kw.toLowerCase().includes(q)) {
+                    el.style.display = '';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

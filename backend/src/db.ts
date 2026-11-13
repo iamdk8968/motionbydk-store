@@ -75,19 +75,21 @@ export async function createPendingOrder(
     baseAmountInr: number;
     discountInr: number;
     finalAmountInr: number;
+    currency?: string;
     cfPaymentSessionId: string | null;
-    ipAddress: string | null;
-    userAgent: string | null;
+    ipAddress?: string | null;
+    userAgent?: string | null;
   }
 ): Promise<OrderRecord> {
   const id = crypto.randomUUID();
+  const orderCurrency = (params.currency || 'INR').toUpperCase();
   await db
     .prepare(
       `INSERT INTO orders (
         id, order_id, customer_id, product_id, coupon_code,
         base_amount_inr, discount_inr, final_amount_inr, currency,
         status, cf_payment_session_id, ip_address, user_agent
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'INR', 'PENDING', ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)`
     )
     .bind(
       id,
@@ -98,9 +100,10 @@ export async function createPendingOrder(
       params.baseAmountInr,
       params.discountInr,
       params.finalAmountInr,
+      orderCurrency,
       params.cfPaymentSessionId,
-      params.ipAddress,
-      params.userAgent
+      params.ipAddress || null,
+      params.userAgent || null
     )
     .run();
 
@@ -116,8 +119,8 @@ export async function createPendingOrder(
     currency: 'INR',
     status: 'PENDING',
     cf_payment_session_id: params.cfPaymentSessionId,
-    ip_address: params.ipAddress,
-    user_agent: params.userAgent,
+    ip_address: params.ipAddress || null,
+    user_agent: params.userAgent || null,
     paid_at: null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -171,19 +174,21 @@ export async function recordPayment(
     paymentMethod: string;
     paymentAmountInr: number;
     paymentStatus: string;
+    paymentCurrency?: string;
     paymentTime: string | null;
     bankReference: string | null;
     rawResponse: string;
   }
 ): Promise<void> {
   const id = crypto.randomUUID();
+  const currency = (params.paymentCurrency || 'INR').toUpperCase();
   await db
     .prepare(
       `INSERT OR REPLACE INTO payments (
         id, order_id, cf_payment_id, payment_method,
-        payment_amount_inr, payment_status, payment_time,
+        payment_amount_inr, payment_currency, payment_status, payment_time,
         bank_reference, raw_response
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .bind(
       id,
@@ -191,6 +196,7 @@ export async function recordPayment(
       params.cfPaymentId,
       params.paymentMethod,
       params.paymentAmountInr,
+      currency,
       params.paymentStatus,
       params.paymentTime || new Date().toISOString(),
       params.bankReference,

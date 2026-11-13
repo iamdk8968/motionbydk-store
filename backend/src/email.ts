@@ -279,11 +279,13 @@ export function buildOrderReceiptEmail(params: {
   productName: string;
   amountInrPaise: number;
   paymentId: string;
+  currency?: string;
   licenseKey?: string | null;
   downloadUrl?: string | null;
 }): EmailPayload {
-  const { customerName, orderId, productName, amountInrPaise, paymentId, licenseKey, downloadUrl } = params;
-  const formattedAmount = `₹${(amountInrPaise / 100).toFixed(2)}`;
+  const { customerName, orderId, productName, amountInrPaise, paymentId, currency, licenseKey, downloadUrl } = params;
+  const symbol = (currency || 'INR').toUpperCase() === 'USD' ? '$' : '₹';
+  const formattedAmount = `${symbol}${(amountInrPaise / 100).toFixed(2)}`;
 
   let licenseSection = '';
   if (licenseKey) {
@@ -620,6 +622,7 @@ export async function dispatchOrderReceiptEmail(
     productName: string;
     amountInrPaise: number;
     paymentId: string;
+    currency?: string;
     licenseKey?: string | null;
     downloadUrl?: string | null;
     forceResend?: boolean;

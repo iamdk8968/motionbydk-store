@@ -415,10 +415,11 @@ export async function handleAdminMetrics(
     // 1. Revenue & Order Status Breakdown
     const revenueRes = await env.DB.prepare(
       `SELECT 
-         COALESCE(SUM(CASE WHEN status = 'PAID' THEN final_amount_inr ELSE 0 END), 0) AS total_revenue_paise,
-         COALESCE(SUM(CASE WHEN status = 'PAID' AND datetime(paid_at) >= datetime('now', '-24 hours') THEN final_amount_inr ELSE 0 END), 0) AS revenue_24h_paise,
-         COALESCE(SUM(CASE WHEN status = 'PAID' AND datetime(paid_at) >= datetime('now', '-7 days') THEN final_amount_inr ELSE 0 END), 0) AS revenue_7d_paise,
-         COALESCE(SUM(CASE WHEN status = 'PAID' AND datetime(paid_at) >= datetime('now', '-30 days') THEN final_amount_inr ELSE 0 END), 0) AS revenue_30d_paise,
+         COALESCE(SUM(CASE WHEN status = 'PAID' AND (currency IS NULL OR currency = 'INR') THEN final_amount_inr ELSE 0 END), 0) AS total_revenue_paise,
+         COALESCE(SUM(CASE WHEN status = 'PAID' AND currency = 'USD' THEN final_amount_inr ELSE 0 END), 0) AS total_revenue_usd_cents,
+         COALESCE(SUM(CASE WHEN status = 'PAID' AND (currency IS NULL OR currency = 'INR') AND datetime(paid_at) >= datetime('now', '-24 hours') THEN final_amount_inr ELSE 0 END), 0) AS revenue_24h_paise,
+         COALESCE(SUM(CASE WHEN status = 'PAID' AND (currency IS NULL OR currency = 'INR') AND datetime(paid_at) >= datetime('now', '-7 days') THEN final_amount_inr ELSE 0 END), 0) AS revenue_7d_paise,
+         COALESCE(SUM(CASE WHEN status = 'PAID' AND (currency IS NULL OR currency = 'INR') AND datetime(paid_at) >= datetime('now', '-30 days') THEN final_amount_inr ELSE 0 END), 0) AS revenue_30d_paise,
          COUNT(*) AS total_orders,
          SUM(CASE WHEN status = 'PAID' THEN 1 ELSE 0 END) AS paid_orders,
          SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) AS pending_orders,
@@ -515,6 +516,8 @@ export async function handleAdminMetrics(
           revenue: {
             totalPaise: Number(revenueRes?.total_revenue_paise || 0),
             totalInrFormatted: `₹${(Number(revenueRes?.total_revenue_paise || 0) / 100).toFixed(2)}`,
+            totalUsdCents: Number(revenueRes?.total_revenue_usd_cents || 0),
+            totalUsdFormatted: `$${(Number(revenueRes?.total_revenue_usd_cents || 0) / 100).toFixed(2)}`,
             revenue24hInr: `₹${(Number(revenueRes?.revenue_24h_paise || 0) / 100).toFixed(2)}`,
             revenue7dInr: `₹${(Number(revenueRes?.revenue_7d_paise || 0) / 100).toFixed(2)}`,
             revenue30dInr: `₹${(Number(revenueRes?.revenue_30d_paise || 0) / 100).toFixed(2)}`,
@@ -646,12 +649,16 @@ export async function handleAdminOrders(
       .bind(...bindings, limit, offset)
       .all<any>();
 
-    const orders = (dataRes.results || []).map((o) => ({
-      ...o,
-      finalAmountInrFormatted: `₹${(o.final_amount_inr / 100).toFixed(2)}`,
-      baseAmountInrFormatted: `₹${(o.base_amount_inr / 100).toFixed(2)}`,
-      discountInrFormatted: `₹${(o.discount_inr / 100).toFixed(2)}`,
-    }));
+    const orders = (dataRes.results || []).map((o) => {
+      const sym = o.currency === 'USD' ? '$' : '₹';
+      return {
+        ...o,
+        finalAmountFormatted: `${sym}${(o.final_amount_inr / 100).toFixed(2)}`,
+        finalAmountInrFormatted: `${sym}${(o.final_amount_inr / 100).toFixed(2)}`,
+        baseAmountInrFormatted: `${sym}${(o.base_amount_inr / 100).toFixed(2)}`,
+        discountInrFormatted: `${sym}${(o.discount_inr / 100).toFixed(2)}`,
+      };
+    });
 
     return adminJsonResponse(
       {
@@ -758,7 +765,8 @@ export async function handleAdminOrderDetail(
         success: true,
         order: {
           ...order,
-          finalAmountInrFormatted: `₹${(order.final_amount_inr / 100).toFixed(2)}`,
+          finalAmountFormatted: `${order.currency === 'USD' ? '$' : '₹'}${(order.final_amount_inr / 100).toFixed(2)}`,
+          finalAmountInrFormatted: `${order.currency === 'USD' ? '$' : '₹'}${(order.final_amount_inr / 100).toFixed(2)}`,
         },
         payments: payments.results || [],
         license: license
@@ -1322,7 +1330,7 @@ export async function handleAdminResendEmail(
     if (order.r2_object_key) {
       let dt = await getDownloadTokenByOrder(env.DB, orderId);
       if (!dt || new Date(dt.expires_at).getTime() < Date.now()) {
-        dt = await createDownloadTokenForOrder(env.DB, orderId, order.r2_object_key, 48);
+        dt = await createDownloadTokenForOrder(env.DB, orderId, order.r2_object_key);
       }
       downloadUrl = `https://motionbydk-api-staging.motionbydk-api.workers.dev/api/download/${dt.token}`;
     }

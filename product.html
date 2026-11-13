@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MotionByDk AE Workflow Pro — Flagship After Effects Suite</title>
+    <meta name="description" content="Supercharge After Effects animation speed by 10x. 3D Carousel Studio, Mouse Dock Magnifier, Kinetic Bezier Suite, and Precision Shape Tools in one unified docked panel.">
+    <link rel="canonical" href="https://motionbydk.in/product.html">
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00F0FF',
+                            hover: '#33F3FF',
+                            dim: '#008b94'
+                        },
+                        dark: {
+                            base: '#07090e',
+                            surface: '#0d1117',
+                            card: '#131822',
+                            elevated: '#1a2230',
+                            border: '#232d3f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Cashfree JS SDK v3 & Checkout Script -->
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <script src="assets/cashfree-checkout.js"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        body {
+            background-color: #07090e;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .studio-card {
+            background: linear-gradient(180deg, rgba(19, 24, 34, 0.8) 0%, rgba(13, 17, 23, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 1.25rem;
+        }
+        .glow-accent {
+            box-shadow: 0 0 35px -5px rgba(0, 240, 255, 0.25);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glow Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand/15 rounded-full blur-3xl"></div>
+        <div class="absolute top-[40%] right-[-150px] w-96 h-96 bg-amber-400/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-white/10 bg-dark-base/80 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-dark-card border border-brand/40 p-2 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <img src="assets/icon.svg" alt="Motion by DK Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <span class="font-heading font-black text-xl tracking-tight text-white block">MOTION<span class="text-brand">BY DK</span></span>
+                    <span class="text-[10px] text-gray-400 font-mono tracking-wider uppercase block">Software Store</span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <!-- Currency Toggle Button -->
+                <button onclick="toggleProductCurrency()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-xs font-mono font-bold text-gray-300 transition-all cursor-pointer">
+                    <span id="navCurrSymbol" class="text-brand">₹</span>
+                    <span id="navCurrCode">INR</span>
+                    <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-gray-400 ml-1"></i>
+                </button>
+
+                <a href="index.html" class="hidden sm:inline-flex text-xs font-bold text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                    &larr; Storefront
+                </a>
+                <a href="activate.html" class="hidden sm:inline-flex text-xs font-bold text-brand hover:text-white px-3 py-2 rounded-lg bg-brand/10 border border-brand/30 transition-all">
+                    License Portal
+                </a>
+                <button onclick="openProductCheckout()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/20 cursor-pointer">
+                    <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
+                    <span id="headerBuyLabel">Buy Pro (₹499)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 py-10 px-4 sm:px-6 lg:px-8 relative z-10 max-w-7xl mx-auto w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="flex items-center gap-2 text-xs text-gray-400 mb-6 font-mono">
+            <a href="index.html" class="hover:text-white">Store</a>
+            <span>/</span>
+            <a href="index.html#plugin" class="hover:text-white">After Effects Plugins</a>
+            <span>/</span>
+            <span id="breadcrumbTitle" class="text-brand font-bold">MotionByDk AE Workflow Pro</span>
+        </div>
+
+        <!-- Product Hero Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            <!-- Left Column: Specs, Features & Demos (7 cols) -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <div class="flex flex-wrap items-center gap-2.5 mb-3">
+                        <span id="productBadge" class="text-xs font-mono font-bold text-black bg-brand px-3 py-1 rounded-full uppercase tracking-wider">
+                            FLAGSHIP EXTENSION • v3.6.0
+                        </span>
+                        <span class="text-xs text-amber-400 font-bold flex items-center gap-1">
+                            ★★★★★ <span class="text-gray-300 font-normal">(5.0 • Verified Motion Designers)</span>
+                        </span>
+                    </div>
+
+                    <h1 id="productTitle" class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-4">
+                        MotionByDk AE Workflow Pro
+                    </h1>
+
+                    <p id="productTagline" class="text-sm sm:text-base text-gray-300 leading-relaxed max-w-2xl">
+                        Supercharge your After Effects animation speed by 10x. Build 3D Carousels with automatic spatial math, recreate Apple-style macOS Mouse Dock Icon Magnification, snap kinetic bezier curves, and manipulate shape layers directly from one docked native CEP panel.
+                    </p>
+                </div>
+
+                <!-- 4 Value Pill Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="studio-card p-3.5 text-center">
+                        <i data-lucide="laptop" class="w-5 h-5 text-brand mx-auto mb-1"></i>
+                        <span class="text-xs font-bold text-white block">2 Workstations</span>
+                        <span class="text-[10px] text-gray-400">Desktop + Laptop</span>
+                    </div>
+                    <div class="studio-card p-3.5 text-center">
+                        <i data-lucide="infinity" class="w-5 h-5 text-emerald-400 mx-auto mb-1"></i>
+                        <span class="text-xs font-bold text-white block">Lifetime Access</span>
+                        <span class="text-[10px] text-gray-400">No Subscriptions</span>
+                    </div>
+                    <div class="studio-card p-3.5 text-center">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 text-amber-400 mx-auto mb-1"></i>
+                        <span class="text-xs font-bold text-white block">Free Updates</span>
+                        <span class="text-[10px] text-gray-400">Lifetime Minor &amp; Major</span>
+                    </div>
+                    <div class="studio-card p-3.5 text-center">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-purple-400 mx-auto mb-1"></i>
+                        <span class="text-xs font-bold text-white block">7-Day Guarantee</span>
+                        <span class="text-[10px] text-gray-400">Full Setup Support</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Feature Showcase Tabs -->
+                <div class="studio-card p-6 border-white/10 space-y-6">
+                    <h3 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-brand"></i>
+                        <span>Flagship Engine Capabilities</span>
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-dark-base border border-white/5 space-y-2">
+                            <div class="flex items-center gap-2 font-heading font-bold text-sm text-white">
+                                <span class="w-6 h-6 rounded-lg bg-brand/20 text-brand flex items-center justify-center text-xs">🎠</span>
+                                <span>3D Carousel Spatial Layout Engine</span>
+                            </div>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Select 3 to 24 layers and build cylindrical, circular, planar, or perspective 3D carousels with 1 click. Sliders control Radius, Rotation, Spacing, and Camera Depth in real-time.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-dark-base border border-white/5 space-y-2">
+                            <div class="flex items-center gap-2 font-heading font-bold text-sm text-white">
+                                <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">🖱️</span>
+                                <span>macOS Mouse Dock Magnification Physics</span>
+                            </div>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Replicate the iconic Apple macOS dock icon magnification effect. Features procedural Gaussian falloff, proximity threshold, and smooth dampening curves linked directly to your mouse null layer.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-dark-base border border-white/5 space-y-2">
+                            <div class="flex items-center gap-2 font-heading font-bold text-sm text-white">
+                                <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs">⚡</span>
+                                <span>Kinetic Bezier Suite &amp; Speed Ramping</span>
+                            </div>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Bypass the clunky AE Graph Editor. 9 handcrafted kinetic presets (Ease In, Ease Out, Pop, Bounce, Elastic) apply to selected keyframes instantly with customizable influence percentages.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-dark-base border border-white/5 space-y-2">
+                            <div class="flex items-center gap-2 font-heading font-bold text-sm text-white">
+                                <span class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs">✏️</span>
+                                <span>Docked Shape Tools &amp; Trim Paths</span>
+                            </div>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                No more digging through 8 nested twisty menus. Access Start, End, and Offset Trim Path sliders directly, create procedural shape bursts, and use the 9-point anchor relocator in 1 click.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Compatibility Matrix -->
+                <div class="studio-card p-6 border-white/10 space-y-4">
+                    <h3 class="font-heading font-bold text-base text-white flex items-center gap-2">
+                        <i data-lucide="cpu" class="w-4 h-4 text-brand"></i>
+                        <span>Technical Compatibility &amp; Requirements</span>
+                    </h3>
+
+                    <div class="overflow-x-auto text-xs text-gray-300">
+                        <table class="w-full text-left border-collapse">
+                            <tbody>
+                                <tr class="border-b border-white/5">
+                                    <td class="py-2.5 font-bold text-gray-400 w-1/3">Host Application</td>
+                                    <td class="py-2.5 text-white font-mono">Adobe After Effects CC 2019 through CC 2026+</td>
+                                </tr>
+                                <tr class="border-b border-white/5">
+                                    <td class="py-2.5 font-bold text-gray-400">macOS Support</td>
+                                    <td class="py-2.5 text-white font-mono">Apple Silicon (M1/M2/M3/M4) &amp; Intel • macOS 10.15+</td>
+                                </tr>
+                                <tr class="border-b border-white/5">
+                                    <td class="py-2.5 font-bold text-gray-400">Windows Support</td>
+                                    <td class="py-2.5 text-white font-mono">Windows 10 &amp; Windows 11 (64-bit)</td>
+                                </tr>
+                                <tr class="border-b border-white/5">
+                                    <td class="py-2.5 font-bold text-gray-400">Architecture</td>
+                                    <td class="py-2.5 text-white font-mono">Adobe CEP 9+ / HTML5 / ExtendScript Engine</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 font-bold text-gray-400">License Terms</td>
+                                    <td class="py-2.5 text-white font-mono">2 Workstations • Commercial &amp; Client Projects Permitted</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Pricing & Checkout Card (5 cols) -->
+            <div class="lg:col-span-5 sticky top-28 space-y-6">
+                
+                <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#131b26] to-dark-card border-2 border-brand/40 shadow-2xl relative overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-48 h-48 bg-brand/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono font-bold text-brand bg-brand/10 px-3 py-1 rounded-full border border-brand/30 uppercase tracking-wider">
+                            OFFICIAL LICENSE
+                        </span>
+                        <button onclick="toggleProductCurrency()" class="text-xs text-gray-400 hover:text-white flex items-center gap-1 font-mono cursor-pointer">
+                            <span class="text-brand font-bold underline">Switch to <span id="otherCurrLabel">USD</span></span>
+                        </button>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span id="priceCurrencySymbol" class="font-heading font-black text-4xl text-brand">₹</span>
+                            <span id="priceValue" class="font-heading font-black text-5xl text-white">499</span>
+                            <span id="priceCurrencyCode" class="text-xs text-gray-400 font-mono">INR</span>
+                        </div>
+                        <span class="text-xs text-gray-400 block mt-1">One-time payment • Lifetime 2-PC Commercial License</span>
+                    </div>
+
+                    <!-- Coupon Code Input -->
+                    <div class="mb-6 p-3.5 rounded-xl bg-dark-base border border-white/10">
+                        <label class="text-[11px] font-bold text-gray-300 block mb-1.5 uppercase font-mono">Have a coupon code?</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="couponInput" placeholder="Enter coupon (e.g. FIRST100)" class="flex-1 px-3 py-2 bg-dark-surface border border-white/10 rounded-lg text-xs text-white font-mono uppercase focus:border-brand focus:outline-none">
+                            <button onclick="applyCoupon()" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all cursor-pointer">
+                                Apply
+                            </button>
+                        </div>
+                        <div id="couponStatus" class="text-[11px] mt-2 hidden"></div>
+                    </div>
+
+                    <!-- Direct Cashfree Checkout Button -->
+                    <div class="space-y-3">
+                        <button onclick="openProductCheckout()" class="w-full py-4 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-heading font-black text-base rounded-2xl shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer group">
+                            <i data-lucide="zap" class="w-5 h-5 fill-black group-hover:scale-110 transition-transform"></i>
+                            <span id="checkoutBtnText">Buy Now &amp; Activate License &rarr;</span>
+                        </button>
+
+                        <div class="flex items-center justify-center gap-2 text-[11px] text-gray-400 text-center">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                            <span id="paymentMethodsDesc">Cashfree 256-bit encrypted • UPI, Cards &amp; NetBanking</span>
+                        </div>
+                    </div>
+
+                    <!-- Security & Delivery List -->
+                    <div class="mt-6 pt-6 border-t border-white/10 space-y-3 text-xs text-gray-300">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Instant automated license key delivery on screen</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Automated receipt and backup key sent to email</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                            <span>1-Click automated Windows &amp; macOS installers</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                            <span>Full compatibility guarantee with direct WhatsApp support</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Assistance Card -->
+                <div class="studio-card p-5 border-emerald-500/30 flex items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-white block">Questions before purchasing?</span>
+                        <span class="text-[11px] text-gray-400">Chat directly with Dhananjay for quick answers.</span>
+                    </div>
+                    <a href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20a%20question%20about%20AE%20Workflow%20Pro%3A" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-dark-base py-10 relative z-10 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-dark-card border border-brand/40 p-1.5 flex items-center justify-center">
+                        <img src="assets/icon.svg" alt="Motion by DK Icon" class="w-full h-full object-contain">
+                    </div>
+                    <span class="font-heading font-black text-base text-white">MOTION<span class="text-brand">BY DK</span></span>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-5 text-xs text-gray-400">
+                    <a href="index.html" class="hover:text-white">Store</a>
+                    <a href="updates.html" class="hover:text-white">Updates &amp; Downloads</a>
+                    <a href="help.html" class="hover:text-white">Help &amp; FAQ</a>
+                    <a href="activate.html" class="hover:text-white">License Portal</a>
+                    <a href="refund.html" class="hover:text-white">Refund Policy</a>
+                    <a href="license-policy.html" class="hover:text-white">License Terms</a>
+                    <a href="terms.html" class="hover:text-white">Terms</a>
+                    <a href="privacy.html" class="hover:text-white">Privacy</a>
+                </div>
+            </div>
+
+            <div class="text-center text-[11px] text-gray-500 border-t border-white/5 pt-6">
+                &copy; 2026 MotionByDk. All Rights Reserved. Adobe After Effects is a registered trademark of Adobe Inc.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dynamic Script Logic -->
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // 1. Detect Product ID from Query Param
+        var urlParams = new URLSearchParams(window.location.search);
+        var currentProductId = urlParams.get('id') || 'ae-workflow-pro';
+
+        // 2. Multi-Currency State
+        var currentCurrency = (function() {
+            try {
+                var stored = localStorage.getItem('mdk_currency');
+                if (stored === 'INR' || stored === 'USD') return stored;
+                var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                var lang = navigator.language || '';
+                if (tz.includes('Calcutta') || tz.includes('Kolkata') || lang.includes('IN') || (new Date().getTimezoneOffset() === -330)) {
+                    return 'INR';
+                }
+                return 'USD';
+            } catch(e) {
+                return 'INR';
+            }
+        })();
+
+        window.currentCurrency = currentCurrency;
+        window.mdkCurrentCurrency = currentCurrency;
+
+        var productData = {
+            id: currentProductId,
+            inrPrice: 499,
+            usdPrice: 15
+        };
+
+        var activeCoupon = '';
+
+        function updateProductPricingUI() {
+            window.currentCurrency = currentCurrency;
+            window.mdkCurrentCurrency = currentCurrency;
+
+            var symbol = (currentCurrency === 'INR') ? '₹' : '$';
+            var rawPrice = (currentCurrency === 'INR') ? productData.inrPrice : productData.usdPrice;
+            var finalPrice = rawPrice;
+
+            if (activeCoupon.toUpperCase() === 'FIRST100') {
+                finalPrice = (currentCurrency === 'INR') ? Math.max(0, rawPrice - 100) : Math.max(0, rawPrice - 3);
+            }
+
+            document.getElementById('navCurrSymbol').innerText = symbol;
+            document.getElementById('navCurrCode').innerText = currentCurrency;
+            document.getElementById('priceCurrencySymbol').innerText = symbol;
+            document.getElementById('priceValue').innerText = finalPrice;
+            document.getElementById('priceCurrencyCode').innerText = currentCurrency;
+            document.getElementById('otherCurrLabel').innerText = (currentCurrency === 'INR') ? 'USD ($)' : 'INR (₹)';
+            document.getElementById('headerBuyLabel').innerText = 'Buy Pro (' + symbol + finalPrice + ')';
+            document.getElementById('checkoutBtnText').innerText = 'Buy Now (' + symbol + finalPrice + ') & Activate License →';
+            document.getElementById('paymentMethodsDesc').innerText = (currentCurrency === 'INR')
+                ? 'Cashfree 256-bit encrypted • UPI, Cards & NetBanking'
+                : 'Cashfree 256-bit encrypted • All International Cards';
+        }
+
+        function toggleProductCurrency() {
+            currentCurrency = (currentCurrency === 'INR') ? 'USD' : 'INR';
+            try { localStorage.setItem('mdk_currency', currentCurrency); } catch(e) {}
+            updateProductPricingUI();
+        }
+
+        function applyCoupon() {
+            var code = (document.getElementById('couponInput').value || '').trim().toUpperCase();
+            var statusEl = document.getElementById('couponStatus');
+            statusEl.classList.remove('hidden');
+
+            if (code === 'FIRST100') {
+                activeCoupon = code;
+                var discountText = (currentCurrency === 'INR') ? '₹100 discount' : '$3 discount';
+                statusEl.className = 'text-[11px] mt-2 text-emerald-400 font-bold';
+                statusEl.innerText = '✓ Code FIRST100 applied! ' + discountText + ' unlocked.';
+            } else if (code === '') {
+                activeCoupon = '';
+                statusEl.classList.add('hidden');
+            } else {
+                statusEl.className = 'text-[11px] mt-2 text-rose-400 font-medium';
+                statusEl.innerText = '✕ Invalid or expired coupon code.';
+            }
+            updateProductPricingUI();
+        }
+
+        function openProductCheckout() {
+            if (typeof openCashfreeModal === 'function') {
+                openCashfreeModal(currentProductId, activeCoupon);
+            }
+        }
+
+        // Fetch dynamic product specs from backend
+        var apiBase = window.MDK_API_BASE || (function() {
+            var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
+            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://api.motionbydk.in';
+            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+        })();
+        fetch(apiBase + '/api/products/' + currentProductId)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data && data.success && data.product) {
+                    var p = data.product;
+                    if (p.name) document.getElementById('productTitle').innerText = p.name;
+                    if (p.tagline) document.getElementById('productTagline').innerText = p.tagline;
+                    if (p.inr_price_paise) productData.inrPrice = Math.round(p.inr_price_paise / 100);
+                    if (p.usd_price_cents) productData.usdPrice = Math.round(p.usd_price_cents / 100);
+                    updateProductPricingUI();
+                }
+            })
+            .catch(function() {
+                // Static defaults stay active seamlessly
+            });
+
+        updateProductPricingUI();
+    </script>
+</body>
+</html>

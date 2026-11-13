@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Software Updates &amp; Downloads | MotionByDk AE Workflow Pro</title>
-    <meta name="description" content="Download the latest version of MotionByDk AE Workflow Pro extension for Adobe After Effects via Google Drive. Lifetime free updates for all license holders.">
+    <meta name="description" content="Download the latest verified release of MotionByDk AE Workflow Pro extension for Adobe After Effects via secure Cloudflare R2 storage. Lifetime free updates for all license holders.">
     <link rel="canonical" href="https://motionbydk.in/updates.html">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 
@@ -105,20 +105,19 @@
             <!-- Section Header -->
             <div class="text-center mb-10">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-bold uppercase tracking-wider mb-4">
-                    <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
-                    <span>Official Release Hub • Lifetime Free Updates</span>
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                    <span>Cloudflare R2 Secure Distribution • Lifetime Free Updates</span>
                 </div>
                 <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight mb-4">
                     Software Updates &amp; Downloads
                 </h1>
                 <p class="text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
-                    Download the latest release of MotionByDk AE Workflow Pro directly from Google Drive. Your license key remains permanently activated across updates!
+                    Download the latest release of MotionByDk AE Workflow Pro. Authenticated directly via your commercial license key with high-speed signed delivery.
                 </p>
             </div>
 
             <!-- Latest Version Card -->
             <div class="studio-card p-6 sm:p-10 border-2 border-brand/40 shadow-2xl relative overflow-hidden mb-8">
-                <!-- Background Glow -->
                 <div class="absolute -top-20 -right-20 w-60 h-60 bg-brand/15 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
@@ -142,18 +141,18 @@
 
                     <div class="text-left sm:text-right">
                         <span class="text-[11px] text-gray-400 block">Compatibility:</span>
-                        <span class="text-xs font-bold text-white">After Effects CC 2020 &ndash; CC 2026+</span>
+                        <span id="minAeVersion" class="text-xs font-bold text-white">After Effects CC 2019 &ndash; CC 2026+</span>
                     </div>
                 </div>
 
-                <!-- Big Direct Google Drive Button -->
+                <!-- Big Secure Download Action -->
                 <div class="py-8 text-center space-y-3">
-                    <a id="gdriveDownloadBtn" href="https://drive.google.com/drive/folders/1LUf8tof2Yzphr0WIPwqWzA1mZFQezryz" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-brand to-cyan-300 hover:from-brand-hover hover:to-cyan-200 text-black font-heading font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-brand/20 transition-all cursor-pointer group">
+                    <button onclick="openLicenseDownloadModal()" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-brand to-cyan-300 hover:from-brand-hover hover:to-cyan-200 text-black font-heading font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-brand/20 transition-all cursor-pointer group">
                         <i data-lucide="download" class="w-5 h-5 group-hover:translate-y-0.5 transition-transform"></i>
-                        <span>Download Latest Update (Google Drive) &rarr;</span>
-                    </a>
+                        <span>Download Latest Release (R2 Secure) &rarr;</span>
+                    </button>
                     <span class="block text-xs text-gray-400">
-                        ⚡ Direct high-speed download • Includes zip package, 1-click Mac/Win installers &amp; setup PDF
+                        ⚡ Verified R2 Delivery • Includes .zip package, 1-click Mac/Win installers &amp; Quickstart PDF
                     </span>
                 </div>
 
@@ -163,28 +162,28 @@
                         <i data-lucide="sparkles" class="w-4 h-4 text-brand"></i>
                         <span>What's New in this Release:</span>
                     </h3>
-                    <ul id="changelogList" class="space-y-2 text-xs sm:text-sm text-gray-300">
-                        <li class="flex items-start gap-2.5">
+                    <div id="changelogContainer" class="space-y-2 text-xs sm:text-sm text-gray-300">
+                        <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>3D Carousel Studio:</strong> Generate 3D spatial carousels across 5 visual layouts with live real-time controls.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
+                        </div>
+                        <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>macOS Mouse Dock Magnification:</strong> Authentic icon magnification physics with falloff and dampening multipliers.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
+                        </div>
+                        <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>Kinetic Bezier Curve Editor:</strong> 9 precision easing speed curves applied to all selected keyframes in 1-click.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
+                        </div>
+                        <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>Docked Shape Tools &amp; Trim Paths:</strong> Procedural shape bursts, dashes, and smart 9-point anchor relocator.</span>
-                        </li>
-                        <li class="flex items-start gap-2.5">
+                        </div>
+                        <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
                             <span><strong>Persistent Hardware Memory:</strong> Existing license keys stay activated automatically upon updating.</span>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -194,7 +193,7 @@
                 <div class="studio-card p-5 border border-white/10">
                     <div class="w-8 h-8 rounded-lg bg-brand/15 text-brand flex items-center justify-center font-bold text-sm mb-3">1</div>
                     <h4 class="font-heading font-bold text-sm text-white mb-1">Download ZIP</h4>
-                    <p class="text-xs text-gray-400">Click the Google Drive button above to download the latest extension package.</p>
+                    <p class="text-xs text-gray-400">Click download above and enter your license key to retrieve the verified package.</p>
                 </div>
                 <div class="studio-card p-5 border border-white/10">
                     <div class="w-8 h-8 rounded-lg bg-brand/15 text-brand flex items-center justify-center font-bold text-sm mb-3">2</div>
@@ -204,7 +203,7 @@
                 <div class="studio-card p-5 border border-white/10">
                     <div class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center font-bold text-sm mb-3">3</div>
                     <h4 class="font-heading font-bold text-sm text-white mb-1">Restart AE</h4>
-                    <p class="text-xs text-gray-400">Open After Effects &mdash; your existing license key stays active automatically!</p>
+                    <p class="text-xs text-gray-400">Open After Effects &mdash; your existing 2-PC license key stays active automatically!</p>
                 </div>
             </div>
 
@@ -223,34 +222,166 @@
         </div>
     </main>
 
+    <!-- License Verification Download Modal -->
+    <div id="licenseDownloadModal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="modal-box relative w-full max-w-md bg-dark-card border-2 border-brand/40 rounded-3xl shadow-2xl p-6 sm:p-8 transform scale-95 transition-transform duration-300 text-center overflow-hidden">
+            <button onclick="closeLicenseDownloadModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-2xl bg-brand/15 text-brand flex items-center justify-center mx-auto mb-3 border border-brand/30">
+                <i data-lucide="key" class="w-6 h-6"></i>
+            </div>
+
+            <h3 class="font-heading font-black text-2xl text-white mb-1">Verify License to Download</h3>
+            <p class="text-xs text-gray-400 mb-6">Enter your 16-character Commercial License Key or Order ID to generate your secure high-speed download link.</p>
+
+            <form id="downloadClaimForm" onsubmit="handleClaimDownload(event)" class="space-y-4">
+                <div class="text-left">
+                    <label class="text-[11px] font-mono font-bold text-gray-300 block mb-1 uppercase tracking-wider">License Key or Order ID</label>
+                    <input type="text" id="claimCredential" required placeholder="e.g. MDK-PRO-XXXX-XXXX or MDK_..." class="w-full px-3.5 py-2.5 rounded-xl bg-dark-base border border-white/10 text-white text-xs font-mono uppercase focus:border-brand focus:outline-none">
+                </div>
+
+                <div id="claimStatus" class="text-xs text-left p-3 rounded-xl hidden"></div>
+
+                <button type="submit" id="claimSubmitBtn" class="w-full py-3.5 px-4 rounded-xl bg-brand hover:bg-brand-hover text-black font-extrabold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-black"></i>
+                    <span>Verify &amp; Start Download</span>
+                </button>
+
+                <div class="text-center pt-2">
+                    <a href="activate.html" class="text-[11px] text-gray-400 hover:text-brand underline transition-colors">
+                        Forgot your license key? Retrieve it on the License Portal &rarr;
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="border-t border-white/10 py-6 text-center text-xs text-gray-500 relative z-10">
-        &copy; 2026 MotionByDk &bull; Speed &amp; Precision for Video Editors
+    <footer class="border-t border-white/10 bg-dark-base py-8 relative z-10 text-center text-xs text-gray-500">
+        <div class="flex flex-wrap items-center justify-center gap-5 mb-3 text-gray-400">
+            <a href="index.html" class="hover:text-white">Store</a>
+            <a href="product.html?id=ae-workflow-pro" class="hover:text-white">AE Workflow Pro</a>
+            <a href="activate.html" class="hover:text-white">License Portal</a>
+            <a href="help.html" class="hover:text-white">Help &amp; FAQ</a>
+            <a href="refund.html" class="hover:text-white">Refund Policy</a>
+            <a href="license-policy.html" class="hover:text-white">License Terms</a>
+        </div>
+        <div>&copy; 2026 MotionByDk. All Rights Reserved.</div>
     </footer>
 
-    <!-- Dynamic Script to Fetch version.json -->
     <script>
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
-        // Fetch updates/version.json dynamically
-        fetch('updates/version.json?t=' + Date.now())
+        var currentRelease = {
+            id: 'ae-workflow-pro-v3.6.0',
+            version: '3.6.0'
+        };
+
+        var apiBase = window.MDK_API_BASE || (function() {
+            var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
+            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://api.motionbydk.in';
+            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+        })();
+
+        // Fetch latest release manifest dynamically from backend
+        fetch(apiBase + '/api/releases/latest?product=ae-workflow-pro')
             .then(function(res) { return res.json(); })
             .then(function(data) {
-                if (data && data.latestVersion) {
+                if (data && data.version) {
+                    currentRelease.id = data.id || ('ae-workflow-pro-v' + data.version);
+                    currentRelease.version = data.version;
+
                     var pill = document.getElementById('versionPill');
                     var title = document.getElementById('versionTitle');
                     var date = document.getElementById('releaseDate');
-                    var btn = document.getElementById('gdriveDownloadBtn');
-                    
-                    if (pill) pill.innerText = 'v' + data.latestVersion + ' Stable (Latest)';
-                    if (title) title.innerText = 'MotionByDk AE Workflow Pro v' + data.latestVersion;
+                    var minAe = document.getElementById('minAeVersion');
+                    var notes = document.getElementById('changelogContainer');
+
+                    if (pill) pill.innerText = 'v' + data.version + ' Stable (Latest)';
+                    if (title) title.innerText = data.title || ('MotionByDk AE Workflow Pro v' + data.version);
                     if (date && data.releaseDate) date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
-                    if (btn && data.gdriveUrl) btn.href = data.gdriveUrl;
+                    if (minAe && data.minAeVersion) minAe.innerText = 'After Effects CC ' + data.minAeVersion + '+';
+
+                    if (notes && data.releaseNotes) {
+                        var lines = data.releaseNotes.split('\n').filter(function(l) { return l.trim(); });
+                        if (lines.length > 0) {
+                            notes.innerHTML = lines.map(function(line) {
+                                return `<div class="flex items-start gap-2.5">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                                    <span>${line.replace(/^- /, '')}</span>
+                                </div>`;
+                            }).join('');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
                 }
             })
-            .catch(function() {
-                // Static defaults stay active seamlessly
-            });
+            .catch(function() {});
+
+        function openLicenseDownloadModal() {
+            var modal = document.getElementById('licenseDownloadModal');
+            if (!modal) return;
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeLicenseDownloadModal() {
+            var modal = document.getElementById('licenseDownloadModal');
+            if (!modal) return;
+            var box = modal.querySelector('.modal-box');
+            if (box) { box.classList.remove('scale-100'); box.classList.add('scale-95'); }
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        async function handleClaimDownload(e) {
+            e.preventDefault();
+            var input = (document.getElementById('claimCredential').value || '').trim();
+            var statusEl = document.getElementById('claimStatus');
+            var submitBtn = document.getElementById('claimSubmitBtn');
+
+            if (!input) return;
+
+            statusEl.className = 'text-xs text-left p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 text-blue-300 block';
+            statusEl.innerText = 'Verifying commercial entitlement with licensing database...';
+            submitBtn.disabled = true;
+
+            try {
+                var bodyPayload = { releaseId: currentRelease.id };
+                if (input.toUpperCase().startsWith('MDK-') || input.length >= 16) {
+                    bodyPayload.licenseKey = input.toUpperCase();
+                } else {
+                    bodyPayload.orderId = input;
+                }
+
+                var res = await fetch(apiBase + '/api/releases/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                var data = await res.json();
+
+                if (res.ok && data.success && data.downloadUrl) {
+                    statusEl.className = 'text-xs text-left p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 block';
+                    statusEl.innerText = '✓ Verified! Your secure R2 download is starting automatically...';
+                    setTimeout(function() {
+                        window.location.href = data.downloadUrl;
+                    }, 800);
+                } else {
+                    statusEl.className = 'text-xs text-left p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 block';
+                    statusEl.innerText = data.message || 'Verification failed. Please check your license key or contact support.';
+                }
+            } catch(err) {
+                statusEl.className = 'text-xs text-left p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 block';
+                statusEl.innerText = 'Network error while contacting licensing server. Please try again.';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

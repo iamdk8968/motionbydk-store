@@ -27,7 +27,17 @@ export interface ProductRecord {
   has_license: number;               // 1 | 0
   max_devices: number;
   is_active: number;                 // 1 | 0
+  category?: string;                 // 'plugin' | 'asset' | 'bundle'
+  is_free?: number;                  // 1 | 0
+  status?: string;                   // 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
+  thumbnail_url?: string | null;
+  screenshots?: string | null;       // JSON string array of URLs
+  compatibility?: string | null;
+  installation_guide?: string | null;
+  features_list?: string | null;     // JSON string array of features
+  update_policy?: string | null;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface CouponRecord {
@@ -37,8 +47,42 @@ export interface CouponRecord {
   max_uses: number;
   times_used: number;
   is_active: number;
+  discount_type?: string;            // 'FIXED' | 'PERCENTAGE'
+  discount_percentage?: number;
+  discount_usd?: number;             // Real USD discount
+  per_customer_limit?: number;
   expires_at: string | null;
   created_at: string;
+}
+
+export interface PluginReleaseRecord {
+  id: string;
+  product_id: string;
+  version: string;
+  title: string;
+  release_notes: string | null;
+  release_date: string;
+  min_ae_version: string;
+  r2_object_key: string;
+  file_size_bytes: number;
+  download_count: number;
+  is_published: number;
+  is_latest: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HomepageCmsRecord {
+  key: string;
+  title: string | null;
+  content: string | null;
+  cta_text: string | null;
+  cta_url: string | null;
+  badge_text: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_active: number;
+  updated_at: string;
 }
 
 export interface CustomerRecord {
