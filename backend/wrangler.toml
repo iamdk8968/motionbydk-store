@@ -37,8 +37,8 @@ EMAIL_TEST_RECIPIENT_ALLOWLIST = "iamdk8968@gmail.com,motionbydk@gmail.com,deliv
 
 [[env.staging.d1_databases]]
 binding = "DB"
-database_name = "motionbydk-db"
-database_id = "6f5c4910-22ae-4ee6-aa95-8060827fcf97"
+database_name = "motionbydk-db-staging"
+database_id = "f40b8c58-0d6b-46ea-800f-796d0a21a539"
 
 [[env.staging.r2_buckets]]
 binding = "PRODUCTS_BUCKET"
