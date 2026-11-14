@@ -22,6 +22,8 @@ ALTER TABLE products ADD COLUMN updated_at TEXT;
 
 -- Update existing active products with rich catalog data
 UPDATE products SET 
+  name = 'MotionByDk AE Workflow Pro Extension v3.7.0',
+  r2_object_key = 'products/ae-workflow-pro/v3.7.0/MotionByDk_AE_Workflow_Pro_v3.7.0.zip',
   category = 'plugin',
   is_free = 0,
   status = 'PUBLISHED',
@@ -133,7 +135,7 @@ VALUES
     'Create stunning 3D carousels, macOS dock physics & smooth easing curves in seconds.',
     'Get AE Workflow Pro',
     '#checkout',
-    'v3.6.0 STABLE',
+    'v3.7.0 STABLE',
     1
 ),
 (

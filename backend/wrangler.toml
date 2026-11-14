@@ -56,6 +56,8 @@ workers_dev = true
 ENVIRONMENT = "production"
 CASHFREE_ENV = "PRODUCTION"
 CORS_ORIGIN = "https://www.motionbydk.in,https://motionbydk.in"
+EMAIL_FROM = "Motion By DK <delivery@motionbydk.in>"
+EMAIL_REPLY_TO = "motionbydk@gmail.com"
 
 [[env.production.d1_databases]]
 binding = "DB"
@@ -65,8 +67,3 @@ database_id = "6f5c4910-22ae-4ee6-aa95-8060827fcf97"
 [[env.production.r2_buckets]]
 binding = "PRODUCTS_BUCKET"
 bucket_name = "motionbydk-products"
-
-# In Phase 10, when adding the custom domain api.motionbydk.in:
-# routes = [
-#   { pattern = "api.motionbydk.in", custom_domain = true }
-# ]

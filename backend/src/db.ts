@@ -307,7 +307,21 @@ export async function createDownloadTokenForOrder(
     .first<DownloadTokenRecord>();
 
   if (existing) {
-    return existing;
+    if (existing.r2_object_key === r2ObjectKey) {
+      return existing;
+    }
+    // Update existing token to point to the new requested asset release key and refresh expiry
+    const newExpiresAt = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
+    await db
+      .prepare('UPDATE download_tokens SET r2_object_key = ?, download_count = 0, expires_at = ? WHERE token = ?')
+      .bind(r2ObjectKey, newExpiresAt, existing.token)
+      .run();
+    return {
+      ...existing,
+      r2_object_key: r2ObjectKey,
+      download_count: 0,
+      expires_at: newExpiresAt,
+    };
   }
 
   const token = generateDownloadToken();
