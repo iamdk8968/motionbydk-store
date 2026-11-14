@@ -472,7 +472,7 @@
         // Fetch dynamic product specs from backend
         var apiBase = window.MDK_API_BASE || (function() {
             var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
-            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://api.motionbydk.in';
+            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
             return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
         })();
         fetch(apiBase + '/api/products/' + currentProductId)

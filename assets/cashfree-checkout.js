@@ -18,7 +18,7 @@
       : '';
     var isProdDomain = host === 'www.motionbydk.in' || host === 'motionbydk.in';
     if (isProdDomain) {
-      return 'https://api.motionbydk.in';
+      return 'https://motionbydk-api.motionbydk-api.workers.dev';
     }
     return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
   }
@@ -30,6 +30,21 @@
   var activeProductId = 'ae-workflow-pro';
   var appliedCoupon = '';
   var isSubmitting = false;
+
+  async function apiFetch(endpoint, options) {
+    try {
+      var res = await fetch(API_BASE + endpoint, options);
+      if (res.status >= 200 && res.status < 500) return res;
+      throw new Error('Primary API HTTP ' + res.status);
+    } catch (err) {
+      var fallbackUrl = 'https://motionbydk-api.motionbydk-api.workers.dev';
+      if (API_BASE !== fallbackUrl) {
+        console.warn('[Checkout] Primary API unreachable, attempting direct production worker fallback...');
+        return await fetch(fallbackUrl + endpoint, options);
+      }
+      throw err;
+    }
+  }
 
   // Active Currency Helper
   function getActiveCurrency() {
@@ -381,7 +396,7 @@
     var curr = getActiveCurrency();
 
     try {
-      var res = await fetch(API_BASE + '/api/checkout/create-order', {
+      var res = await apiFetch('/api/checkout/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
