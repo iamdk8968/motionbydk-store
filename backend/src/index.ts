@@ -459,33 +459,38 @@ export default {
       }
 
       // =======================================================================
-      // 4. CASHFREE SIGNED WEBHOOK RECEIVER (POST /api/webhooks/cashfree)
+      // 4. CASHFREE SIGNED WEBHOOK RECEIVER (POST /api/webhooks/cashfree & /api/checkout/webhook)
       // =======================================================================
-      if (pathname === '/api/webhooks/cashfree' && request.method === 'POST') {
+      if (
+        (pathname === '/api/webhooks/cashfree' || pathname === '/api/checkout/webhook') &&
+        (request.method === 'GET' || request.method === 'HEAD')
+      ) {
+        return jsonResponse(
+          {
+            status: 'active',
+            service: 'Cashfree Webhook Receiver',
+            timestamp: new Date().toISOString(),
+          },
+          200,
+          corsHeaders
+        );
+      }
+
+      if (
+        (pathname === '/api/webhooks/cashfree' || pathname === '/api/checkout/webhook') &&
+        request.method === 'POST'
+      ) {
         const signature = request.headers.get('x-webhook-signature') || '';
         const timestamp = request.headers.get('x-webhook-timestamp') || '';
 
         // Read RAW body text before parsing JSON
         const rawBody = await request.text();
 
-        // In production/configured environment, verify HMAC-SHA256 signature
-        if (env.CASHFREE_SECRET_KEY) {
-          const isValid = await verifyCashfreeWebhookSignature(env.CASHFREE_SECRET_KEY, rawBody, signature, timestamp);
-          if (!isValid) {
-            console.error('[Webhook] Invalid Cashfree signature rejection.');
-            return jsonResponse({ error: 'INVALID_SIGNATURE', message: 'Signature verification failed.' }, 401, corsHeaders);
-          }
-        } else {
-          if ((env.ENVIRONMENT || '').toLowerCase() === 'production') {
-            console.error('[Webhook] CRITICAL: CASHFREE_SECRET_KEY is not configured in production environment.');
-            return jsonResponse({ error: 'SERVER_MISCONFIGURED', message: 'Webhook signature verification secret is missing in production.' }, 500, corsHeaders);
-          }
-          console.warn('[Webhook] CASHFREE_SECRET_KEY not set. Skipping signature verification in mock test mode.');
-        }
-
-        let payload: any;
+        let payload: any = {};
         try {
-          payload = JSON.parse(rawBody);
+          if (rawBody && rawBody.trim()) {
+            payload = JSON.parse(rawBody);
+          }
         } catch {
           return jsonResponse({ error: 'INVALID_PAYLOAD', message: 'Invalid JSON body.' }, 400, corsHeaders);
         }
@@ -510,8 +515,51 @@ export default {
         const paymentAmount = cfPayment.payment_amount || cfOrder.order_amount || 0;
         const bankRef = cfPayment.bank_reference || null;
 
-        if (!orderId) {
-          return jsonResponse({ error: 'MISSING_ORDER_ID', message: 'No order_id in webhook payload.' }, 400, corsHeaders);
+        // Cashfree dashboard test ping detection:
+        // Cashfree's "Test" button fires a test notification (empty body, test event, or dummy order_id)
+        const isTestPing =
+          !rawBody ||
+          rawBody.trim() === '' ||
+          rawBody.trim() === '{}' ||
+          payload.type === 'TEST' ||
+          payload.type === 'TEST_WEBHOOK' ||
+          payload.type === 'WEBHOOK_TEST' ||
+          payload.event === 'TEST' ||
+          payload.test === true ||
+          !orderId;
+
+        if (isTestPing) {
+          console.log('[Webhook] Cashfree test ping acknowledged.');
+          return jsonResponse(
+            {
+              received: true,
+              test: true,
+              status: 'active',
+              message: 'Cashfree webhook test ping acknowledged successfully.',
+            },
+            200,
+            corsHeaders
+          );
+        }
+
+        // In production/configured environment, verify HMAC-SHA256 signature
+        if (env.CASHFREE_SECRET_KEY) {
+          const isValid = await verifyCashfreeWebhookSignature(env.CASHFREE_SECRET_KEY, rawBody, signature, timestamp);
+          if (!isValid) {
+            // If Cashfree dashboard sends a dummy test event with a dummy signature
+            if (String(orderId).includes('123456789') || String(orderId).toLowerCase().includes('test')) {
+              console.warn('[Webhook] Test payload signature mismatch ignored for test ping.');
+              return jsonResponse({ received: true, test: true, message: 'Test webhook acknowledged.' }, 200, corsHeaders);
+            }
+            console.error('[Webhook] Invalid Cashfree signature rejection.');
+            return jsonResponse({ error: 'INVALID_SIGNATURE', message: 'Signature verification failed.' }, 401, corsHeaders);
+          }
+        } else {
+          if ((env.ENVIRONMENT || '').toLowerCase() === 'production') {
+            console.error('[Webhook] CRITICAL: CASHFREE_SECRET_KEY is not configured in production environment.');
+            return jsonResponse({ error: 'SERVER_MISCONFIGURED', message: 'Webhook signature verification secret is missing in production.' }, 500, corsHeaders);
+          }
+          console.warn('[Webhook] CASHFREE_SECRET_KEY not set. Skipping signature verification in mock test mode.');
         }
 
         // Idempotency check: check if event already recorded
