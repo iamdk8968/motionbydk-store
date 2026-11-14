@@ -1,16 +1,17 @@
 {
-  "latestVersion": "3.6.0",
-  "releaseDate": "2026-10-13",
-  "title": "MotionByDk Pro Suite Released!",
-  "message": "Complete suite with 3D Carousel, macOS Mouse Dock, Graph Bezier Editor, and Shape Tools.",
+  "latestVersion": "3.7.0",
+  "releaseDate": "2026-11-14",
+  "title": "MotionByDk AE Workflow Pro v3.7.0 Suite Released!",
+  "message": "Major update with Liquid Glass Native Plugin, 7-Day Free Trial Engine, and Cloudflare D1/R2 License Integration.",
   "downloadUrl": "https://motionbydk.in/updates.html",
-  "gdriveUrl": "https://drive.google.com/drive/folders/1LUf8tof2Yzphr0WIPwqWzA1mZFQezryz",
   "minAEVersion": "15.0",
   "changelog": [
-    "Added 3D Carousel Suite with 5 visual layouts & live preview",
-    "Added macOS Mouse Dock magnification effect with spring physics",
-    "Added full Shape Tools with Trim Paths, Dashes & Taper",
-    "Enhanced Bezier Graph Editor curve library with instant easing",
-    "Hardware-locked 2-PC commercial licensing engine"
+    "Added Liquid Glass native plugin (ToolsForMotion) with 1-click macOS & Windows installers",
+    "Integrated 7-Day Free Trial Engine with persistent local tamper protection",
+    "Added Cloudflare D1 Cloud Licensing & 2-PC hardware activation",
+    "Upgraded 3D Spatial Carousel Suite with 5 visual layouts & real-time AE preview",
+    "Upgraded macOS Mouse Dock magnification effect with realistic spring physics",
+    "Enhanced Bezier Graph Editor curve library with instant ease ramps",
+    "Universal Adobe After Effects 2020-2026 support"
   ]
 }

@@ -81,20 +81,20 @@ CREATE TABLE IF NOT EXISTS plugin_releases (
 CREATE INDEX IF NOT EXISTS idx_releases_product ON plugin_releases(product_id, is_published);
 CREATE INDEX IF NOT EXISTS idx_releases_latest ON plugin_releases(is_latest);
 
--- Seed initial release for v3.6.0
+-- Seed initial release for v3.7.0
 INSERT OR IGNORE INTO plugin_releases (
     id, product_id, version, title, release_notes, release_date, min_ae_version,
     r2_object_key, file_size_bytes, download_count, is_published, is_latest
 ) VALUES (
-    'rel-00000000-0000-4000-8000-000000000001',
+    'rel-00000000-0000-4000-8000-000000000002',
     'ae-workflow-pro',
-    '3.6.0',
-    'MotionByDk AE Workflow Pro v3.6.0 Stable',
-    '• Added 3D Spatial Carousel Animator with 5 layout presets\n• Added macOS Mouse Dock physics with spring animation\n• Added Curve Graph Editor with 1-click ease ramps\n• Vector Shape Modifier Suite with Trim Paths & Taper\n• Secure hardware-locked 2-PC licensing engine',
-    '2026-10-13',
+    '3.7.0',
+    'MotionByDk AE Workflow Pro v3.7.0 Suite',
+    '• Added Liquid Glass native plugin (ToolsForMotion) with 1-click installer support\n• Integrated 7-Day Free Trial Engine with persistent local tamper protection\n• Instant Cashfree & D1 Cloud License Key device activation\n• High-performance 3D Carousel Suite & macOS Mouse Dock spring physics\n• Universal Adobe After Effects 2020-2026 compatibility',
+    '2026-11-14',
     '15.0',
-    'products/ae-workflow-pro/v3.6.0/MotionByDk_AE_Workflow_Pro_v3.6.0.zip',
-    3605,
+    'products/ae-workflow-pro/v3.7.0/MotionByDk_AE_Workflow_Pro_v3.7.0.zip',
+    1093344,
     0,
     1,
     1

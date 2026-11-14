@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="6.0" ExtensionBundleId="com.motionbydk.aeworkflow" ExtensionBundleVersion="3.7.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ExtensionList>
+        <Extension Id="com.motionbydk.aeworkflow.panel" Version="3.7.0" />
+        <Extension Id="com.motionbydk.aeworkflow.graph" Version="3.7.0" />
+        <Extension Id="com.motionbydk.aeworkflow.carousel" Version="3.7.0" />
+        <Extension Id="com.motionbydk.aeworkflow.mousedock" Version="3.7.0" />
+        <Extension Id="com.motionbydk.aeworkflow.shapes" Version="3.7.0" />
+    </ExtensionList>
+    <ExecutionEnvironment>
+        <HostList>
+            <Host Name="AEFT" Version="[14.0,99.9]" />
+        </HostList>
+        <LocaleList>
+            <Locale Code="All" />
+        </LocaleList>
+        <RequiredRuntimeList>
+            <RequiredRuntime Name="CSXS" Version="6.0" />
+        </RequiredRuntimeList>
+    </ExecutionEnvironment>
+    <DispatchInfoList>
+        <!-- Full Main Studio Suite -->
+        <Extension Id="com.motionbydk.aeworkflow.panel">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html</MainPath>
+                    <ScriptPath>./host/script.jsxbin</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>MotionByDk AEworkflow</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>600</Height>
+                            <Width>340</Width>
+                        </Size>
+                        <MinSize>
+                            <Height>350</Height>
+                            <Width>280</Width>
+                        </MinSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+
+        <!-- Undocked Graph Editor Panel -->
+        <Extension Id="com.motionbydk.aeworkflow.graph">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html?tab=graph</MainPath>
+                    <ScriptPath>./host/script.jsxbin</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>MotionByDk Graph Editor</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>450</Height>
+                            <Width>520</Width>
+                        </Size>
+                        <MinSize>
+                            <Height>320</Height>
+                            <Width>300</Width>
+                        </MinSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+
+        <!-- Undocked 3D Carousel Studio Panel -->
+        <Extension Id="com.motionbydk.aeworkflow.carousel">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html?tab=carousel3d</MainPath>
+                    <ScriptPath>./host/script.jsxbin</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>MotionByDk 3D Carousel</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>580</Height>
+                            <Width>340</Width>
+                        </Size>
+                        <MinSize>
+                            <Height>380</Height>
+                            <Width>280</Width>
+                        </MinSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+
+        <!-- Undocked Mouse Dock Panel -->
+        <Extension Id="com.motionbydk.aeworkflow.mousedock">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html?tab=mousedock</MainPath>
+                    <ScriptPath>./host/script.jsxbin</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>MotionByDk Mouse Dock</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>580</Height>
+                            <Width>340</Width>
+                        </Size>
+                        <MinSize>
+                            <Height>380</Height>
+                            <Width>280</Width>
+                        </MinSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+
+        <!-- Undocked Shape Tools Panel -->
+        <Extension Id="com.motionbydk.aeworkflow.shapes">
+            <DispatchInfo>
+                <Resources>
+                    <MainPath>./client/index.html?tab=shape</MainPath>
+                    <ScriptPath>./host/script.jsxbin</ScriptPath>
+                </Resources>
+                <Lifecycle>
+                    <AutoVisible>true</AutoVisible>
+                </Lifecycle>
+                <UI>
+                    <Type>Panel</Type>
+                    <Menu>MotionByDk Shape Tools</Menu>
+                    <Geometry>
+                        <Size>
+                            <Height>580</Height>
+                            <Width>340</Width>
+                        </Size>
+                        <MinSize>
+                            <Height>380</Height>
+                            <Width>280</Width>
+                        </MinSize>
+                    </Geometry>
+                </UI>
+            </DispatchInfo>
+        </Extension>
+    </DispatchInfoList>
+</ExtensionManifest>

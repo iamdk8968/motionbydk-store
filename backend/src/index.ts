@@ -101,7 +101,8 @@ const ALLOWED_ORIGINS = [
 ];
 
 function isOriginAllowed(origin: string, envCorsOrigin?: string): boolean {
-  if (!origin) return false;
+  if (!origin) return true;
+  if (origin === 'null' || origin === 'file://' || origin.startsWith('chrome-extension://')) return true;
   if (ALLOWED_ORIGINS.includes(origin)) return true;
   if (envCorsOrigin && envCorsOrigin.split(',').map((o) => o.trim()).includes(origin)) return true;
   if (/^http:\/\/(localhost|127\.0\.0\.1)(:[0-9]{1,5})?$/.test(origin)) return true;
@@ -113,7 +114,7 @@ function getCorsHeaders(request: Request, envCorsOrigin?: string): HeadersInit {
   const allowed = isOriginAllowed(origin, envCorsOrigin);
 
   return {
-    'Access-Control-Allow-Origin': allowed && origin ? origin : 'https://www.motionbydk.in',
+    'Access-Control-Allow-Origin': allowed && origin && origin !== 'null' ? origin : '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-webhook-signature, x-webhook-timestamp, x-admin-token',
     'Access-Control-Allow-Credentials': 'true',
@@ -1229,23 +1230,23 @@ export default {
         );
       }
 
-      // Backward-compatibility endpoint for legacy AE extensions querying /api/licenses.json
+      // Backward-compatibility endpoint for AE extensions querying /api/licenses.json
       if (pathname === '/api/licenses.json' && request.method === 'GET') {
-        // Return all 105 legacy keys from D1 without exposing customer email addresses
-        const legacyKeys = await env.DB
-          .prepare('SELECT license_key, max_devices, is_active FROM licenses WHERE is_legacy = 1')
+        // Return all active keys from D1 without exposing customer email addresses
+        const activeKeys = await env.DB
+          .prepare('SELECT license_key, max_devices, is_active FROM licenses WHERE is_active = 1')
           .all<{ license_key: string; max_devices: number; is_active: number }>();
 
-        const legacyMap: Record<string, any> = {};
-        for (const r of legacyKeys.results || []) {
-          legacyMap[r.license_key] = {
+        const activeMap: Record<string, any> = {};
+        for (const r of activeKeys.results || []) {
+          activeMap[r.license_key] = {
             type: r.license_key.includes('BUNDLE') ? 'Studio Bundle (2-PC Commercial)' : 'AE Workflow Pro (2-PC Commercial)',
             maxDevices: r.max_devices,
             devices: [],
             active: r.is_active === 1,
           };
         }
-        return jsonResponse(legacyMap, 200, corsHeaders);
+        return jsonResponse(activeMap, 200, corsHeaders);
       }
 
       // 404 Route Not Found
