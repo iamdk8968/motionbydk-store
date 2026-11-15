@@ -149,10 +149,10 @@
                 <div class="py-8 text-center space-y-3">
                     <button onclick="openLicenseDownloadModal()" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-12 py-4 bg-gradient-to-r from-brand to-cyan-300 hover:from-brand-hover hover:to-cyan-200 text-black font-heading font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-brand/20 transition-all cursor-pointer group">
                         <i data-lucide="download" class="w-5 h-5 group-hover:translate-y-0.5 transition-transform"></i>
-                        <span>Download Latest Release (R2 Secure) &rarr;</span>
+                        <span id="downloadBtnText">Download Latest Release (v3.8.0) &rarr;</span>
                     </button>
                     <span class="block text-xs text-gray-400">
-                        ⚡ Verified R2 Delivery • Includes .zip package, 1-click Mac/Win installers &amp; Quickstart PDF
+                        ⚡ Instant High-Speed Download • Includes Signed .ZXP package, 1-click Mac/Win installers &amp; Quickstart Guide
                     </span>
                 </div>
 
@@ -165,23 +165,19 @@
                     <div id="changelogContainer" class="space-y-2 text-xs sm:text-sm text-gray-300">
                         <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>Liquid Glass Native Plugin:</strong> Native ToolsForMotion C++ plugin with 1-click macOS &amp; Windows automatic installer.</span>
+                            <span><strong>Official Signed ZXP Plugin:</strong> Digitally signed Adobe extension package compatible with CC 2019 to 2026+.</span>
                         </div>
                         <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>7-Day Free Trial Engine:</strong> Tamper-resistant trial counter with persistent local state &amp; instant upgrade links.</span>
+                            <span><strong>Smart Auto-Cleaner:</strong> Automatically detects and removes older duplicate plugin folders on launch.</span>
                         </div>
                         <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>Cloud License Activation:</strong> Hardware-locked 2-PC commercial licensing connected to Cloudflare D1.</span>
+                            <span><strong>Native Liquid Glass Auto-Installer:</strong> 1-click installer for native C++ ToolsForMotion effects (macOS &amp; Windows).</span>
                         </div>
                         <div class="flex items-start gap-2.5">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>3D Carousel Studio:</strong> Generate 3D spatial carousels across 5 visual layouts with live real-time controls.</span>
-                        </div>
-                        <div class="flex items-start gap-2.5">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                            <span><strong>macOS Mouse Dock Magnification:</strong> Authentic icon magnification physics with falloff and dampening multipliers.</span>
+                            <span><strong>Cloud License Activation:</strong> Real-time hardware-locked 2-PC licensing powered by Cloudflare D1.</span>
                         </div>
                     </div>
                 </div>
@@ -275,46 +271,48 @@
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
         var currentRelease = {
-            id: 'ae-workflow-pro-v3.7.0',
-            version: '3.7.0'
+            id: 'rel-00000000-0000-4000-8000-000000000003',
+            version: '3.8.0'
         };
 
         var apiBase = window.MDK_API_BASE || (function() {
             var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
-            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
-            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+            if (host.includes('staging')) return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+            return 'https://motionbydk-api.motionbydk-api.workers.dev';
         })();
 
         // Fetch latest release manifest dynamically from backend
         fetch(apiBase + '/api/releases/latest?product=ae-workflow-pro')
             .then(function(res) { return res.json(); })
             .then(function(data) {
-                if (data && data.version) {
-                    currentRelease.id = data.id || ('ae-workflow-pro-v' + data.version);
-                    currentRelease.version = data.version;
+                var ver = data.latestVersion || data.version;
+                if (data && ver) {
+                    currentRelease.id = data.id || ('ae-workflow-pro-v' + ver);
+                    currentRelease.version = ver;
 
                     var pill = document.getElementById('versionPill');
                     var title = document.getElementById('versionTitle');
                     var date = document.getElementById('releaseDate');
                     var minAe = document.getElementById('minAeVersion');
                     var notes = document.getElementById('changelogContainer');
+                    var btnText = document.getElementById('downloadBtnText');
 
-                    if (pill) pill.innerText = 'v' + data.version + ' Stable (Latest)';
-                    if (title) title.innerText = data.title || ('MotionByDk AE Workflow Pro v' + data.version);
+                    if (pill) pill.innerText = 'v' + ver + ' Stable (Latest)';
+                    if (title) title.innerText = data.title || ('MotionByDk AE Workflow Pro v' + ver);
                     if (date && data.releaseDate) date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
-                    if (minAe && data.minAeVersion) minAe.innerText = 'After Effects CC ' + data.minAeVersion + '+';
+                    if (minAe && (data.minAEVersion || data.minAeVersion)) minAe.innerText = 'After Effects CC ' + (data.minAEVersion || data.minAeVersion) + '+';
+                    if (btnText) btnText.innerText = 'Download Latest Release (v' + ver + ') →';
 
-                    if (notes && data.releaseNotes) {
-                        var lines = data.releaseNotes.split('\n').filter(function(l) { return l.trim(); });
-                        if (lines.length > 0) {
-                            notes.innerHTML = lines.map(function(line) {
-                                return `<div class="flex items-start gap-2.5">
-                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                                    <span>${line.replace(/^- /, '')}</span>
-                                </div>`;
-                            }).join('');
-                            if (typeof lucide !== 'undefined') lucide.createIcons();
-                        }
+                    var rawChangelog = data.changelog || (data.releaseNotes ? data.releaseNotes.split('\n') : []);
+                    if (notes && rawChangelog && rawChangelog.length > 0) {
+                        notes.innerHTML = rawChangelog.map(function(line) {
+                            var clean = line.replace(/^[•\-\*]\s*/, '').trim();
+                            return `<div class="flex items-start gap-2.5">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                                <span>${clean}</span>
+                            </div>`;
+                        }).join('');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
                     }
                 }
             })

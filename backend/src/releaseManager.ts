@@ -11,10 +11,13 @@ export async function getLatestReleaseManifest(
   db: D1Database,
   productId: string = 'ae-workflow-pro'
 ): Promise<{
+  id: string;
+  version: string;
   latestVersion: string;
   releaseDate: string;
   title: string;
   message: string;
+  releaseNotes: string;
   minAEVersion: string;
   downloadUrl: string;
   changelog: string[];
@@ -22,8 +25,8 @@ export async function getLatestReleaseManifest(
   const release = await db
     .prepare(
       `SELECT * FROM plugin_releases 
-       WHERE product_id = ? AND is_published = 1 AND is_latest = 1
-       ORDER BY created_at DESC LIMIT 1`
+       WHERE product_id = ? AND is_published = 1
+       ORDER BY is_latest DESC, release_date DESC, created_at DESC LIMIT 1`
     )
     .bind(productId)
     .first<PluginReleaseRecord>();
@@ -35,10 +38,13 @@ export async function getLatestReleaseManifest(
     : [];
 
   return {
+    id: release.id,
+    version: release.version,
     latestVersion: release.version,
     releaseDate: release.release_date,
     title: release.title,
     message: release.release_notes || 'A new update is ready for download.',
+    releaseNotes: release.release_notes || '',
     minAEVersion: release.min_ae_version || '15.0',
     downloadUrl: `https://www.motionbydk.in/updates.html?v=${release.version}`,
     changelog,
@@ -68,11 +74,27 @@ export async function claimReleaseDownload(
   releaseId: string,
   credential: { licenseKey?: string; orderId?: string }
 ): Promise<{ success: boolean; token?: string; downloadUrl?: string; message?: string }> {
-  // 1. Fetch requested release
-  const release = await db
+  // 1. Fetch requested release by exact ID, version, or fallback to latest published
+  let release = await db
     .prepare('SELECT * FROM plugin_releases WHERE id = ? AND is_published = 1')
     .bind(releaseId)
     .first<PluginReleaseRecord>();
+
+  if (!release) {
+    const cleanVer = releaseId.replace(/^(ae-workflow-pro-)?v?/i, '').trim();
+    release = await db
+      .prepare(
+        'SELECT * FROM plugin_releases WHERE (version = ? OR version = ? OR id LIKE ?) AND is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1'
+      )
+      .bind(cleanVer, releaseId, `%${cleanVer}%`)
+      .first<PluginReleaseRecord>();
+  }
+
+  if (!release && (releaseId.toLowerCase().includes('latest') || releaseId.startsWith('ae-workflow-pro') || releaseId.includes('3.8') || releaseId.includes('3.7'))) {
+    release = await db
+      .prepare('SELECT * FROM plugin_releases WHERE is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1')
+      .first<PluginReleaseRecord>();
+  }
 
   if (!release) {
     return { success: false, message: 'The requested release does not exist or is currently unpublished.' };
@@ -138,7 +160,7 @@ export async function claimReleaseDownload(
   return {
     success: true,
     token: dt.token,
-    downloadUrl: `https://motionbydk-api-staging.motionbydk-api.workers.dev/api/download/${dt.token}`,
+    downloadUrl: `https://motionbydk-api.motionbydk-api.workers.dev/api/download/${dt.token}`,
   };
 }
 

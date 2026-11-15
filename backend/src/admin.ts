@@ -1528,7 +1528,7 @@ export async function handleAdminResendEmail(
       if (!dt || new Date(dt.expires_at).getTime() < Date.now()) {
         dt = await createDownloadTokenForOrder(env.DB, orderId, order.r2_object_key);
       }
-      downloadUrl = `https://motionbydk-api-staging.motionbydk-api.workers.dev/api/download/${dt.token}`;
+      downloadUrl = `https://motionbydk-api.motionbydk-api.workers.dev/api/download/${dt.token}`;
     }
 
     let sendResult: any = null;
