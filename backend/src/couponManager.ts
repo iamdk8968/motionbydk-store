@@ -15,23 +15,22 @@ export async function listAdminCoupons(db: D1Database): Promise<CouponRecord[]> 
 
 export async function createCoupon(
   db: D1Database,
-  data: {
-    code: string;
-    discountInr: number;
-    discountUsd?: number;
-    discountType?: string;          // 'FIXED' | 'PERCENTAGE'
-    discountPercentage?: number;
-    applicableProductId?: string;
-    maxUses?: number;
-    perCustomerLimit?: number;
-    expiresAt?: string;
-  }
+  data: any
 ): Promise<CouponRecord> {
-  const cleanCode = data.code.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+  const cleanCode = (data.code || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
   if (!cleanCode) throw new Error('Invalid coupon code format.');
 
   const existing = await db.prepare('SELECT code FROM coupons WHERE code = ?').bind(cleanCode).first();
   if (existing) throw new Error(`Coupon '${cleanCode}' already exists.`);
+
+  const discountType = (data.discount_type || data.discountType || 'FIXED').toUpperCase();
+  const discountInr = Number(data.discount_inr ?? data.discount_amount_inr ?? data.discountInr ?? 0);
+  const discountUsd = Number(data.discount_usd ?? data.discountUsd ?? 0);
+  const discountPercentage = Number(data.discount_percentage ?? data.discountPct ?? data.discountPercentage ?? 0);
+  const applicableProductId = data.applicable_product_id ?? data.applicableProductId ?? null;
+  const maxUses = data.max_uses !== undefined ? Number(data.max_uses) : data.maxUses !== undefined ? Number(data.maxUses) : 1000;
+  const perCustomerLimit = data.per_customer_limit !== undefined ? Number(data.per_customer_limit) : data.perCustomerLimit !== undefined ? Number(data.perCustomerLimit) : 1;
+  const expiresAt = data.expires_at || data.expiresAt || null;
 
   await db
     .prepare(
@@ -43,14 +42,14 @@ export async function createCoupon(
     )
     .bind(
       cleanCode,
-      data.discountInr || 0,
-      data.discountUsd || 0,
-      data.discountType || 'FIXED',
-      data.discountPercentage || 0,
-      data.applicableProductId || null,
-      data.maxUses !== undefined ? data.maxUses : 1000,
-      data.perCustomerLimit !== undefined ? data.perCustomerLimit : 1,
-      data.expiresAt || null
+      discountInr,
+      discountUsd,
+      discountType,
+      discountPercentage,
+      applicableProductId,
+      maxUses,
+      perCustomerLimit,
+      expiresAt
     )
     .run();
 
@@ -62,11 +61,21 @@ export async function createCoupon(
 export async function updateCoupon(
   db: D1Database,
   code: string,
-  data: Partial<CouponRecord>
+  data: any
 ): Promise<CouponRecord> {
   const cleanCode = code.trim().toUpperCase();
   const existing = await db.prepare('SELECT * FROM coupons WHERE code = ?').bind(cleanCode).first<CouponRecord>();
   if (!existing) throw new Error('Coupon not found.');
+
+  const discountInr = data.discount_inr !== undefined ? Number(data.discount_inr) : data.discount_amount_inr !== undefined ? Number(data.discount_amount_inr) : data.discountInr !== undefined ? Number(data.discountInr) : null;
+  const discountUsd = data.discount_usd !== undefined ? Number(data.discount_usd) : data.discountUsd !== undefined ? Number(data.discountUsd) : null;
+  const discountType = data.discount_type !== undefined ? String(data.discount_type).toUpperCase() : data.discountType !== undefined ? String(data.discountType).toUpperCase() : null;
+  const discountPercentage = data.discount_percentage !== undefined ? Number(data.discount_percentage) : data.discountPct !== undefined ? Number(data.discountPct) : data.discountPercentage !== undefined ? Number(data.discountPercentage) : null;
+  const applicableProductId = data.applicable_product_id !== undefined ? data.applicable_product_id : data.applicableProductId !== undefined ? data.applicableProductId : null;
+  const maxUses = data.max_uses !== undefined ? Number(data.max_uses) : data.maxUses !== undefined ? Number(data.maxUses) : null;
+  const perCustomerLimit = data.per_customer_limit !== undefined ? Number(data.per_customer_limit) : data.perCustomerLimit !== undefined ? Number(data.perCustomerLimit) : null;
+  const isActive = data.is_active !== undefined ? (data.is_active ? 1 : 0) : data.isActive !== undefined ? (data.isActive ? 1 : 0) : null;
+  const expiresAt = data.expires_at !== undefined ? data.expires_at : data.expiresAt !== undefined ? data.expiresAt : null;
 
   await db
     .prepare(
@@ -83,15 +92,15 @@ export async function updateCoupon(
       WHERE code = ?`
     )
     .bind(
-      data.discount_inr !== undefined ? data.discount_inr : null,
-      data.discount_usd !== undefined ? data.discount_usd : null,
-      data.discount_type !== undefined ? data.discount_type : null,
-      data.discount_percentage !== undefined ? data.discount_percentage : null,
-      data.applicable_product_id !== undefined ? data.applicable_product_id : null,
-      data.max_uses !== undefined ? data.max_uses : null,
-      data.per_customer_limit !== undefined ? data.per_customer_limit : null,
-      data.is_active !== undefined ? data.is_active : null,
-      data.expires_at !== undefined ? data.expires_at : null,
+      discountInr,
+      discountUsd,
+      discountType,
+      discountPercentage,
+      applicableProductId,
+      maxUses,
+      perCustomerLimit,
+      isActive,
+      expiresAt,
       cleanCode
     )
     .run();

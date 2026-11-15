@@ -29,6 +29,7 @@
   }
   var activeProductId = 'ae-workflow-pro';
   var appliedCoupon = '';
+  var appliedCouponData = null;
   var isSubmitting = false;
 
   async function apiFetch(endpoint, options) {
@@ -199,7 +200,15 @@
     var origPrice = isUsd ? 30 : 999;
     var discount = 0;
 
-    if (appliedCoupon === 'FIRST100') {
+    if (appliedCouponData && appliedCouponData.valid && appliedCouponData.code === appliedCoupon) {
+      if (appliedCouponData.discountType === 'PERCENTAGE' && appliedCouponData.discountPercentage) {
+        discount = Math.round((basePrice * appliedCouponData.discountPercentage) / 100 * 100) / 100;
+      } else if (isUsd) {
+        discount = appliedCouponData.discountUsd || (appliedCouponData.discountAmount && appliedCouponData.currency === 'USD' ? appliedCouponData.discountAmount : 3);
+      } else {
+        discount = appliedCouponData.discountInr ? Math.round(appliedCouponData.discountInr / 100) : (appliedCouponData.discountAmount || 0);
+      }
+    } else if (appliedCoupon === 'FIRST100') {
       discount = isUsd ? 3 : 100;
     } else if (appliedCoupon === 'SAVE20') {
       discount = Math.round(basePrice * 0.20 * 100) / 100;
@@ -213,7 +222,7 @@
       origPrice: origPrice,
       discount: discount,
       finalPrice: finalPrice,
-      formattedFinal: (isUsd ? '$' : '₹') + (isUsd ? finalPrice.toFixed(2) : finalPrice.toFixed(0)),
+      formattedFinal: (isUsd ? '$' : '₹') + (isUsd ? finalPrice.toFixed(2) : (finalPrice % 1 === 0 ? finalPrice.toFixed(0) : finalPrice.toFixed(2))),
       formattedOrig: (isUsd ? '$' : '₹') + (isUsd ? origPrice.toFixed(2) : origPrice.toFixed(0)),
     };
   }
@@ -258,7 +267,11 @@
     if (typeof window.applyCurrencyUI === 'function') {
       window.applyCurrencyUI();
     }
-    updateModalPricingDisplay();
+    if (appliedCoupon) {
+      window.applyModalCoupon();
+    } else {
+      updateModalPricingDisplay();
+    }
   };
 
   // Open the Cashfree Checkout Modal
@@ -313,36 +326,85 @@
   };
 
   // Apply Coupon inside Modal
-  window.applyModalCoupon = function () {
+  window.applyModalCoupon = async function () {
     var input = document.getElementById('cfModalCouponInput');
     var msg = document.getElementById('cfModalCouponMsg');
     var val = (input ? input.value : '').trim().toUpperCase();
 
-    if (val === 'FIRST100') {
-      appliedCoupon = 'FIRST100';
-      var p = getComputedPrice();
-      if (msg) {
-        msg.className = 'text-[11px] text-emerald-400 font-bold block';
-        msg.innerText = '✓ FIRST100 Applied! ' + (p.currency === 'USD' ? '$3.00' : '₹100') + ' discount added (' + p.formattedFinal + ').';
-      }
-    } else if (val === 'SAVE20') {
-      appliedCoupon = 'SAVE20';
-      var p2 = getComputedPrice();
-      if (msg) {
-        msg.className = 'text-[11px] text-emerald-400 font-bold block';
-        msg.innerText = '✓ SAVE20 Applied! 20% discount added (' + p2.formattedFinal + ').';
-      }
-    } else if (!val) {
+    if (!val) {
       appliedCoupon = '';
+      appliedCouponData = null;
       if (msg) msg.className = 'hidden';
-    } else {
-      appliedCoupon = '';
-      if (msg) {
-        msg.className = 'text-[11px] text-red-400 font-bold block';
-        msg.innerText = 'Coupon "' + val + '" is invalid or expired.';
+      updateModalPricingDisplay();
+      return;
+    }
+
+    if (msg) {
+      msg.className = 'text-[11px] text-gray-400 font-bold block';
+      msg.innerText = 'Checking coupon...';
+    }
+
+    try {
+      var curr = getActiveCurrency();
+      var res = await apiFetch('/api/checkout/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: val,
+          productId: activeProductId || 'ae-workflow-pro',
+          currency: curr,
+        }),
+      });
+
+      var data = await res.json();
+      if (data && data.valid) {
+        appliedCoupon = data.code;
+        appliedCouponData = data;
+        updateModalPricingDisplay();
+        var p = getComputedPrice();
+        if (msg) {
+          msg.className = 'text-[11px] text-emerald-400 font-bold block';
+          msg.innerText = data.message || ('✓ ' + data.code + ' Applied! Payable: ' + p.formattedFinal);
+        }
+      } else {
+        appliedCoupon = '';
+        appliedCouponData = null;
+        updateModalPricingDisplay();
+        if (msg) {
+          msg.className = 'text-[11px] text-red-400 font-bold block';
+          msg.innerText = (data && data.message) ? data.message : ('Coupon "' + val + '" is invalid or expired.');
+        }
+      }
+    } catch (err) {
+      // Offline fallback
+      if (val === 'FIRST100') {
+        appliedCoupon = 'FIRST100';
+        appliedCouponData = { valid: true, code: 'FIRST100', discountType: 'FIXED', discountInr: 10000, discountUsd: 3 };
+        updateModalPricingDisplay();
+        var p1 = getComputedPrice();
+        if (msg) {
+          msg.className = 'text-[11px] text-emerald-400 font-bold block';
+          msg.innerText = '✓ FIRST100 Applied! Payable: ' + p1.formattedFinal;
+        }
+      } else if (val === 'SAVE20') {
+        appliedCoupon = 'SAVE20';
+        appliedCouponData = { valid: true, code: 'SAVE20', discountType: 'PERCENTAGE', discountPercentage: 20 };
+        updateModalPricingDisplay();
+        var p2 = getComputedPrice();
+        if (msg) {
+          msg.className = 'text-[11px] text-emerald-400 font-bold block';
+          msg.innerText = '✓ SAVE20 Applied! Payable: ' + p2.formattedFinal;
+        }
+      } else {
+        appliedCoupon = '';
+        appliedCouponData = null;
+        updateModalPricingDisplay();
+        if (msg) {
+          msg.className = 'text-[11px] text-red-400 font-bold block';
+          msg.innerText = 'Coupon "' + val + '" is invalid or expired.';
+        }
       }
     }
-    updateModalPricingDisplay();
   };
 
   // Handle Form Submission & Cashfree Checkout Initialization

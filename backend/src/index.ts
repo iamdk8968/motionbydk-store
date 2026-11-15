@@ -391,6 +391,90 @@ export default {
       }
 
       // =======================================================================
+      // 2b. CHECKOUT: VALIDATE COUPON (POST /api/checkout/validate-coupon)
+      // =======================================================================
+      if (pathname === '/api/checkout/validate-coupon' && request.method === 'POST') {
+        let body: any = {};
+        try {
+          body = await request.json();
+        } catch {
+          return jsonResponse({ valid: false, message: 'Invalid request payload.' }, 400, corsHeaders);
+        }
+
+        const rawCode = (body.code || '').trim().toUpperCase();
+        const productId = (body.productId || 'ae-workflow-pro').trim();
+        const currency = (body.currency || 'INR').toUpperCase();
+        const isUSD = currency === 'USD';
+
+        if (!rawCode) {
+          return jsonResponse({ valid: false, message: 'Please enter a coupon code.' }, 400, corsHeaders);
+        }
+
+        const coupon = await getCoupon(env.DB, rawCode);
+        if (!coupon || !coupon.is_active) {
+          return jsonResponse({ valid: false, message: `Coupon "${rawCode}" is invalid or disabled.` }, 200, corsHeaders);
+        }
+
+        if (coupon.expires_at && new Date(coupon.expires_at).getTime() <= Date.now()) {
+          return jsonResponse({ valid: false, message: `Coupon "${rawCode}" has expired.` }, 200, corsHeaders);
+        }
+
+        if (coupon.times_used >= coupon.max_uses) {
+          return jsonResponse({ valid: false, message: `Coupon "${rawCode}" redemption limit reached.` }, 200, corsHeaders);
+        }
+
+        if (coupon.applicable_product_id && coupon.applicable_product_id !== productId) {
+          return jsonResponse({ valid: false, message: `Coupon "${rawCode}" is not applicable to this product.` }, 200, corsHeaders);
+        }
+
+        // Fetch product base price
+        const product = await getProduct(env.DB, productId);
+        const baseAmountMinor = product
+          ? (isUSD ? Math.round(((product.price_usd !== null && product.price_usd !== undefined) ? product.price_usd : 15.00) * 100) : product.price_inr)
+          : (isUSD ? 1500 : 49900);
+
+        let discountMinor = 0;
+        if (coupon.discount_type === 'PERCENTAGE' && coupon.discount_percentage) {
+          discountMinor = Math.round((baseAmountMinor * coupon.discount_percentage) / 100);
+        } else if (isUSD) {
+          discountMinor = Math.round((coupon.discount_usd || 0) * 100);
+        } else {
+          discountMinor = coupon.discount_inr;
+        }
+
+        // Final payable amount (minimum 100 minor units = ₹1.00 or $1.00)
+        const finalAmountMinor = Math.max(baseAmountMinor - discountMinor, 100);
+        const discountAmount = Number((discountMinor / 100).toFixed(2));
+        const finalAmount = Number((finalAmountMinor / 100).toFixed(2));
+        const baseAmount = Number((baseAmountMinor / 100).toFixed(2));
+
+        let discountLabel = '';
+        if (coupon.discount_type === 'PERCENTAGE' && coupon.discount_percentage) {
+          discountLabel = `${coupon.discount_percentage}% off`;
+        } else {
+          discountLabel = isUSD ? `$${discountAmount.toFixed(2)} off` : `₹${Math.round(discountAmount)} off`;
+        }
+
+        return jsonResponse(
+          {
+            valid: true,
+            code: coupon.code,
+            discountType: coupon.discount_type,
+            discountPercentage: coupon.discount_percentage,
+            discountMinor,
+            discountAmount,
+            baseAmount,
+            finalAmount,
+            finalAmountMinor,
+            currency,
+            message: `✓ ${coupon.code} Applied! ${discountLabel} (Payable: ${isUSD ? '$' : '₹'}${finalAmount}).`,
+          },
+          200,
+          corsHeaders
+        );
+      }
+
+      // =======================================================================
       // 3. CHECKOUT: ORDER STATUS (GET /api/checkout/status/:orderId)
       // =======================================================================
       if (pathname.startsWith('/api/checkout/status/') && request.method === 'GET') {
