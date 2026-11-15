@@ -331,5 +331,50 @@
         }
     };
 
+    function _deleteFolderRecursive(folder) {
+        if (!folder || !folder.exists) return;
+        try {
+            var files = folder.getFiles();
+            for (var i = 0; i < files.length; i++) {
+                if (files[i] instanceof Folder) {
+                    _deleteFolderRecursive(files[i]);
+                } else {
+                    files[i].remove();
+                }
+            }
+            folder.remove();
+        } catch(e) {}
+    }
+
+    _mdkPro.cleanLegacyFolders = function() {
+        try {
+            var isWin = ($.os.indexOf("Windows") !== -1);
+            var targets = [];
+            if (isWin) {
+                var appData = Folder.userData ? Folder.userData.fsName : "";
+                var common = Folder.commonFiles ? Folder.commonFiles.fsName : "";
+                if (appData) targets.push(appData + "\\Adobe\\CEP\\extensions\\MotionByDk AE Workflow");
+                if (common) targets.push(common + "\\Adobe\\CEP\\extensions\\MotionByDk AE Workflow");
+            } else {
+                var userHome = Folder("~").fsName;
+                targets.push(userHome + "/Library/Application Support/Adobe/CEP/extensions/MotionByDk AE Workflow");
+                targets.push("/Library/Application Support/Adobe/CEP/extensions/MotionByDk AE Workflow");
+            }
+
+            var thisScript = new File($.fileName);
+            var thisExtensionRoot = thisScript.parent.parent.fsName;
+
+            for (var t = 0; t < targets.length; t++) {
+                var oldF = new Folder(targets[t]);
+                if (oldF.exists && oldF.fsName !== thisExtensionRoot) {
+                    _deleteFolderRecursive(oldF);
+                }
+            }
+            return "SUCCESS";
+        } catch(err) {
+            return "ERROR: " + err.toString();
+        }
+    };
+
     $._MDK_PRO = _mdkPro;
 })();
