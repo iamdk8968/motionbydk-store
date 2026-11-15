@@ -3573,7 +3573,7 @@
     var MDK_System = {
         version: "3.7.0",
         updateEndpoint: "https://www.motionbydk.in/updates/version.json",
-        staticLicensesEndpoint: "https://www.motionbydk.in/api/licenses.json",
+        staticLicensesEndpoint: "https://motionbydk-api.motionbydk-api.workers.dev/api/licenses.json",
         gumroadEndpoint: "https://api.gumroad.com/v2/licenses/verify",
         gumroadProductId: "iEt-Y3SQpdXVF16WThEL9w==",
         storageKey: "motionbydk_license_v1",
@@ -3903,7 +3903,7 @@
                 try {
                     // Send deactivation notification to API in background to free device slot
                     var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "https://api.motionbydk.in/api/license/deactivate", true);
+                    xhr.open("POST", "https://motionbydk-api.motionbydk-api.workers.dev/api/license/deactivate", true);
                     xhr.setRequestHeader("Content-Type", "application/json");
                     xhr.timeout = 3000;
                     xhr.send(JSON.stringify({ licenseKey: currentLic.key, machineId: currentLic.machineId || this.getMachineId() }));
@@ -4025,7 +4025,7 @@
             // Step 1: Cloudflare D1 Dynamic Activation (registers machineId & device count)
             // Step 2: Fallback to staticLicensesEndpoint (/api/licenses.json) if API is unreachable
             var apiXhr = new XMLHttpRequest();
-            apiXhr.open("POST", "https://api.motionbydk.in/api/license/activate", true);
+            apiXhr.open("POST", "https://motionbydk-api.motionbydk-api.workers.dev/api/license/activate", true);
             apiXhr.setRequestHeader("Content-Type", "application/json");
             apiXhr.timeout = 4000;
             apiXhr.onload = function() {
