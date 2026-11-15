@@ -50,6 +50,8 @@ import {
   handleAdminResetDevices,
   handleAdminRevokeLicense,
   handleAdminReinstateLicense,
+  handleAdminCreateManualLicense,
+  handleAdminUpdateDeviceLimit,
   handleAdminEmails,
   handleAdminResendEmail,
   handleAdminAuditLogs,
@@ -113,13 +115,22 @@ function getCorsHeaders(request: Request, envCorsOrigin?: string): HeadersInit {
   const origin = request.headers.get('Origin') || '';
   const allowed = isOriginAllowed(origin, envCorsOrigin);
 
-  return {
-    'Access-Control-Allow-Origin': allowed && origin && origin !== 'null' ? origin : '*',
+  const headers: Record<string, string> = {
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-webhook-signature, x-webhook-timestamp, x-admin-token',
-    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Max-Age': '86400',
   };
+
+  if (origin === 'null') {
+    headers['Access-Control-Allow-Origin'] = '*';
+  } else if (allowed && origin && origin !== '*') {
+    headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Allow-Credentials'] = 'true';
+  } else {
+    headers['Access-Control-Allow-Origin'] = '*';
+  }
+
+  return headers;
 }
 
 function jsonResponse(data: unknown, status = 200, corsHeaders: HeadersInit = {}): Response {
@@ -1151,6 +1162,24 @@ export default {
             return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
           }
           return handleAdminReinstateLicense(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 10a. Admin Create Manual License (POST /api/admin/licenses/create-manual)
+        if (pathname === '/api/admin/licenses/create-manual' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminCreateManualLicense(request, env, auth.user.sub, clientIp, corsHeaders);
+        }
+
+        // 10b. Admin Update Device Limit (POST /api/admin/licenses/update-devices)
+        if (pathname === '/api/admin/licenses/update-devices' && request.method === 'POST') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) {
+            return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          }
+          return handleAdminUpdateDeviceLimit(request, env, auth.user.sub, clientIp, corsHeaders);
         }
 
         // 11. Admin Emails List (GET /api/admin/emails)

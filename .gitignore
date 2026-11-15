@@ -27,3 +27,6 @@ yarn-error.log*
 *.sql
 !backend/migrations/**/*.sql
 build_packages/
+_MASTER_SOURCE_DO_NOT_SHARE/
+*.zxp
+MotionByDk_AE_Workflow_v3.8.0*

@@ -10,6 +10,7 @@ import {
   dispatchDownloadDeliveryEmail,
 } from './email';
 import { createDownloadTokenForOrder, getLicenseByOrder, getDownloadTokenByOrder } from './db';
+import { generateLicenseKey, hashString } from './license';
 
 const STAGING_ADMIN_SECRET = 'mdk_admin_secret_staging_2026_motionbydk_vault';
 
@@ -1171,6 +1172,201 @@ export async function handleAdminReinstateLicense(
   } catch (err: any) {
     console.error('Reinstate license error:', err);
     return adminJsonResponse({ success: false, error: 'Failed to reinstate license.' }, 500, corsHeaders);
+  }
+}
+
+/**
+ * POST /api/admin/licenses/create-manual
+ * Creates a license manually for a client/customer with custom device limit
+ */
+export async function handleAdminCreateManualLicense(
+  request: Request,
+  env: Env,
+  adminUser: string,
+  clientIp: string,
+  corsHeaders: HeadersInit
+): Promise<Response> {
+  const auth = await authenticateAdmin(request, env);
+  if (!auth.valid || !auth.user) {
+    return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Admin role required.' }, 403, corsHeaders);
+  }
+
+  try {
+    const body = (await request.json().catch(() => ({}))) as {
+      email?: string;
+      full_name?: string;
+      max_devices?: number;
+      custom_key?: string;
+      note?: string;
+    };
+
+    const email = (body.email || '').trim().toLowerCase();
+    const fullName = (body.full_name || '').trim();
+    const maxDevices = Math.max(1, Math.min(100, parseInt(String(body.max_devices || 2), 10) || 2));
+    const note = (body.note || 'Manually assigned by Admin').trim();
+
+    if (!email || !email.includes('@')) {
+      return adminJsonResponse({ success: false, error: 'A valid customer email is required.' }, 400, corsHeaders);
+    }
+
+    // Determine license key
+    let licenseKey = (body.custom_key || '').trim().toUpperCase();
+    if (!licenseKey) {
+      licenseKey = generateLicenseKey('MDK-PRO-2026-');
+    }
+
+    // Check if key already exists
+    const existing = await env.DB.prepare('SELECT id FROM licenses WHERE license_key = ?')
+      .bind(licenseKey)
+      .first<any>();
+    if (existing) {
+      return adminJsonResponse({ success: false, error: `License key ${licenseKey} already exists in database.` }, 409, corsHeaders);
+    }
+
+    // Ensure customer exists in customers table
+    let customer = await env.DB.prepare('SELECT id FROM customers WHERE email = ?')
+      .bind(email)
+      .first<{ id: string }>();
+
+    let customerId: string;
+    if (customer && customer.id) {
+      customerId = customer.id;
+    } else {
+      customerId = crypto.randomUUID();
+      await env.DB.prepare(
+        `INSERT INTO customers (id, email, full_name, phone, created_at)
+         VALUES (?, ?, ?, null, datetime('now'))`
+      )
+        .bind(customerId, email, fullName || email.split('@')[0])
+        .run();
+    }
+
+    const licenseId = crypto.randomUUID();
+    const licenseHash = await hashString(licenseKey);
+
+    await env.DB.prepare(
+      `INSERT INTO licenses (
+        id, license_key, license_hash, order_id, customer_id, product_id, max_devices, is_active, is_legacy, note
+      ) VALUES (?, ?, ?, null, ?, 'ae-workflow-pro', ?, 1, 0, ?)`
+    )
+      .bind(licenseId, licenseKey, licenseHash, customerId, maxDevices, note)
+      .run();
+
+    await logAuditEvent(
+      env.DB,
+      adminUser,
+      'CREATE_MANUAL_LICENSE',
+      'LICENSE',
+      maskLicenseKey(licenseKey),
+      { email, maxDevices, note },
+      clientIp
+    );
+
+    return adminJsonResponse(
+      {
+        success: true,
+        message: `License successfully created and assigned to ${email} with ${maxDevices} PC slots!`,
+        license: {
+          id: licenseId,
+          license_key: licenseKey,
+          customer_email: email,
+          customer_name: fullName,
+          max_devices: maxDevices,
+          note,
+          created_at: new Date().toISOString(),
+        },
+      },
+      201,
+      corsHeaders
+    );
+  } catch (err: any) {
+    console.error('Create manual license error:', err);
+    return adminJsonResponse({ success: false, error: 'Failed to create manual license: ' + err.message }, 500, corsHeaders);
+  }
+}
+
+/**
+ * POST /api/admin/licenses/update-devices
+ * Update device limit (e.g. increase from 2 to 3, 5, etc.) for any license
+ */
+export async function handleAdminUpdateDeviceLimit(
+  request: Request,
+  env: Env,
+  adminUser: string,
+  clientIp: string,
+  corsHeaders: HeadersInit
+): Promise<Response> {
+  const auth = await authenticateAdmin(request, env);
+  if (!auth.valid || !auth.user) {
+    return adminJsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+  }
+  if (auth.user.role !== 'admin') {
+    return adminJsonResponse({ success: false, error: 'Forbidden: Admin role required.' }, 403, corsHeaders);
+  }
+
+  try {
+    const body = (await request.json().catch(() => ({}))) as {
+      license_key?: string;
+      max_devices?: number;
+      reason?: string;
+    };
+
+    const licenseKey = (body.license_key || '').trim().toUpperCase();
+    const maxDevices = parseInt(String(body.max_devices || 0), 10);
+    const reason = (body.reason || 'Admin updated device limit').trim();
+
+    if (!licenseKey) {
+      return adminJsonResponse({ success: false, error: 'License key is required.' }, 400, corsHeaders);
+    }
+    if (!maxDevices || maxDevices < 1 || maxDevices > 100) {
+      return adminJsonResponse({ success: false, error: 'max_devices must be a number between 1 and 100.' }, 400, corsHeaders);
+    }
+
+    const license = await env.DB.prepare('SELECT id, license_key, max_devices FROM licenses WHERE license_key = ?')
+      .bind(licenseKey)
+      .first<{ id: string; license_key: string; max_devices: number }>();
+
+    if (!license) {
+      return adminJsonResponse({ success: false, error: 'License key not found.' }, 404, corsHeaders);
+    }
+
+    const oldLimit = license.max_devices;
+
+    await env.DB.prepare(
+      `UPDATE licenses 
+       SET max_devices = ?, updated_at = datetime('now') 
+       WHERE license_key = ?`
+    )
+      .bind(maxDevices, licenseKey)
+      .run();
+
+    await logAuditEvent(
+      env.DB,
+      adminUser,
+      'UPDATE_DEVICE_LIMIT',
+      'LICENSE',
+      maskLicenseKey(licenseKey),
+      { oldLimit, newLimit: maxDevices, reason },
+      clientIp
+    );
+
+    return adminJsonResponse(
+      {
+        success: true,
+        message: `Device limit for ${licenseKey} updated from ${oldLimit} to ${maxDevices} PCs successfully.`,
+        license_key: licenseKey,
+        old_limit: oldLimit,
+        max_devices: maxDevices,
+      },
+      200,
+      corsHeaders
+    );
+  } catch (err: any) {
+    console.error('Update device limit error:', err);
+    return adminJsonResponse({ success: false, error: 'Failed to update device limit: ' + err.message }, 500, corsHeaders);
   }
 }
 

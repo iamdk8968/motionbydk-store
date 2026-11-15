@@ -612,6 +612,10 @@
                         <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="COMMERCIAL">Commercial (New)</button>
                         <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="LEGACY">Legacy</button>
                         <button class="license-filter-btn filter-btn px-3 py-1.5 rounded-lg text-xs bg-dark-card text-gray-300 border border-white/5 hover:border-brand/40" data-type="REVOKED">Revoked</button>
+                        <button onclick="openCreateManualLicenseModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand text-black hover:bg-brand-hover flex items-center gap-1 shadow-sm ml-2 whitespace-nowrap">
+                            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                            <span>+ Issue Key</span>
+                        </button>
                     </div>
                 </div>
 
@@ -1436,6 +1440,89 @@
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('modal-revoke-license')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
                 <button id="confirm-revoke-btn" class="px-4 py-2 rounded-lg bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors">Confirm Revocation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 8b: ISSUE MANUAL LICENSE -->
+    <div id="modal-create-manual-license" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-brand/30 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-brand">
+                <div class="w-10 h-10 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center">
+                    <i data-lucide="key" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-white">Issue Manual License Key</h3>
+                    <span class="text-xs text-gray-400">Assign a commercial license directly to a client or VIP</span>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Customer Email <span class="text-brand">*</span>:</label>
+                    <input type="email" id="manual-license-email" placeholder="client@example.com"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Customer Full Name (Optional):</label>
+                    <input type="text" id="manual-license-name" placeholder="e.g. Rahul Sharma / Studio X"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Max PC Slots (Devices):</label>
+                        <input type="number" id="manual-license-devices" min="1" max="100" value="2"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white font-mono focus:outline-none focus:border-brand">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Custom Key (Optional):</label>
+                        <input type="text" id="manual-license-key" placeholder="Auto-generate"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white font-mono uppercase focus:outline-none focus:border-brand">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Internal Note / VIP Reason:</label>
+                    <input type="text" id="manual-license-note" placeholder="e.g. VIP Video Editor, Friend, Beta Tester"
+                        class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand">
+                </div>
+            </div>
+            <div id="manual-license-error" class="hidden text-xs text-rose-400 bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/20"></div>
+            <div id="manual-license-success" class="hidden text-xs text-emerald-400 bg-emerald-500/10 p-3 rounded-lg border border-emerald-500/20 space-y-1"></div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-create-manual-license')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                <button id="btn-submit-manual-license" onclick="submitCreateManualLicense()" class="px-4 py-2 rounded-lg bg-brand text-black text-xs font-bold hover:bg-brand-hover transition-colors">Generate & Assign Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 8c: UPDATE DEVICE LIMIT -->
+    <div id="modal-update-device-limit" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="studio-card rounded-2xl max-w-md w-full border border-indigo-500/30 p-6 space-y-4">
+            <div class="flex items-center gap-3 text-indigo-400">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                    <i data-lucide="laptop" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-white">Update PC Slot Limit</h3>
+                    <span id="update-device-key-label" class="font-mono text-xs text-indigo-400"></span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400">
+                Increase or decrease the maximum number of simultaneous PC activations allowed for this license key.
+            </p>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">New Max Allowed Devices (PCs):</label>
+                <input type="number" id="update-device-count-input" min="1" max="100" value="2"
+                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white font-mono focus:outline-none focus:border-indigo-400">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Update Reason (Audit Log):</label>
+                <input type="text" id="update-device-reason-input" placeholder="e.g. Customer upgraded to 3 PC pack"
+                    class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-indigo-400">
+            </div>
+            <div id="update-device-error" class="hidden text-xs text-rose-400 bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/20"></div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('modal-update-device-limit')" class="px-4 py-2 rounded-lg bg-dark-card border border-white/10 text-xs font-semibold text-gray-300 hover:text-white">Cancel</button>
+                <button id="btn-submit-update-device" onclick="submitUpdateDeviceLimit()" class="px-4 py-2 rounded-lg bg-indigo-500 text-white text-xs font-bold hover:bg-indigo-600 transition-colors">Save Device Limit</button>
             </div>
         </div>
     </div>
@@ -2573,8 +2660,8 @@
                             : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">REVOKED</span>';
 
                         const deviceBadge = l.active_devices_count >= l.max_devices
-                            ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 font-mono">${l.active_devices_count}/${l.max_devices} MAXED</span>`
-                            : `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-dark-card border border-white/10 text-gray-300 font-mono">${l.active_devices_count}/${l.max_devices} Active</span>`;
+                            ? `<button onclick="promptUpdateDeviceLimit('${escapeHtml(l.license_key)}', ${l.max_devices})" title="Click to change PC limit" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 font-mono hover:border-brand/40 border border-transparent">${l.active_devices_count}/${l.max_devices} MAXED ✏️</button>`
+                            : `<button onclick="promptUpdateDeviceLimit('${escapeHtml(l.license_key)}', ${l.max_devices})" title="Click to change PC limit" class="px-2 py-0.5 rounded text-[10px] font-bold bg-dark-card border border-white/10 text-gray-300 font-mono hover:border-brand/40 hover:text-brand">${l.active_devices_count}/${l.max_devices} Active ✏️</button>`;
 
                         tr.innerHTML = `
                             <td class="py-3 px-4 font-mono text-brand font-bold cursor-pointer hover:underline" onclick="inspectDevices('${escapeHtml(l.license_key)}')">${escapeHtml(l.license_key)}</td>
@@ -2591,6 +2678,7 @@
                             <td class="py-3 px-4 text-right">
                                 <div class="flex items-center justify-end gap-1.5">
                                     <button onclick="inspectDevices('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-semibold text-gray-300 hover:text-white">Devices</button>
+                                    <button onclick="promptUpdateDeviceLimit('${escapeHtml(l.license_key)}', ${l.max_devices})" class="px-2 py-1 rounded bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-[11px] font-semibold text-indigo-400" title="Change PC Limit">Limit</button>
                                     <button onclick="promptResetDevices('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 text-[11px] font-semibold text-amber-400">Reset</button>
                                     ${l.is_active === 1 
                                         ? `<button onclick="promptRevokeLicense('${escapeHtml(l.license_key)}')" class="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 text-[11px] font-semibold text-rose-400">Revoke</button>`
@@ -2735,6 +2823,134 @@
                 }
             } catch (err) {
                 showToast(err.message, 'error');
+            }
+        }
+
+        // Manual License Generation
+        function openCreateManualLicenseModal() {
+            document.getElementById('manual-license-email').value = '';
+            document.getElementById('manual-license-name').value = '';
+            document.getElementById('manual-license-devices').value = '2';
+            document.getElementById('manual-license-key').value = '';
+            document.getElementById('manual-license-note').value = '';
+            document.getElementById('manual-license-error').classList.add('hidden');
+            document.getElementById('manual-license-success').classList.add('hidden');
+            document.getElementById('btn-submit-manual-license').disabled = false;
+            document.getElementById('btn-submit-manual-license').textContent = 'Generate & Assign Key';
+            openModal('modal-create-manual-license');
+        }
+
+        async function submitCreateManualLicense() {
+            const email = document.getElementById('manual-license-email').value.trim();
+            const fullName = document.getElementById('manual-license-name').value.trim();
+            const maxDevices = parseInt(document.getElementById('manual-license-devices').value, 10) || 2;
+            const customKey = document.getElementById('manual-license-key').value.trim();
+            const note = document.getElementById('manual-license-note').value.trim();
+            const errEl = document.getElementById('manual-license-error');
+            const succEl = document.getElementById('manual-license-success');
+            const btn = document.getElementById('btn-submit-manual-license');
+
+            errEl.classList.add('hidden');
+            succEl.classList.add('hidden');
+
+            if (!email || !email.includes('@')) {
+                errEl.textContent = 'Please enter a valid customer email address.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating Key...';
+
+            try {
+                const data = await adminFetch('/api/admin/licenses/create-manual', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email,
+                        full_name: fullName,
+                        max_devices: maxDevices,
+                        custom_key: customKey || undefined,
+                        note: note || undefined,
+                    })
+                });
+
+                if (data.success && data.license) {
+                    succEl.innerHTML = `
+                        <div class="font-bold">✓ License Created Successfully!</div>
+                        <div class="font-mono text-brand text-xs font-bold select-all bg-black/40 p-2 rounded">${escapeHtml(data.license.license_key)}</div>
+                        <div class="text-[11px] text-gray-300">Slots: <strong>${data.license.max_devices} PCs</strong> · Assigned to: <strong>${escapeHtml(data.license.customer_email)}</strong></div>
+                    `;
+                    succEl.classList.remove('hidden');
+                    btn.textContent = 'Key Created!';
+                    showToast(`License ${data.license.license_key} issued with ${data.license.max_devices} PC slots!`, 'success');
+                    fetchLicenses();
+                    fetchMetrics();
+                } else {
+                    errEl.textContent = data.error || 'Failed to create license.';
+                    errEl.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.textContent = 'Try Again';
+                }
+            } catch (err) {
+                errEl.textContent = err.message || 'Network error.';
+                errEl.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = 'Try Again';
+            }
+        }
+
+        // Device Limit Updates
+        let pendingUpdateDeviceKey = null;
+        function promptUpdateDeviceLimit(licenseKey, currentLimit) {
+            pendingUpdateDeviceKey = licenseKey;
+            document.getElementById('update-device-key-label').textContent = licenseKey;
+            document.getElementById('update-device-count-input').value = currentLimit || 2;
+            document.getElementById('update-device-reason-input').value = '';
+            document.getElementById('update-device-error').classList.add('hidden');
+            openModal('modal-update-device-limit');
+        }
+
+        async function submitUpdateDeviceLimit() {
+            if (!pendingUpdateDeviceKey) return;
+            const maxDevices = parseInt(document.getElementById('update-device-count-input').value, 10);
+            const reason = document.getElementById('update-device-reason-input').value.trim();
+            const errEl = document.getElementById('update-device-error');
+            const btn = document.getElementById('btn-submit-update-device');
+
+            errEl.classList.add('hidden');
+            if (!maxDevices || maxDevices < 1) {
+                errEl.textContent = 'Device limit must be at least 1 PC.';
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const data = await adminFetch('/api/admin/licenses/update-devices', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        license_key: pendingUpdateDeviceKey,
+                        max_devices: maxDevices,
+                        reason: reason || undefined
+                    })
+                });
+
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    closeModal('modal-update-device-limit');
+                    fetchLicenses();
+                } else {
+                    errEl.textContent = data.error || 'Failed to update limit.';
+                    errEl.classList.remove('hidden');
+                }
+            } catch (err) {
+                errEl.textContent = err.message;
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Device Limit';
             }
         }
 
