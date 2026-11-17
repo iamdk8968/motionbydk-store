@@ -31,8 +31,13 @@ export async function getPublicHomepageCms(
       title: block.title,
       content: block.content,
       ctaText: block.cta_text,
+      cta_text: block.cta_text,
       ctaUrl: block.cta_url,
+      cta_url: block.cta_url,
       badgeText: block.badge_text,
+      badge_text: block.badge_text,
+      is_active: block.is_active,
+      isActive: block.is_active,
     };
   }
 
@@ -61,10 +66,25 @@ export async function upsertCmsBlock(
     startDate?: string;
     endDate?: string;
     isActive?: number;
+    cta_text?: string;
+    cta_url?: string;
+    badge_text?: string;
+    start_date?: string;
+    end_date?: string;
+    is_active?: number;
   }
 ): Promise<HomepageCmsRecord> {
   const cleanKey = key.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_');
   const now = new Date().toISOString();
+
+  const title = data.title !== undefined ? data.title : null;
+  const content = data.content !== undefined ? data.content : null;
+  const ctaText = data.ctaText !== undefined ? data.ctaText : data.cta_text !== undefined ? data.cta_text : null;
+  const ctaUrl = data.ctaUrl !== undefined ? data.ctaUrl : data.cta_url !== undefined ? data.cta_url : null;
+  const badgeText = data.badgeText !== undefined ? data.badgeText : data.badge_text !== undefined ? data.badge_text : null;
+  const startDate = data.startDate !== undefined ? data.startDate : data.start_date !== undefined ? data.start_date : null;
+  const endDate = data.endDate !== undefined ? data.endDate : data.end_date !== undefined ? data.end_date : null;
+  const isActive = data.isActive !== undefined ? data.isActive : data.is_active !== undefined ? data.is_active : 1;
 
   await db
     .prepare(
@@ -85,14 +105,14 @@ export async function upsertCmsBlock(
     )
     .bind(
       cleanKey,
-      data.title !== undefined ? data.title : null,
-      data.content !== undefined ? data.content : null,
-      data.ctaText !== undefined ? data.ctaText : null,
-      data.ctaUrl !== undefined ? data.ctaUrl : null,
-      data.badgeText !== undefined ? data.badgeText : null,
-      data.startDate !== undefined ? data.startDate : null,
-      data.endDate !== undefined ? data.endDate : null,
-      data.isActive !== undefined ? data.isActive : 1,
+      title,
+      content,
+      ctaText,
+      ctaUrl,
+      badgeText,
+      startDate,
+      endDate,
+      isActive,
       now
     )
     .run();
