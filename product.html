@@ -573,10 +573,10 @@
         function applyProductDataToUI(p) {
             if (!p) return;
             productData.name = p.name || productData.name;
-            productData.allowCoupons = p.allow_coupons !== undefined ? p.allow_coupons : 1;
-            productData.freeTrialEnabled = p.free_trial_enabled !== 0;
-            productData.trialUrl = p.trial_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
-            productData.fileUrl = p.file_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            productData.allowCoupons = (p.allow_coupons !== undefined) ? p.allow_coupons : (p.allowCoupons !== undefined ? (p.allowCoupons ? 1 : 0) : 1);
+            productData.freeTrialEnabled = (p.free_trial_enabled !== undefined) ? (p.free_trial_enabled !== 0) : (p.hasTrial !== undefined ? !!p.hasTrial : true);
+            productData.trialUrl = p.trial_url || p.trialPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            productData.fileUrl = p.file_url || p.download_url || p.downloadPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
 
             if (p.name) {
                 var titleEl = document.getElementById('productTitle');
@@ -591,8 +591,9 @@
             }
 
             var heroImg = document.getElementById('productHeroImage');
-            if (heroImg && p.thumbnail_url) {
-                heroImg.src = p.thumbnail_url;
+            var thumb = p.thumbnail_url || p.thumbnail;
+            if (heroImg && thumb) {
+                heroImg.src = thumb;
             }
 
             var catBadge = document.getElementById('productCategoryBadge');
@@ -601,13 +602,17 @@
             }
 
             if (p.price_inr !== undefined && p.price_inr !== null) {
-                productData.inrPrice = Math.round(p.price_inr / 100);
+                productData.inrPrice = p.price_inr > 1000 ? Math.round(p.price_inr / 100) : p.price_inr;
+            } else if (p.priceInr !== undefined && p.priceInr !== null) {
+                productData.inrPrice = p.priceInr > 1000 ? Math.round(p.priceInr / 100) : p.priceInr;
             } else if (p.inr_price_paise) {
                 productData.inrPrice = Math.round(p.inr_price_paise / 100);
             }
 
             if (p.price_usd !== undefined && p.price_usd !== null) {
                 productData.usdPrice = Math.round(p.price_usd);
+            } else if (p.priceUsd !== undefined && p.priceUsd !== null) {
+                productData.usdPrice = Math.round(p.priceUsd);
             } else if (p.usd_price_cents) {
                 productData.usdPrice = Math.round(p.usd_price_cents / 100);
             }
@@ -615,16 +620,18 @@
             // Free trial button display
             var trialRow = document.getElementById('productFreeTrialRow');
             if (trialRow) {
-                var hasTrial = (productData.freeTrialEnabled && (p.category === 'plugin' || p.trial_url));
+                var hasTrial = (productData.freeTrialEnabled && (p.category === 'plugin' || p.trial_url || p.trialPkg));
                 trialRow.style.display = hasTrial ? 'block' : 'none';
             }
 
             // Coupon eligibility UI
-            if (productData.allowCoupons === 0) {
-                var couponBox = document.getElementById('couponSectionBox');
-                if (couponBox) {
+            var couponBox = document.getElementById('couponSectionBox');
+            if (couponBox) {
+                if (productData.allowCoupons === 0) {
                     couponBox.innerHTML = '<div class="text-[11px] text-amber-400/90 font-medium flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5"></i><span>Fixed price product • Coupon codes not applicable</span></div>';
                     if (typeof lucide !== 'undefined') lucide.createIcons();
+                } else {
+                    couponBox.style.display = 'block';
                 }
             }
 
@@ -663,7 +670,13 @@
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data && data.success && data.product) {
-                    applyProductDataToUI(data.product);
+                    var localOverride = loadLocalCustomProduct(currentProductId);
+                    if (localOverride) {
+                        var merged = Object.assign({}, data.product, localOverride);
+                        applyProductDataToUI(merged);
+                    } else {
+                        applyProductDataToUI(data.product);
+                    }
                 }
             })
             .catch(function(err) {
@@ -671,6 +684,14 @@
             });
 
         updateProductPricingUI();
+
+        // Realtime update if product edited in admin tab
+        window.addEventListener('storage', function(e) {
+            if (!e.key || e.key === 'mdk_custom_products') {
+                var freshP = loadLocalCustomProduct(currentProductId);
+                if (freshP) applyProductDataToUI(freshP);
+            }
+        });
     </script>
 </body>
 </html>

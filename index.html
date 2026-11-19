@@ -3613,6 +3613,15 @@
                 .catch(function(err) {
                     console.warn('[Storefront] Remote catalog fetch fallback:', err);
                 });
+
+            // Auto-refresh catalog in realtime when admin edits/adds products in another tab
+            window.addEventListener('storage', function(e) {
+                if (!e.key || e.key === 'mdk_custom_products') {
+                    var updated = getMergedStorefrontProducts([]);
+                    window.mdkProductsCatalog = updated;
+                    renderDynamicProductsCatalog(updated);
+                }
+            });
         }
 
         function getMergedStorefrontProducts(remoteProducts) {
@@ -3724,7 +3733,15 @@
             var html = '';
 
             products.forEach(function(p) {
-                var isFree = (p.is_free === 1 || p.category === 'free' || p.price_inr === 0);
+                var thumb = p.thumbnail_url || p.thumbnail || 'assets/plugin_hero_ui.jpg';
+                var rawInr = 0;
+                if (p.price_inr !== undefined && p.price_inr !== null) {
+                    rawInr = p.price_inr > 1000 ? Math.round(p.price_inr / 100) : p.price_inr;
+                } else if (p.priceInr !== undefined && p.priceInr !== null) {
+                    rawInr = p.priceInr > 1000 ? Math.round(p.priceInr / 100) : p.priceInr;
+                }
+                var rawUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : (p.priceUsd !== undefined ? Number(p.priceUsd) : 15);
+                var isFree = (p.is_free === 1 || p.isFree === true || p.category === 'free' || rawInr === 0);
                 var catAttr = 'plugins';
                 var badgeText = 'AFTER EFFECTS EXTENSION';
                 var badgeBg = 'bg-brand text-black';
@@ -3751,11 +3768,10 @@
                     titleHover = 'group-hover:text-sky-400';
                 }
 
-                var priceInr = p.price_inr ? Math.round(p.price_inr / 100) : 0;
-                var priceUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : 15;
+                var priceInr = rawInr;
+                var priceUsd = rawUsd;
                 var displayPrice = isFree ? 'FREE' : (isUsd ? '$' + priceUsd : '₹' + priceInr);
                 var subPriceText = isFree ? '(₹0)' : (isUsd ? '₹' + priceInr : '$' + priceUsd);
-                var thumb = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
 
                 var modalClickAction = isFree
                     ? "openFreeKitModal('" + p.id + "')"
@@ -3765,7 +3781,7 @@
                     ? "openFreeKitModal('" + p.id + "')"
                     : ("openCashfreeModal('" + p.id + "')");
 
-                var couponTag = (!isFree && p.allow_coupons !== 0)
+                var couponTag = (!isFree && p.allow_coupons !== 0 && p.allowCoupons !== false)
                     ? '<span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Coupon Eligible</span>'
                     : '';
 
@@ -4065,7 +4081,7 @@
             if (breadcrumb) breadcrumb.innerText = p.name;
 
             var previewImg = document.getElementById('detailMainPreview');
-            if (previewImg) previewImg.src = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
+            if (previewImg) previewImg.src = p.thumbnail_url || p.thumbnail || 'assets/plugin_hero_ui.jpg';
 
             var titleEl = document.getElementById('detailTitle');
             if (titleEl) titleEl.innerText = p.name;
@@ -4074,8 +4090,13 @@
             if (descEl) descEl.innerText = p.description || '';
 
             var isUsd = (window.currentCurrency || 'INR') === 'USD';
-            var priceInr = p.price_inr ? Math.round(p.price_inr / 100) : 499;
-            var priceUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : 15;
+            var priceInr = 499;
+            if (p.price_inr !== undefined && p.price_inr !== null) {
+                priceInr = p.price_inr > 1000 ? Math.round(p.price_inr / 100) : p.price_inr;
+            } else if (p.priceInr !== undefined && p.priceInr !== null) {
+                priceInr = p.priceInr > 1000 ? Math.round(p.priceInr / 100) : p.priceInr;
+            }
+            var priceUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : (p.priceUsd !== undefined ? Number(p.priceUsd) : 15);
             window.currentDetailBasePriceInr = priceInr;
             window.currentDetailBasePriceUsd = priceUsd;
 
