@@ -3683,17 +3683,29 @@
                 }
             ];
 
-            var list = (Array.isArray(remoteProducts) && remoteProducts.length > 0) ? remoteProducts : defaultProducts;
+            // Always start with all 4 default baseline products
             var map = {};
-            list.forEach(function(p) { map[p.id] = p; });
+            defaultProducts.forEach(function(p) { map[p.id] = p; });
 
+            // Merge remote products without discarding default products
+            if (Array.isArray(remoteProducts) && remoteProducts.length > 0) {
+                remoteProducts.forEach(function(p) {
+                    if (p && p.id) {
+                        map[p.id] = Object.assign({}, map[p.id] || {}, p);
+                    }
+                });
+            }
+
+            // Merge custom products created/edited via admin in localStorage
             try {
                 var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
                 custom.forEach(function(p) {
-                    if (p._deleted) {
-                        delete map[p.id];
-                    } else {
-                        map[p.id] = Object.assign({}, map[p.id] || {}, p);
+                    if (p && p.id) {
+                        if (p._deleted) {
+                            delete map[p.id];
+                        } else {
+                            map[p.id] = Object.assign({}, map[p.id] || {}, p);
+                        }
                     }
                 });
             } catch(e) {}

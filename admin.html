@@ -3399,12 +3399,17 @@
                 }
             ];
 
-            let baseList = [...defaultProducts];
+            const map = new Map();
+            defaultProducts.forEach(p => map.set(p.id, p));
 
             try {
                 const data = await adminFetch('/api/admin/products');
                 if (data && data.success && Array.isArray(data.products) && data.products.length > 0) {
-                    baseList = data.products;
+                    data.products.forEach(p => {
+                        if (p && p.id) {
+                            map.set(p.id, Object.assign({}, map.get(p.id) || {}, p));
+                        }
+                    });
                 }
             } catch (err) {
                 console.warn('[Admin] Remote products fetch fallback:', err);
@@ -3412,13 +3417,13 @@
 
             // Merge local storage products
             const custom = getLocalCustomProducts();
-            const map = new Map();
-            baseList.forEach(p => map.set(p.id, p));
             custom.forEach(p => {
-                if (p._deleted) {
-                    map.delete(p.id);
-                } else {
-                    map.set(p.id, Object.assign({}, map.get(p.id) || {}, p));
+                if (p && p.id) {
+                    if (p._deleted) {
+                        map.delete(p.id);
+                    } else {
+                        map.set(p.id, Object.assign({}, map.get(p.id) || {}, p));
+                    }
                 }
             });
 
