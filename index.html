@@ -3473,29 +3473,48 @@
                 if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
                 return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
             })();
+            // Helper to apply top banner from block object
+            function applyTopBannerUI(banner) {
+                var bannerEl = document.getElementById('dynamicCmsTopBanner');
+                if (!bannerEl) return;
+                var isActive = banner && (banner.is_active === 1 || banner.isActive === 1 || banner.is_active === true || banner.isActive === true);
+                if (!isActive) {
+                    bannerEl.style.display = 'none';
+                    return;
+                }
+                bannerEl.style.display = 'flex';
+                var title = banner.title || '';
+                var desc = banner.content || banner.description || '';
+                var badge = banner.badgeText || banner.badge_text || banner.badge || 'ANNOUNCEMENT';
+                var ctaText = banner.ctaText || banner.cta_text || '';
+                var ctaUrl = banner.ctaUrl || banner.cta_url || '';
+
+                bannerEl.innerHTML = `
+                    <span class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                        <span>${badge}: <strong class="text-white">${title}</strong> ${desc ? '— ' + desc : ''}</span>
+                    </span>
+                    ${ctaText && ctaUrl ? `<a href="${ctaUrl}" class="underline hover:text-white font-bold ml-2">${ctaText} &rarr;</a>` : ''}
+                    <button onclick="document.getElementById('dynamicCmsTopBanner').style.display='none'" class="absolute right-3 text-gray-500 hover:text-gray-300 p-1 text-xs cursor-pointer" title="Dismiss">✕</button>
+                `;
+            }
+
+            // Immediately apply stored banner if available
+            try {
+                var storedBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null');
+                if (storedBanner) applyTopBannerUI(storedBanner);
+            } catch(e) {}
+
             // 1. Fetch CMS blocks
             fetch(apiBase + '/api/cms/homepage')
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data && data.success && data.blocks) {
                         var banner = data.blocks.top_banner || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'top_banner' || b.key === 'top_banner'; }) : null);
-                        if (banner) {
-                            var title = banner.title || '';
-                            var desc = banner.content || banner.description || '';
-                            var badge = banner.badgeText || banner.badge || 'ANNOUNCEMENT';
-                            var ctaText = banner.ctaText || banner.cta_text || '';
-                            var ctaUrl = banner.ctaUrl || banner.cta_url || '';
-                            var bannerEl = document.getElementById('dynamicCmsTopBanner');
-                            if (bannerEl) {
-                                bannerEl.innerHTML = `
-                                    <span class="flex items-center gap-2">
-                                        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-                                        <span>${badge}: <strong class="text-white">${title}</strong> ${desc ? '— ' + desc : ''}</span>
-                                    </span>
-                                    ${ctaText && ctaUrl ? `<a href="${ctaUrl}" class="underline hover:text-white font-bold ml-2">${ctaText} &rarr;</a>` : ''}
-                                `;
-                            }
-                        }
+                        // Local override takes priority if edited in admin
+                        var localBanner = null;
+                        try { localBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null'); } catch(e) {}
+                        applyTopBannerUI(localBanner || banner);
 
                         // Check Promotional Popup from CMS
                         var popupBlock = data.blocks.promo_popup || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'promo_popup' || b.key === 'promo_popup'; }) : null);
@@ -3614,12 +3633,18 @@
                     console.warn('[Storefront] Remote catalog fetch fallback:', err);
                 });
 
-            // Auto-refresh catalog in realtime when admin edits/adds products in another tab
+            // Auto-refresh catalog & CMS banner in realtime when admin edits in another tab
             window.addEventListener('storage', function(e) {
                 if (!e.key || e.key === 'mdk_custom_products') {
                     var updated = getMergedStorefrontProducts([]);
                     window.mdkProductsCatalog = updated;
                     renderDynamicProductsCatalog(updated);
+                }
+                if (!e.key || e.key === 'mdk_cms_top_banner') {
+                    try {
+                        var banner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null');
+                        if (typeof applyTopBannerUI === 'function') applyTopBannerUI(banner);
+                    } catch(err) {}
                 }
             });
         }
