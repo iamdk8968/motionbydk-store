@@ -865,9 +865,11 @@
                         <select id="product-category-filter" class="px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-xs text-white focus:outline-none focus:border-brand">
                             <option value="ALL">All Categories</option>
                             <option value="plugin">Plugins</option>
+                            <option value="bundle">Bundles & Deals</option>
+                            <option value="vault">Creator Assets (Vault)</option>
+                            <option value="free">Free Tools</option>
                             <option value="preset">Presets</option>
                             <option value="template">Templates</option>
-                            <option value="bundle">Bundles</option>
                         </select>
                     </div>
 
@@ -5150,15 +5152,28 @@
 
                 // Apply local storage values first
                 try {
-                    const localBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null');
+                    const localBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement') || 'null');
                     if (localBanner) {
                         const actEl = document.getElementById('cms-top-banner-active');
                         if (actEl) actEl.checked = localBanner.is_active === 1 || localBanner.isActive === 1;
-                        if (localBanner.title) document.getElementById('cms-top-banner-title').value = localBanner.title;
-                        if (localBanner.content) document.getElementById('cms-top-banner-content').value = localBanner.content;
+                        if (localBanner.title !== undefined) document.getElementById('cms-top-banner-title').value = localBanner.title;
+                        if (localBanner.content !== undefined) document.getElementById('cms-top-banner-content').value = localBanner.content;
                         if (localBanner.cta_text || localBanner.ctaText) document.getElementById('cms-top-banner-cta-text').value = localBanner.cta_text || localBanner.ctaText;
                         if (localBanner.cta_url || localBanner.ctaUrl) document.getElementById('cms-top-banner-cta-url').value = localBanner.cta_url || localBanner.ctaUrl;
                         if (localBanner.badge_text || localBanner.badgeText) document.getElementById('cms-top-banner-badge').value = localBanner.badge_text || localBanner.badgeText;
+                    }
+                } catch(e) {}
+
+                try {
+                    const localHero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null');
+                    if (localHero) {
+                        const actEl = document.getElementById('cms-hero-cta-active');
+                        if (actEl) actEl.checked = localHero.is_active === 1 || localHero.isActive === 1;
+                        if (localHero.title !== undefined) document.getElementById('cms-hero-cta-title').value = localHero.title;
+                        if (localHero.content !== undefined) document.getElementById('cms-hero-cta-content').value = localHero.content;
+                        if (localHero.cta_text || localHero.ctaText) document.getElementById('cms-hero-cta-cta-text').value = localHero.cta_text || localHero.ctaText;
+                        if (localHero.cta_url || localHero.ctaUrl) document.getElementById('cms-hero-cta-cta-url').value = localHero.cta_url || localHero.ctaUrl;
+                        if (localHero.badge_text || localHero.badgeText) document.getElementById('cms-hero-cta-badge').value = localHero.badge_text || localHero.badgeText;
                     }
                 } catch(e) {}
 
@@ -5166,24 +5181,30 @@
                 if (!data.success || !data.blocks) return;
 
                 const blocks = data.blocks;
-                const topBanner = blocks.find(b => b.key === 'top_banner');
+                const topBanner = blocks.find(b => b.key === 'top_banner' || b.key === 'announcement');
                 if (topBanner) {
-                    document.getElementById('cms-top-banner-active').checked = topBanner.is_active === 1;
-                    document.getElementById('cms-top-banner-title').value = topBanner.title || '';
-                    document.getElementById('cms-top-banner-content').value = topBanner.content || '';
-                    document.getElementById('cms-top-banner-cta-text').value = topBanner.cta_text || '';
-                    document.getElementById('cms-top-banner-cta-url').value = topBanner.cta_url || '';
-                    document.getElementById('cms-top-banner-badge').value = topBanner.badge_text || '';
+                    const hasLocalBanner = localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement');
+                    if (!hasLocalBanner) {
+                        document.getElementById('cms-top-banner-active').checked = topBanner.is_active === 1;
+                        document.getElementById('cms-top-banner-title').value = topBanner.title || '';
+                        document.getElementById('cms-top-banner-content').value = topBanner.content || '';
+                        document.getElementById('cms-top-banner-cta-text').value = topBanner.cta_text || '';
+                        document.getElementById('cms-top-banner-cta-url').value = topBanner.cta_url || '';
+                        document.getElementById('cms-top-banner-badge').value = topBanner.badge_text || '';
+                    }
                 }
 
                 const heroCta = blocks.find(b => b.key === 'hero_cta');
                 if (heroCta) {
-                    document.getElementById('cms-hero-cta-active').checked = heroCta.is_active === 1;
-                    document.getElementById('cms-hero-cta-title').value = heroCta.title || '';
-                    document.getElementById('cms-hero-cta-content').value = heroCta.content || '';
-                    document.getElementById('cms-hero-cta-cta-text').value = heroCta.cta_text || '';
-                    document.getElementById('cms-hero-cta-cta-url').value = heroCta.cta_url || '';
-                    document.getElementById('cms-hero-cta-badge').value = heroCta.badge_text || '';
+                    const hasLocalHero = localStorage.getItem('mdk_cms_hero_cta');
+                    if (!hasLocalHero) {
+                        document.getElementById('cms-hero-cta-active').checked = heroCta.is_active === 1;
+                        document.getElementById('cms-hero-cta-title').value = heroCta.title || '';
+                        document.getElementById('cms-hero-cta-content').value = heroCta.content || '';
+                        document.getElementById('cms-hero-cta-cta-text').value = heroCta.cta_text || '';
+                        document.getElementById('cms-hero-cta-cta-url').value = heroCta.cta_url || '';
+                        document.getElementById('cms-hero-cta-badge').value = heroCta.badge_text || '';
+                    }
                 }
 
                 const promoPopup = blocks.find(b => b.key === 'promo_popup');
@@ -5281,6 +5302,9 @@
             // Immediately save to localStorage as persistent local copy
             try {
                 localStorage.setItem('mdk_cms_' + key, JSON.stringify(payload));
+                if (key === 'top_banner') {
+                    localStorage.setItem('mdk_cms_announcement', JSON.stringify(Object.assign({}, payload, { key: 'announcement' })));
+                }
                 window.dispatchEvent(new Event('storage'));
             } catch(e) {}
 
@@ -5289,10 +5313,16 @@
                     method: 'PUT',
                     body: JSON.stringify(payload)
                 });
+                if (key === 'top_banner') {
+                    await adminFetch('/api/admin/cms/homepage', {
+                        method: 'PUT',
+                        body: JSON.stringify(Object.assign({}, payload, { key: 'announcement' }))
+                    }).catch(() => {});
+                }
                 if (data.success) {
                     showToast(`CMS block "${key}" saved successfully!`, 'success');
                 } else {
-                    showToast(data.error || 'Saved locally (offline mode).', 'info');
+                    showToast(data.error || 'Saved locally in browser storage.', 'info');
                 }
             } catch (err) {
                 showToast(`Saved locally in browser storage!`, 'success');

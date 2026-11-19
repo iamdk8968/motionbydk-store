@@ -374,7 +374,7 @@
     </div>
 
     <!-- 0. TOP ANNOUNCEMENT BAR (Matching Official Design) -->
-    <div id="dynamicCmsTopBanner" class="bg-[#0b0d14] border-b border-brand/25 text-gray-300 text-xs py-2 px-4 text-center flex items-center justify-center gap-2.5 relative z-50">
+    <div id="dynamicCmsTopBanner" style="display: none;" class="bg-[#0b0d14] border-b border-brand/25 text-gray-300 text-xs py-2 px-4 text-center flex items-center justify-center gap-2.5 relative z-50">
         <span class="flex items-center gap-2">
             <span class="text-brand font-black">⚡ LIMITED TIME:</span>
             <span class="text-amber-300 font-bold">🔥 Special Launch Offer</span>
@@ -621,10 +621,10 @@
                     <!-- Left Hero Content (7 Cols) -->
                     <div class="lg:col-span-7 text-left">
                         
-                        <!-- Tagline Pill Badge -->
-                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-card border border-brand/35 text-brand text-xs font-medium mb-6 shadow-brand-sm backdrop-blur-md">
-                            <span class="px-2.5 py-0.5 rounded-full bg-brand text-black text-[10px] font-black uppercase tracking-wider">MOTIONBYDK 2026</span>
-                            <span class="text-gray-300 text-[11px] sm:text-xs">Curated After Effects Tools &amp; Creator Assets</span>
+                        <!-- Tagline Pill Badge (Managed by Store CMS: hero_cta) -->
+                        <div id="dynamicHeroPromoPill" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-card border border-brand/35 text-brand text-xs font-medium mb-6 shadow-brand-sm backdrop-blur-md">
+                            <span id="heroPromoBadge" class="px-2.5 py-0.5 rounded-full bg-brand text-black text-[10px] font-black uppercase tracking-wider">MOTIONBYDK 2026</span>
+                            <span id="heroPromoTitle" class="text-gray-300 text-[11px] sm:text-xs">Curated After Effects Tools &amp; Creator Assets</span>
                         </div>
 
                         <!-- Main Headline -->
@@ -3496,10 +3496,39 @@
                 `;
             }
 
-            // Immediately apply stored banner if available
+            // Helper to apply hero promo pill from block object
+            function applyHeroPromoUI(heroCta) {
+                var pillEl = document.getElementById('dynamicHeroPromoPill');
+                if (!pillEl) return;
+                var isActive = heroCta && (heroCta.is_active === 1 || heroCta.isActive === 1 || heroCta.is_active === true || heroCta.isActive === true);
+                if (!isActive) {
+                    pillEl.style.display = 'none';
+                    return;
+                }
+                pillEl.style.display = 'inline-flex';
+                var badgeEl = document.getElementById('heroPromoBadge');
+                var titleEl = document.getElementById('heroPromoTitle');
+                var badge = heroCta.badgeText || heroCta.badge_text || 'MOTIONBYDK 2026';
+                var title = heroCta.title || 'Curated After Effects Tools & Creator Assets';
+                var content = heroCta.content || '';
+                var ctaText = heroCta.ctaText || heroCta.cta_text || '';
+                var ctaUrl = heroCta.ctaUrl || heroCta.cta_url || '';
+
+                if (badgeEl) badgeEl.textContent = badge;
+                if (titleEl) {
+                    titleEl.innerHTML = title + (content ? ' &mdash; <span class="text-gray-300">' + content + '</span>' : '') + (ctaText && ctaUrl ? ' <a href="' + ctaUrl + '" class="underline hover:text-white font-bold ml-1 text-brand">' + ctaText + ' &rarr;</a>' : '');
+                }
+            }
+
+            // Immediately apply stored banner & hero deal if available in localStorage
             try {
-                var storedBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null');
-                if (storedBanner) applyTopBannerUI(storedBanner);
+                var storedBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement') || 'null');
+                applyTopBannerUI(storedBanner);
+            } catch(e) {}
+
+            try {
+                var storedHero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null');
+                applyHeroPromoUI(storedHero);
             } catch(e) {}
 
             // 1. Fetch CMS blocks
@@ -3507,11 +3536,15 @@
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data && data.success && data.blocks) {
-                        var banner = data.blocks.top_banner || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'top_banner' || b.key === 'top_banner'; }) : null);
-                        // Local override takes priority if edited in admin
+                        var banner = data.blocks.top_banner || data.blocks.announcement || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'top_banner' || b.key === 'top_banner' || b.block_key === 'announcement' || b.key === 'announcement'; }) : null);
                         var localBanner = null;
-                        try { localBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null'); } catch(e) {}
-                        applyTopBannerUI(localBanner || banner);
+                        try { localBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement') || 'null'); } catch(e) {}
+                        applyTopBannerUI(localBanner !== null ? localBanner : banner);
+
+                        var heroBlock = data.blocks.hero_cta || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'hero_cta' || b.key === 'hero_cta'; }) : null);
+                        var localHero = null;
+                        try { localHero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null'); } catch(e) {}
+                        applyHeroPromoUI(localHero !== null ? localHero : heroBlock);
 
                         // Check Promotional Popup from CMS
                         var popupBlock = data.blocks.promo_popup || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'promo_popup' || b.key === 'promo_popup'; }) : null);
@@ -3590,19 +3623,44 @@
                 })
                 .catch(function() {});
 
-            // 2. Fetch Catalog Pricing for Flagship
+            // 2. Fetch Catalog Pricing for Flagship with local override priority
+            try {
+                var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                var customAe = custom.find(function(x) { return x.id === 'ae-workflow-pro'; });
+                if (customAe) {
+                    if (customAe.priceInr !== undefined && customAe.priceInr !== null) mdkProductPrices.INR = Number(customAe.priceInr);
+                    else if (customAe.price_inr !== undefined && customAe.price_inr !== null) mdkProductPrices.INR = customAe.price_inr > 1000 ? Math.round(customAe.price_inr / 100) : customAe.price_inr;
+                    if (customAe.priceUsd !== undefined && customAe.priceUsd !== null) mdkProductPrices.USD = Number(customAe.priceUsd);
+                    else if (customAe.price_usd !== undefined && customAe.price_usd !== null) mdkProductPrices.USD = Number(customAe.price_usd);
+                    applyCurrencyUI();
+                }
+            } catch(e) {}
+
             fetch(apiBase + '/api/products/ae-workflow-pro')
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data && data.success && data.product) {
                         var p = data.product;
-                        if (p.price_inr !== undefined && p.price_inr !== null) {
-                            mdkProductPrices.INR = Math.round(p.price_inr / 100);
+                        var localCustom = null;
+                        try {
+                            var list = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                            localCustom = list.find(function(x) { return x.id === 'ae-workflow-pro'; });
+                        } catch(e) {}
+                        if (localCustom) {
+                            p = Object.assign({}, p, localCustom);
+                        }
+
+                        if (p.priceInr !== undefined && p.priceInr !== null) {
+                            mdkProductPrices.INR = Number(p.priceInr);
+                        } else if (p.price_inr !== undefined && p.price_inr !== null) {
+                            mdkProductPrices.INR = p.price_inr > 1000 ? Math.round(p.price_inr / 100) : p.price_inr;
                         } else if (p.inr_price_paise) {
                             mdkProductPrices.INR = Math.round(p.inr_price_paise / 100);
                         }
 
-                        if (p.price_usd !== undefined && p.price_usd !== null) {
+                        if (p.priceUsd !== undefined && p.priceUsd !== null) {
+                            mdkProductPrices.USD = Number(p.priceUsd);
+                        } else if (p.price_usd !== undefined && p.price_usd !== null) {
                             mdkProductPrices.USD = Math.round(p.price_usd);
                         } else if (p.usd_price_cents) {
                             mdkProductPrices.USD = Math.round(p.usd_price_cents / 100);
@@ -3637,10 +3695,16 @@
                     window.mdkProductsCatalog = updated;
                     renderDynamicProductsCatalog(updated);
                 }
-                if (!e.key || e.key === 'mdk_cms_top_banner') {
+                if (!e.key || e.key === 'mdk_cms_top_banner' || e.key === 'mdk_cms_announcement') {
                     try {
-                        var banner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || 'null');
-                        if (typeof applyTopBannerUI === 'function') applyTopBannerUI(banner);
+                        var banner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement') || 'null');
+                        applyTopBannerUI(banner);
+                    } catch(err) {}
+                }
+                if (!e.key || e.key === 'mdk_cms_hero_cta') {
+                    try {
+                        var hero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null');
+                        applyHeroPromoUI(hero);
                     } catch(err) {}
                 }
             });
@@ -3732,7 +3796,7 @@
                 var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
                 custom.forEach(function(p) {
                     if (p && p.id) {
-                        if (p._deleted) {
+                        if (p._deleted || p.status === 'DELETED' || p.status === 'ARCHIVED' || p.status === 'DRAFT') {
                             delete map[p.id];
                         } else {
                             map[p.id] = Object.assign({}, map[p.id] || {}, p);
@@ -3741,7 +3805,9 @@
                 });
             } catch(e) {}
 
-            return Object.values(map);
+            return Object.values(map).filter(function(p) {
+                return p && !p._deleted && p.status !== 'DELETED' && p.status !== 'ARCHIVED' && p.status !== 'DRAFT';
+            });
         }
 
         function renderDynamicProductsCatalog(products) {
