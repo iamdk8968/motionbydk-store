@@ -159,6 +159,14 @@
                     <p id="productTagline" class="text-sm sm:text-base text-gray-300 leading-relaxed max-w-2xl">
                         Supercharge your After Effects animation speed by 10x. Build 3D Carousels with automatic spatial math, recreate Apple-style macOS Mouse Dock Icon Magnification, snap kinetic bezier curves, and manipulate shape layers directly from one docked native CEP panel.
                     </p>
+
+                    <!-- Main Product Visual Preview Banner -->
+                    <div class="aspect-video rounded-2xl overflow-hidden border border-brand/40 bg-black shadow-2xl relative mt-5 mb-2 group">
+                        <img id="productHeroImage" src="assets/plugin_hero_ui.jpg" alt="Product Preview" class="w-full h-full object-cover">
+                        <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-black/85 backdrop-blur-md text-xs font-mono text-brand border border-brand/30" id="productCategoryBadge">
+                            EXTENSION SUITE
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 4 Value Pill Cards -->
@@ -314,6 +322,14 @@
                             <i data-lucide="zap" class="w-5 h-5 fill-black group-hover:scale-110 transition-transform"></i>
                             <span id="checkoutBtnText">Buy Now &amp; Activate License &rarr;</span>
                         </button>
+
+                        <!-- Free Trial Download Button -->
+                        <div id="productFreeTrialRow" class="pt-1">
+                            <button onclick="downloadProductFreeTrial()" class="w-full py-3 px-6 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-emerald-200 border-2 border-emerald-400/50 font-heading font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                                <span class="text-base">☁</span>
+                                <span>Download Free Trial (7 Days Access)</span>
+                            </button>
+                        </div>
 
                         <div class="flex items-center justify-center gap-2 text-[11px] text-gray-400 text-center">
                             <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
@@ -545,59 +561,113 @@
             }
         }
 
-        // Fetch dynamic product specs from backend
+        function loadLocalCustomProduct(id) {
+            try {
+                var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                return custom.find(function(p) { return p.id === id; });
+            } catch(e) {
+                return null;
+            }
+        }
+
+        function applyProductDataToUI(p) {
+            if (!p) return;
+            productData.name = p.name || productData.name;
+            productData.allowCoupons = p.allow_coupons !== undefined ? p.allow_coupons : 1;
+            productData.freeTrialEnabled = p.free_trial_enabled !== 0;
+            productData.trialUrl = p.trial_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            productData.fileUrl = p.file_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
+            if (p.name) {
+                var titleEl = document.getElementById('productTitle');
+                if (titleEl) titleEl.innerText = p.name;
+                var breadEl = document.getElementById('breadcrumbTitle');
+                if (breadEl) breadEl.innerText = p.name;
+                document.title = p.name + ' — MotionByDk Official Store';
+            }
+            if (p.description) {
+                var tagEl = document.getElementById('productTagline');
+                if (tagEl) tagEl.innerText = p.description;
+            }
+
+            var heroImg = document.getElementById('productHeroImage');
+            if (heroImg && p.thumbnail_url) {
+                heroImg.src = p.thumbnail_url;
+            }
+
+            var catBadge = document.getElementById('productCategoryBadge');
+            if (catBadge) {
+                catBadge.innerText = (p.category || 'plugin').toUpperCase() + ' SUITE';
+            }
+
+            if (p.price_inr !== undefined && p.price_inr !== null) {
+                productData.inrPrice = Math.round(p.price_inr / 100);
+            } else if (p.inr_price_paise) {
+                productData.inrPrice = Math.round(p.inr_price_paise / 100);
+            }
+
+            if (p.price_usd !== undefined && p.price_usd !== null) {
+                productData.usdPrice = Math.round(p.price_usd);
+            } else if (p.usd_price_cents) {
+                productData.usdPrice = Math.round(p.usd_price_cents / 100);
+            }
+
+            // Free trial button display
+            var trialRow = document.getElementById('productFreeTrialRow');
+            if (trialRow) {
+                var hasTrial = (productData.freeTrialEnabled && (p.category === 'plugin' || p.trial_url));
+                trialRow.style.display = hasTrial ? 'block' : 'none';
+            }
+
+            // Coupon eligibility UI
+            if (productData.allowCoupons === 0) {
+                var couponBox = document.getElementById('couponSectionBox');
+                if (couponBox) {
+                    couponBox.innerHTML = '<div class="text-[11px] text-amber-400/90 font-medium flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5"></i><span>Fixed price product • Coupon codes not applicable</span></div>';
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            }
+
+            if (isPreviewMode) {
+                var bannerText = document.getElementById('previewBannerText');
+                if (bannerText) {
+                    bannerText.innerText = 'Previewing "' + p.name + '" (Status: ' + (p.status || 'PUBLISHED') + ' • Category: ' + (p.category || 'plugin') + ')';
+                }
+            }
+
+            updateProductPricingUI();
+        }
+
+        function downloadProductFreeTrial() {
+            var trialFile = productData.trialUrl || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            if (trialFile.startsWith('http://') || trialFile.startsWith('https://')) {
+                window.open(trialFile, '_blank');
+            } else {
+                var link = document.createElement('a');
+                link.href = trialFile;
+                link.download = trialFile.split('/').pop() || 'MotionByDk_Free_Trial.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // 1. Immediately apply local product data if available (e.g. fresh from admin preview)
+        var localP = loadLocalCustomProduct(currentProductId);
+        if (localP) {
+            applyProductDataToUI(localP);
+        }
+
+        // 2. Fetch dynamic product specs from backend (remote sync)
         fetch(apiBase + '/api/products/' + encodeURIComponent(currentProductId))
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data && data.success && data.product) {
-                    var p = data.product;
-                    productData.name = p.name;
-                    productData.allowCoupons = p.allow_coupons !== undefined ? p.allow_coupons : 1;
-
-                    if (p.name) {
-                        var titleEl = document.getElementById('productTitle');
-                        if (titleEl) titleEl.innerText = p.name;
-                        var breadEl = document.getElementById('breadcrumbTitle');
-                        if (breadEl) breadEl.innerText = p.name;
-                    }
-                    if (p.description) {
-                        var tagEl = document.getElementById('productTagline');
-                        if (tagEl) tagEl.innerText = p.description;
-                    }
-
-                    if (p.price_inr !== undefined && p.price_inr !== null) {
-                        productData.inrPrice = Math.round(p.price_inr / 100);
-                    } else if (p.inr_price_paise) {
-                        productData.inrPrice = Math.round(p.inr_price_paise / 100);
-                    }
-
-                    if (p.price_usd !== undefined && p.price_usd !== null) {
-                        productData.usdPrice = Math.round(p.price_usd);
-                    } else if (p.usd_price_cents) {
-                        productData.usdPrice = Math.round(p.usd_price_cents / 100);
-                    }
-
-                    // Coupon eligibility UI
-                    if (productData.allowCoupons === 0) {
-                        var couponBox = document.getElementById('couponSectionBox');
-                        if (couponBox) {
-                            couponBox.innerHTML = '<div class="text-[11px] text-amber-400/90 font-medium flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5"></i><span>Fixed price product • Coupon codes not applicable</span></div>';
-                            if (typeof lucide !== 'undefined') lucide.createIcons();
-                        }
-                    }
-
-                    if (isPreviewMode) {
-                        var bannerText = document.getElementById('previewBannerText');
-                        if (bannerText) {
-                            bannerText.innerText = 'Previewing "' + p.name + '" (Status: ' + (p.status || 'PUBLISHED') + ' • Category: ' + (p.category || 'plugin') + ')';
-                        }
-                    }
-
-                    updateProductPricingUI();
+                    applyProductDataToUI(data.product);
                 }
             })
             .catch(function(err) {
-                console.warn('[Preview/Product] Could not fetch remote specs, using built-in defaults:', err);
+                console.warn('[Preview/Product] Using stored product data:', err);
             });
 
         updateProductPricingUI();

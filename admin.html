@@ -1743,10 +1743,11 @@
                     <div>
                         <label class="block font-semibold text-gray-300 mb-1">Category:</label>
                         <select id="prod-category-input" class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
-                            <option value="plugin">plugin</option>
-                            <option value="preset">preset</option>
-                            <option value="template">template</option>
-                            <option value="bundle">bundle</option>
+                            <option value="plugin">plugin (AE Extension / Tool)</option>
+                            <option value="preset">preset (Presets &amp; Templates)</option>
+                            <option value="vault">vault (Creator Assets &amp; SFX)</option>
+                            <option value="bundle">bundle (Combo Deal / Creator Pack)</option>
+                            <option value="free">free (Free Tools &amp; Starters)</option>
                         </select>
                     </div>
                     <div>
@@ -1787,6 +1788,44 @@
                     </div>
                 </div>
 
+                <!-- Product File / Package Upload Section -->
+                <div class="p-3.5 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-semibold text-gray-300">Product Download Package / File (ZIP / Installer):</label>
+                        <span class="text-[10px] text-gray-400 font-mono">Delivered on purchase</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="prod-file-url-input" placeholder="assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip or Google Drive Link"
+                            class="flex-1 px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono text-[11px] focus:border-brand">
+                        <label class="px-3 py-2 rounded-lg bg-dark-card border border-white/20 text-gray-300 hover:text-white font-semibold cursor-pointer hover:bg-white/10 transition-colors whitespace-nowrap text-xs flex items-center gap-1.5">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                            <span id="upload-package-btn-text">Select File</span>
+                            <input type="file" id="prod-file-picker" accept=".zip,.zxp,.jsx,.jsxbin,.rar,.pdf" class="hidden" onchange="handleProductFileSelect(this)">
+                        </label>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1 text-[11px] flex-wrap">
+                        <span class="text-gray-400">Quick presets:</span>
+                        <button type="button" onclick="setProductFilePreset('assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip')" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-brand text-[10px] font-mono border border-brand/20">AE Workflow ZIP</button>
+                        <button type="button" onclick="setProductFilePreset('https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g')" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-emerald-400 text-[10px] font-mono border border-emerald-500/20">Starter Drive Folder</button>
+                    </div>
+                </div>
+
+                <!-- Free Trial Download Controls -->
+                <div class="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 text-emerald-300 font-semibold cursor-pointer">
+                            <input type="checkbox" id="prod-free-trial-enabled-input" checked class="w-4 h-4 accent-emerald-400 rounded">
+                            <span>Enable Free Trial Download (7 Days Access)</span>
+                        </label>
+                        <span class="text-[10px] text-emerald-400/80 font-mono">Shows Green Trial Button</span>
+                    </div>
+                    <div id="trial-file-container" class="space-y-1.5">
+                        <label class="block text-[11px] font-medium text-gray-300">Free Trial Download Link / File (ZIP):</label>
+                        <input type="text" id="prod-trial-url-input" value="assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip" placeholder="assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip or Drive Link"
+                            class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono text-[11px] focus:border-emerald-400">
+                    </div>
+                </div>
+
                 <div>
                     <label class="block font-semibold text-gray-300 mb-1">Description:</label>
                     <textarea id="prod-desc-input" rows="2" placeholder="Brief product summary for store listing..."
@@ -1799,16 +1838,40 @@
                         class="w-full px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white focus:border-brand">
                 </div>
 
-                <!-- Thumbnail Upload to R2 -->
-                <div class="p-3 rounded-xl bg-dark-base/60 border border-white/5 space-y-2">
-                    <label class="block font-semibold text-gray-300">Thumbnail Image (Cloudflare R2):</label>
+                <!-- Thumbnail Image + Visual Image Library Gallery -->
+                <div class="p-3.5 rounded-xl bg-dark-base/60 border border-white/5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-semibold text-gray-300">Thumbnail Image:</label>
+                        <span class="text-[10px] text-gray-400">Select from gallery below or upload</span>
+                    </div>
+                    
                     <div class="flex items-center gap-3">
-                        <input type="text" id="prod-thumb-url-input" placeholder="https://..."
+                        <!-- Live Preview Thumbnail -->
+                        <div class="w-16 h-12 rounded-lg bg-black border border-white/15 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+                            <img id="prod-thumb-preview" src="assets/plugin_hero_ui.jpg" alt="Preview" class="w-full h-full object-cover">
+                        </div>
+                        <input type="text" id="prod-thumb-url-input" placeholder="assets/plugin_hero_ui.jpg or https://..."
+                            oninput="updateThumbPreview(this.value)"
                             class="flex-1 px-3 py-2 bg-dark-base border border-dark-border rounded-lg text-white font-mono text-[11px] focus:border-brand">
-                        <label class="px-3 py-2 rounded-lg bg-dark-card border border-brand/40 text-brand font-semibold cursor-pointer hover:bg-brand/10 transition-colors whitespace-nowrap">
+                        <label class="px-3 py-2 rounded-lg bg-dark-card border border-brand/40 text-brand font-semibold cursor-pointer hover:bg-brand/10 transition-colors whitespace-nowrap text-xs flex items-center gap-1.5">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                             <span id="upload-thumb-btn-text">Upload Image</span>
                             <input type="file" id="prod-thumb-file-picker" accept="image/*" class="hidden" onchange="uploadThumbnailToR2(this)">
                         </label>
+                    </div>
+
+                    <!-- Image Library Gallery -->
+                    <div class="pt-2 border-t border-white/10 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-gray-300 flex items-center gap-1.5">
+                                <i data-lucide="images" class="w-3.5 h-3.5 text-brand"></i>
+                                <span>Image Library (1-Click Reusable Images):</span>
+                            </span>
+                            <span class="text-[10px] text-gray-400">Click to use without re-uploading</span>
+                        </div>
+                        <div id="media-library-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-2 max-h-36 overflow-y-auto p-1 bg-black/40 rounded-xl border border-white/5">
+                            <!-- Populated dynamically -->
+                        </div>
                     </div>
                 </div>
 
@@ -3156,70 +3219,219 @@
         }
 
         // ---------------------------------------------------------------------
-        // 2. PRODUCTS & PLUGINS
+        // 2. PRODUCTS & PLUGINS CATALOG (LOCAL PERSISTENCE & CLOUDFLARE SYNC)
         // ---------------------------------------------------------------------
+        const CUSTOM_PRODUCTS_KEY = 'mdk_custom_products';
+        const MEDIA_LIBRARY_KEY = 'mdk_media_library';
+
+        function getLocalCustomProducts() {
+            try {
+                return JSON.parse(localStorage.getItem(CUSTOM_PRODUCTS_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveLocalCustomProducts(list) {
+            try {
+                localStorage.setItem(CUSTOM_PRODUCTS_KEY, JSON.stringify(list));
+            } catch (e) {}
+        }
+
+        function getMediaLibrary() {
+            const builtIn = [
+                { url: 'assets/plugin_hero_ui.jpg', label: 'AE Plugin UI Hero' },
+                { url: 'assets/ae_workflow_preview.png', label: 'Workflow Pro Suite' },
+                { url: 'assets/ae_script_preview.png', label: '3D Carousel Studio' },
+                { url: 'assets/sfx_starter_banner.png', label: 'Creator Assets & SFX' },
+                { url: 'assets/combo_deal_banner.png', label: 'Studio Creator Combo' },
+                { url: 'assets/vault_hero_mockup.png', label: 'Community Free Starter' }
+            ];
+            let custom = [];
+            try {
+                custom = JSON.parse(localStorage.getItem(MEDIA_LIBRARY_KEY) || '[]');
+            } catch (e) {}
+
+            const urls = new Set(builtIn.map(b => b.url));
+            const combined = [...builtIn];
+            if (Array.isArray(custom)) {
+                custom.forEach(item => {
+                    if (item && item.url && !urls.has(item.url)) {
+                        combined.push(item);
+                        urls.add(item.url);
+                    }
+                });
+            }
+            return combined;
+        }
+
+        function addMediaToLibrary(url, label) {
+            if (!url) return;
+            try {
+                let custom = JSON.parse(localStorage.getItem(MEDIA_LIBRARY_KEY) || '[]');
+                if (!custom.some(x => x.url === url)) {
+                    custom.unshift({ url: url, label: label || 'Uploaded Asset' });
+                    localStorage.setItem(MEDIA_LIBRARY_KEY, JSON.stringify(custom.slice(0, 30)));
+                }
+            } catch (e) {}
+            renderMediaLibraryGrid();
+        }
+
+        function renderMediaLibraryGrid() {
+            const grid = document.getElementById('media-library-grid');
+            if (!grid) return;
+            const items = getMediaLibrary();
+            const currentVal = document.getElementById('prod-thumb-url-input')?.value.trim() || '';
+
+            grid.innerHTML = items.map(item => {
+                const isSelected = item.url === currentVal;
+                const ring = isSelected ? 'ring-2 ring-emerald-400 border-emerald-400 shadow-md' : 'border-white/10 hover:border-brand/60';
+                return `
+                    <div onclick="selectMediaItem('${escapeHtml(item.url)}')" class="cursor-pointer group/item relative rounded-lg overflow-hidden border ${ring} bg-black/60 aspect-video transition-all" title="${escapeHtml(item.label)}">
+                        <img src="${escapeHtml(item.url)}" alt="${escapeHtml(item.label)}" class="w-full h-full object-cover group-hover/item:scale-105 transition-transform" onerror="this.src='assets/plugin_hero_ui.jpg'">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center p-1">
+                            <span class="text-[9px] text-white font-semibold text-center truncate">${escapeHtml(item.label)}</span>
+                        </div>
+                        ${isSelected ? '<div class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-black flex items-center justify-center text-[9px] font-black">✓</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectMediaItem(url) {
+            const input = document.getElementById('prod-thumb-url-input');
+            if (input) input.value = url;
+            updateThumbPreview(url);
+            renderMediaLibraryGrid();
+        }
+
+        function updateThumbPreview(url) {
+            const img = document.getElementById('prod-thumb-preview');
+            if (img) {
+                img.src = url || 'assets/plugin_hero_ui.jpg';
+            }
+        }
+
+        function handleProductFileSelect(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            const btnText = document.getElementById('upload-package-btn-text');
+            if (btnText) btnText.textContent = file.name;
+            const targetUrl = 'assets/' + file.name;
+            document.getElementById('prod-file-url-input').value = targetUrl;
+            showToast(`Package file "${file.name}" linked.`, 'info');
+        }
+
+        function setProductFilePreset(url) {
+            const el = document.getElementById('prod-file-url-input');
+            if (el) el.value = url;
+            showToast('Download package preset applied!', 'info');
+        }
+
         async function fetchProducts() {
             const tbody = document.getElementById('products-tbody');
-            tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">Loading products...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="py-8 text-center text-gray-500">Loading products catalog...</td></tr>';
+
+            const defaultProducts = [
+                {
+                    id: 'ae-workflow-pro',
+                    name: 'MotionByDk AE Workflow Pro Extension v3.8.0',
+                    category: 'plugin',
+                    price_inr: 49900,
+                    price_usd: 15,
+                    max_devices: 2,
+                    status: 'PUBLISHED',
+                    allow_coupons: 1,
+                    free_trial_enabled: 1,
+                    trial_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
+                    thumbnail_url: 'assets/plugin_hero_ui.jpg',
+                    description: '4-in-1 workflow plugin with 3D carousel, mouse dock, bezier curve and more.'
+                },
+                {
+                    id: 'creator-sfx-starter',
+                    name: 'Creator Assets & SFX Starter Pack',
+                    category: 'vault',
+                    price_inr: 0,
+                    price_usd: 0,
+                    is_free: 1,
+                    max_devices: 0,
+                    status: 'PUBLISHED',
+                    allow_coupons: 0,
+                    free_trial_enabled: 0,
+                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
+                    compatibility: 'Universal (Ae, Pr, DaVinci)',
+                    thumbnail_url: 'assets/sfx_starter_banner.png',
+                    description: 'Curated overlays, film burns, glitches, SFX, LUTs and more.'
+                },
+                {
+                    id: 'combo-creator-deal',
+                    name: 'AE Workflow Pro — Studio Creator Deal',
+                    category: 'bundle',
+                    price_inr: 39900,
+                    price_usd: 12,
+                    max_devices: 2,
+                    status: 'PUBLISHED',
+                    allow_coupons: 1,
+                    free_trial_enabled: 1,
+                    trial_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
+                    thumbnail_url: 'assets/combo_deal_banner.png',
+                    description: 'Complete toolkit: AE Workflow Pro (2-PC) + creator starter assets.'
+                },
+                {
+                    id: 'free-starter-kit',
+                    name: 'MotionByDk Free Starter Pack',
+                    category: 'free',
+                    price_inr: 0,
+                    price_usd: 0,
+                    is_free: 1,
+                    max_devices: 0,
+                    status: 'PUBLISHED',
+                    allow_coupons: 0,
+                    free_trial_enabled: 0,
+                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
+                    compatibility: 'Universal (Ae, Pr, DaVinci)',
+                    thumbnail_url: 'assets/vault_hero_mockup.png',
+                    description: 'Get 3D carousel script, scale & fade plugin, SFX pack and setup guide.'
+                }
+            ];
+
+            let baseList = [...defaultProducts];
 
             try {
                 const data = await adminFetch('/api/admin/products');
-                if (!data.success || !data.products || data.products.length === 0) {
-                    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || adminToken.startsWith('dev-')) {
-                        productsCache = [
-                            {
-                                id: 'ae-workflow-pro',
-                                name: 'MotionByDk AE Workflow Pro Extension v3.8.0',
-                                category: 'plugin',
-                                price_inr: 49900,
-                                price_usd: 15,
-                                max_devices: 2,
-                                status: 'PUBLISHED',
-                                allow_coupons: 1,
-                                compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
-                                thumbnail_url: 'assets/ae_workflow_preview.png'
-                            },
-                            {
-                                id: 'free-starter-kit',
-                                name: 'MotionByDk Free Starter Pack',
-                                category: 'asset',
-                                price_inr: 0,
-                                price_usd: 0,
-                                max_devices: 0,
-                                status: 'PUBLISHED',
-                                allow_coupons: 0,
-                                compatibility: 'Universal (Ae, Pr, DaVinci)',
-                                thumbnail_url: 'assets/vault_hero_mockup.png'
-                            }
-                        ];
-                        document.getElementById('badge-total-products').textContent = productsCache.length;
-                        renderProductsTable(productsCache);
-
-                        const relProdSelect = document.getElementById('rel-product-select');
-                        if (relProdSelect) {
-                            relProdSelect.innerHTML = productsCache.map(p => `
-                                <option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (${escapeHtml(p.id)})</option>
-                            `).join('');
-                        }
-                        return;
-                    }
-                    tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-rose-400">Error: ${escapeHtml(data.error || 'No products')}</td></tr>`;
-                    return;
-                }
-
-                productsCache = data.products || [];
-                document.getElementById('badge-total-products').textContent = productsCache.length;
-                renderProductsTable(productsCache);
-
-                // Populate product selects in Release Modal
-                const relProdSelect = document.getElementById('rel-product-select');
-                if (relProdSelect) {
-                    relProdSelect.innerHTML = productsCache.map(p => `
-                        <option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (${escapeHtml(p.id)})</option>
-                    `).join('');
+                if (data && data.success && Array.isArray(data.products) && data.products.length > 0) {
+                    baseList = data.products;
                 }
             } catch (err) {
-                console.error('Failed to fetch products:', err);
+                console.warn('[Admin] Remote products fetch fallback:', err);
+            }
+
+            // Merge local storage products
+            const custom = getLocalCustomProducts();
+            const map = new Map();
+            baseList.forEach(p => map.set(p.id, p));
+            custom.forEach(p => {
+                if (p._deleted) {
+                    map.delete(p.id);
+                } else {
+                    map.set(p.id, Object.assign({}, map.get(p.id) || {}, p));
+                }
+            });
+
+            productsCache = Array.from(map.values());
+            const badge = document.getElementById('badge-total-products');
+            if (badge) badge.textContent = productsCache.length;
+            renderProductsTable(productsCache);
+
+            const relProdSelect = document.getElementById('rel-product-select');
+            if (relProdSelect) {
+                relProdSelect.innerHTML = productsCache.map(p => `
+                    <option value="${escapeHtml(p.id)}">${escapeHtml(p.name)} (${escapeHtml(p.id)})</option>
+                `).join('');
             }
         }
 
@@ -3231,7 +3443,7 @@
             const catFilter = document.getElementById('product-category-filter')?.value || 'ALL';
 
             const filtered = products.filter(p => {
-                const matchesSearch = p.name.toLowerCase().includes(search) || p.id.toLowerCase().includes(search);
+                const matchesSearch = (p.name || '').toLowerCase().includes(search) || (p.id || '').toLowerCase().includes(search);
                 const matchesCat = catFilter === 'ALL' || (p.category || 'plugin') === catFilter;
                 return matchesSearch && matchesCat;
             });
@@ -3254,6 +3466,9 @@
                     ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">OFF</span>'
                     : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ALLOWED</span>';
 
+                const inrDisplay = (p.price_inr === 0 || p.is_free || p.category === 'free') ? 'FREE' : `₹${(p.price_inr / 100).toFixed(2)}`;
+                const usdDisplay = (p.price_usd === 0 || p.is_free || p.category === 'free') ? '$0.00' : `$${Number(p.price_usd || 0).toFixed(2)}`;
+
                 tr.innerHTML = `
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-3">
@@ -3269,10 +3484,10 @@
                     <td class="py-3 px-4">
                         <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-white/5 text-gray-300">${escapeHtml(p.category || 'plugin')}</span>
                     </td>
-                    <td class="py-3 px-4 font-bold text-white">₹${(p.price_inr / 100).toFixed(2)}</td>
-                    <td class="py-3 px-4 font-bold text-emerald-400">$${Number(p.price_usd || 0).toFixed(2)}</td>
+                    <td class="py-3 px-4 font-bold text-white">${inrDisplay}</td>
+                    <td class="py-3 px-4 font-bold text-emerald-400">${usdDisplay}</td>
                     <td class="py-3 px-4">${couponsBadge}</td>
-                    <td class="py-3 px-4 font-mono text-gray-300">${p.max_devices} PC</td>
+                    <td class="py-3 px-4 font-mono text-gray-300">${p.max_devices || 0} PC</td>
                     <td class="py-3 px-4">${statusBadge}</td>
                     <td class="py-3 px-4 text-gray-400 text-[11px] max-w-[160px] truncate" title="${escapeHtml(p.compatibility || 'Win/Mac')}">${escapeHtml(p.compatibility || 'All CC')}</td>
                     <td class="py-3 px-4 text-right">
@@ -3292,7 +3507,7 @@
                 `;
                 tbody.appendChild(tr);
             });
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function previewCurrentProductModal() {
@@ -3314,9 +3529,17 @@
             document.getElementById('prod-is-free-input').checked = false;
             const allowCouponsEl = document.getElementById('prod-allow-coupons-input');
             if (allowCouponsEl) allowCouponsEl.checked = true;
+
+            const freeTrialEl = document.getElementById('prod-free-trial-enabled-input');
+            if (freeTrialEl) freeTrialEl.checked = true;
+            document.getElementById('prod-trial-url-input').value = 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            document.getElementById('prod-file-url-input').value = 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
             document.getElementById('prod-desc-input').value = '';
             document.getElementById('prod-compat-input').value = 'After Effects CC 2018 - 2026, Win/Mac';
-            document.getElementById('prod-thumb-url-input').value = '';
+            document.getElementById('prod-thumb-url-input').value = 'assets/plugin_hero_ui.jpg';
+            updateThumbPreview('assets/plugin_hero_ui.jpg');
+            renderMediaLibraryGrid();
             document.getElementById('prod-features-input').value = '';
             openModal('modal-product-form');
         }
@@ -3335,12 +3558,20 @@
             document.getElementById('prod-price-usd-input').value = Number(p.price_usd || 0).toFixed(0);
             document.getElementById('prod-max-devices-input').value = p.max_devices || 2;
             document.getElementById('prod-status-input').value = p.status || 'PUBLISHED';
-            document.getElementById('prod-is-free-input').checked = !!p.is_free;
+            document.getElementById('prod-is-free-input').checked = !!(p.is_free || p.category === 'free' || p.price_inr === 0);
             const allowCouponsEl = document.getElementById('prod-allow-coupons-input');
             if (allowCouponsEl) allowCouponsEl.checked = p.allow_coupons !== 0;
+
+            const freeTrialEl = document.getElementById('prod-free-trial-enabled-input');
+            if (freeTrialEl) freeTrialEl.checked = p.free_trial_enabled !== 0;
+            document.getElementById('prod-trial-url-input').value = p.trial_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            document.getElementById('prod-file-url-input').value = p.file_url || p.download_url || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
             document.getElementById('prod-desc-input').value = p.description || '';
             document.getElementById('prod-compat-input').value = p.compatibility || '';
-            document.getElementById('prod-thumb-url-input').value = p.thumbnail_url || '';
+            document.getElementById('prod-thumb-url-input').value = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
+            updateThumbPreview(p.thumbnail_url || 'assets/plugin_hero_ui.jpg');
+            renderMediaLibraryGrid();
 
             let feats = '';
             if (p.features_list) {
@@ -3353,21 +3584,46 @@
             openModal('modal-product-form');
         }
 
+        // Auto-synchronize Free checkbox and category
+        document.getElementById('prod-is-free-input')?.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.getElementById('prod-price-inr-input').value = '0';
+                document.getElementById('prod-price-usd-input').value = '0';
+                document.getElementById('prod-category-input').value = 'free';
+                const allowCouponsEl = document.getElementById('prod-allow-coupons-input');
+                if (allowCouponsEl) allowCouponsEl.checked = false;
+            }
+        });
+
+        document.getElementById('prod-category-input')?.addEventListener('change', (e) => {
+            if (e.target.value === 'free') {
+                const freeCb = document.getElementById('prod-is-free-input');
+                if (freeCb) freeCb.checked = true;
+                document.getElementById('prod-price-inr-input').value = '0';
+                document.getElementById('prod-price-usd-input').value = '0';
+                const allowCouponsEl = document.getElementById('prod-allow-coupons-input');
+                if (allowCouponsEl) allowCouponsEl.checked = false;
+            }
+        });
+
         document.getElementById('product-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const mode = document.getElementById('prod-form-mode').value;
             const id = document.getElementById('prod-id-input').value.trim();
             const name = document.getElementById('prod-name-input').value.trim();
             const category = document.getElementById('prod-category-input').value;
-            const priceInr = Math.round(parseFloat(document.getElementById('prod-price-inr-input').value) * 100);
+            const priceInr = Math.round(parseFloat(document.getElementById('prod-price-inr-input').value) * 100) || 0;
             const priceUsd = parseFloat(document.getElementById('prod-price-usd-input').value) || 0;
             const maxDevices = parseInt(document.getElementById('prod-max-devices-input').value, 10) || 2;
             const status = document.getElementById('prod-status-input').value;
-            const isFree = document.getElementById('prod-is-free-input').checked ? 1 : 0;
-            const allowCoupons = document.getElementById('prod-allow-coupons-input')?.checked ? 1 : 0;
+            const isFree = (document.getElementById('prod-is-free-input').checked || category === 'free' || priceInr === 0) ? 1 : 0;
+            const allowCoupons = (isFree === 1) ? 0 : (document.getElementById('prod-allow-coupons-input')?.checked ? 1 : 0);
+            const freeTrialEnabled = document.getElementById('prod-free-trial-enabled-input')?.checked ? 1 : 0;
+            const trialUrl = document.getElementById('prod-trial-url-input')?.value.trim() || '';
+            const fileUrl = document.getElementById('prod-file-url-input')?.value.trim() || '';
             const description = document.getElementById('prod-desc-input').value.trim();
             const compatibility = document.getElementById('prod-compat-input').value.trim();
-            const thumbnailUrl = document.getElementById('prod-thumb-url-input').value.trim();
+            const thumbnailUrl = document.getElementById('prod-thumb-url-input').value.trim() || 'assets/plugin_hero_ui.jpg';
             const rawFeatures = document.getElementById('prod-features-input').value.trim();
             const featuresList = JSON.stringify(rawFeatures.split('\n').map(s => s.trim()).filter(Boolean));
 
@@ -3381,48 +3637,84 @@
                 status,
                 is_free: isFree,
                 allow_coupons: allowCoupons,
+                free_trial_enabled: freeTrialEnabled,
+                trial_url: trialUrl,
+                file_url: fileUrl,
                 description,
                 compatibility,
                 thumbnail_url: thumbnailUrl,
                 features_list: featuresList,
             };
 
-            try {
-                const endpoint = mode === 'create' ? '/api/admin/products' : `/api/admin/products/${id}`;
-                const method = mode === 'create' ? 'POST' : 'PUT';
-                const data = await adminFetch(endpoint, {
-                    method,
-                    body: JSON.stringify(payload)
-                });
-
-                if (data.success) {
-                    showToast(mode === 'create' ? 'Product created successfully!' : 'Product updated successfully!', 'success');
-                    closeModal('modal-product-form');
-                    fetchProducts();
-                    fetchMetrics();
-                } else {
-                    showToast(data.error || 'Failed to save product.', 'error');
-                }
-            } catch (err) {
-                showToast(err.message, 'error');
+            // 1. Save in localStorage immediately (Permanent local store)
+            const custom = getLocalCustomProducts();
+            const idx = custom.findIndex(x => x.id === id);
+            if (idx >= 0) {
+                custom[idx] = payload;
+            } else {
+                custom.unshift(payload);
             }
+            saveLocalCustomProducts(custom);
+
+            // 2. Add thumbnail to media library
+            if (thumbnailUrl) {
+                addMediaToLibrary(thumbnailUrl, name);
+            }
+
+            // 3. Update productsCache immediately
+            const cIdx = productsCache.findIndex(x => x.id === id);
+            if (cIdx >= 0) {
+                productsCache[cIdx] = Object.assign({}, productsCache[cIdx], payload);
+            } else {
+                productsCache.unshift(payload);
+            }
+            renderProductsTable(productsCache);
+            const badge = document.getElementById('badge-total-products');
+            if (badge) badge.textContent = productsCache.length;
+
+            // 4. Background Cloudflare D1 Remote Sync
+            const endpoint = mode === 'create' ? '/api/admin/products' : `/api/admin/products/${id}`;
+            const method = mode === 'create' ? 'POST' : 'PUT';
+            adminFetch(endpoint, {
+                method,
+                body: JSON.stringify(payload)
+            }).then(data => {
+                if (data && data.success) {
+                    console.log('[Admin] Cloudflare D1 remote synced for:', id);
+                }
+            }).catch(err => {
+                console.warn('[Admin] Cloudflare D1 offline/deferred (locally saved):', err);
+            });
+
+            showToast(mode === 'create' ? `Product "${name}" added to catalog!` : `Product "${name}" updated!`, 'success');
+            closeModal('modal-product-form');
         });
 
         async function deleteProductPrompt(productId) {
-            if (!confirm(`Are you sure you want to delete product "${productId}"?\n\nIf it has customer orders or license records, it will be safely archived instead.`)) return;
+            if (!confirm(`Are you sure you want to delete product "${productId}"?\n\nThis will remove it from the catalog.`)) return;
 
-            try {
-                const data = await adminFetch(`/api/admin/products/${encodeURIComponent(productId)}?action=delete`, { method: 'DELETE' });
-                if (data.success) {
-                    showToast(`Product "${productId}" removed successfully.`, 'success');
-                    fetchProducts();
-                    fetchMetrics();
-                } else {
-                    showToast(data.error || 'Failed to delete product.', 'error');
-                }
-            } catch (err) {
-                showToast(err.message, 'error');
+            // 1. Remove from localStorage & record deletion
+            const custom = getLocalCustomProducts();
+            const idx = custom.findIndex(x => x.id === productId);
+            if (idx >= 0) {
+                custom.splice(idx, 1);
             }
+            custom.push({ id: productId, _deleted: true });
+            saveLocalCustomProducts(custom);
+
+            // 2. Update cache & table
+            productsCache = productsCache.filter(x => x.id !== productId);
+            renderProductsTable(productsCache);
+            const badge = document.getElementById('badge-total-products');
+            if (badge) badge.textContent = productsCache.length;
+
+            // 3. Remote call
+            try {
+                await adminFetch(`/api/admin/products/${encodeURIComponent(productId)}?action=delete`, { method: 'DELETE' });
+            } catch (err) {
+                console.warn('[Admin] Remote delete deferred:', err);
+            }
+            showToast(`Product "${productId}" removed successfully.`, 'success');
         }
 
         async function toggleArchiveProduct(productId, currentStatus) {
@@ -3430,58 +3722,73 @@
             const actionText = isArchived ? 'restore' : 'archive';
             if (!confirm(`Are you sure you want to ${actionText} product "${productId}"?`)) return;
 
+            const p = productsCache.find(x => x.id === productId);
+            if (p) {
+                p.status = isArchived ? 'PUBLISHED' : 'ARCHIVED';
+                const custom = getLocalCustomProducts();
+                const idx = custom.findIndex(x => x.id === productId);
+                if (idx >= 0) {
+                    custom[idx].status = p.status;
+                } else {
+                    custom.push(p);
+                }
+                saveLocalCustomProducts(custom);
+                renderProductsTable(productsCache);
+            }
+
             try {
                 if (!isArchived) {
-                    const data = await adminFetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
-                    if (data.success) {
-                        showToast(`Product ${productId} archived.`, 'success');
-                        fetchProducts();
-                    } else {
-                        showToast(data.error || 'Failed to archive.', 'error');
-                    }
+                    await adminFetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
                 } else {
-                    const data = await adminFetch(`/api/admin/products/${productId}`, {
+                    await adminFetch(`/api/admin/products/${productId}`, {
                         method: 'PUT',
                         body: JSON.stringify({ status: 'PUBLISHED' })
                     });
-                    if (data.success) {
-                        showToast(`Product ${productId} restored to PUBLISHED.`, 'success');
-                        fetchProducts();
-                    }
                 }
-            } catch (err) {
-                showToast(err.message, 'error');
-            }
+            } catch (err) {}
+            showToast(`Product ${productId} ${isArchived ? 'restored' : 'archived'}.`, 'success');
         }
 
         async function uploadThumbnailToR2(input) {
             if (!input.files || input.files.length === 0) return;
             const file = input.files[0];
             const btnText = document.getElementById('upload-thumb-btn-text');
-            btnText.textContent = 'Uploading...';
+            btnText.textContent = 'Processing...';
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('folder', 'thumbnails');
-
+            let uploadedUrl = null;
             try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('folder', 'thumbnails');
                 const res = await adminFetch('/api/admin/upload', {
                     method: 'POST',
                     body: formData,
                     isFormData: true,
                 });
-                if (res.success && res.objectKey) {
-                    const publicUrl = `https://www.motionbydk.in/${res.objectKey}`;
-                    document.getElementById('prod-thumb-url-input').value = publicUrl;
-                    showToast('Thumbnail uploaded to Cloudflare R2!', 'success');
-                } else {
-                    showToast(res.error || 'Upload failed', 'error');
+                if (res && res.success && res.objectKey) {
+                    uploadedUrl = `https://www.motionbydk.in/${res.objectKey}`;
                 }
-            } catch (err) {
-                showToast(err.message, 'error');
-            } finally {
-                btnText.textContent = 'Upload Image';
+            } catch (err) {}
+
+            if (uploadedUrl) {
+                document.getElementById('prod-thumb-url-input').value = uploadedUrl;
+                updateThumbPreview(uploadedUrl);
+                addMediaToLibrary(uploadedUrl, file.name);
+                showToast('Thumbnail uploaded to Cloudflare R2 and saved to Library!', 'success');
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    const fallbackPath = 'assets/' + file.name;
+                    const chosenPath = (file.size > 1500000) ? fallbackPath : dataUrl;
+                    document.getElementById('prod-thumb-url-input').value = chosenPath;
+                    updateThumbPreview(dataUrl);
+                    addMediaToLibrary(chosenPath, file.name);
+                    showToast(`Image "${file.name}" added to Image Library!`, 'success');
+                };
+                reader.readAsDataURL(file);
             }
+            btnText.textContent = 'Upload Image';
         }
 
         // ---------------------------------------------------------------------

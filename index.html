@@ -2465,8 +2465,8 @@
             <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mx-auto mb-3">
                 <i data-lucide="gift" class="w-6 h-6"></i>
             </div>
-            <h3 class="font-heading font-black text-2xl text-white">Free Starter Pack</h3>
-            <p class="text-xs text-gray-300 mt-1 mb-5">3D Carousel Rig + Scale/Fade Tool + SFX Pack + Setup PDF</p>
+            <h3 id="freeKitTitle" class="font-heading font-black text-2xl text-white">Free Starter Pack</h3>
+            <p id="freeKitDesc" class="text-xs text-gray-300 mt-1 mb-5">3D Carousel Rig + Scale/Fade Tool + SFX Pack + Setup PDF</p>
 
             <div class="p-3.5 rounded-xl bg-[#08080a] border border-white/10 text-xs text-gray-300 text-left space-y-2 mb-5">
                 <div class="flex items-center gap-2 text-white font-medium">
@@ -2502,7 +2502,7 @@
                     <i data-lucide="download" class="w-4 h-4"></i>
                 </button>
                 <div class="text-center pt-1">
-                    <a href="https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g" target="_blank" class="text-[11px] text-gray-400 hover:text-emerald-400 underline transition-colors">
+                    <a id="freeKitDriveLink" href="https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g" target="_blank" class="text-[11px] text-gray-400 hover:text-emerald-400 underline transition-colors">
                         Or click here to Open Directly in Google Drive &rarr;
                     </a>
                 </div>
@@ -2612,7 +2612,7 @@
                 <div class="flex items-center gap-2 text-xs text-gray-400">
                     <button onclick="closeProductDetailModal()" class="hover:text-white cursor-pointer">Home</button>
                     <span>/</span>
-                    <span class="text-white font-semibold">MotionByDk AE Workflow Pro</span>
+                    <span id="detailBreadcrumbTitle" class="text-white font-semibold">MotionByDk AE Workflow Pro</span>
                 </div>
                 <button onclick="closeProductDetailModal()" class="text-gray-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" title="Close Modal">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -2721,11 +2721,11 @@
                             <span class="ml-auto text-[10px] font-mono font-bold text-white bg-purple-600/80 px-2 py-0.5 rounded uppercase">NEW</span>
                         </div>
 
-                        <h2 class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
+                        <h2 id="detailTitle" class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
                             MotionByDk AE Workflow Pro
                         </h2>
 
-                        <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                        <p id="detailDesc" class="text-xs text-gray-400 leading-relaxed mb-4">
                             MotionByDk AE Workflow Pro is the fastest way to build 3D Carousels, spring physics mouse dock, and kinetic bezier curves in After Effects.
                         </p>
 
@@ -2759,7 +2759,7 @@
                         <div class="mb-5">
                             <div class="flex items-baseline gap-3">
                                 <span id="detailPriceDisplay" class="font-heading font-black text-3xl sm:text-4xl text-white">₹499.00</span>
-                                <span class="text-xs text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">Coupon FIRST100 applicable</span>
+                                <span id="detailCouponBadge" class="text-xs text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">Coupon FIRST100 applicable</span>
                             </div>
                             <span class="text-[11px] text-gray-400 block mt-1">One-time payment &bull; Free lifetime updates &bull; Instant delivery</span>
                         </div>
@@ -2767,13 +2767,13 @@
                         <!-- Action Buttons matching Aescripts screenshot -->
                         <div class="space-y-2.5">
                             <!-- 1. Add to Cart / Buy Button (Orange) -->
-                            <button onclick="closeProductDetailModal(); openCashfreeModal('ae-workflow-pro')" class="w-full py-3.5 px-6 bg-brand hover:bg-brand-hover text-black font-heading font-black text-sm rounded-xl transition-all shadow-brand flex items-center justify-center gap-2 cursor-pointer">
+                            <button id="detailBuyBtn" onclick="closeProductDetailModal(); openCashfreeModal('ae-workflow-pro')" class="w-full py-3.5 px-6 bg-brand hover:bg-brand-hover text-black font-heading font-black text-sm rounded-xl transition-all shadow-brand flex items-center justify-center gap-2 cursor-pointer">
                                 <i data-lucide="shopping-cart" class="w-4 h-4 text-black"></i>
                                 <span id="detailBuyBtnText">Buy Now &mdash; ₹499 (Instant License)</span>
                             </button>
 
                             <!-- 2. THE PROMINENT FREE TRIAL BUTTON (Requested by User!) -->
-                            <button onclick="closeProductDetailModal(); openFreeTrialModal('ae-workflow-pro')" class="w-full py-3 px-6 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-emerald-200 border-2 border-emerald-400/50 font-heading font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                            <button id="detailFreeTrialBtn" onclick="closeProductDetailModal(); openFreeTrialModal('ae-workflow-pro')" class="w-full py-3 px-6 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-emerald-200 border-2 border-emerald-400/50 font-heading font-black text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
                                 <span class="text-base">☁</span>
                                 <span>FREE TRIAL (7 Days Full Access)</span>
                             </button>
@@ -3596,18 +3596,109 @@
                 })
                 .catch(function() {});
 
-            // 3. Fetch Full Public Catalog Dynamically
+            // 3. Fetch Full Public Catalog Dynamically & Merge Custom Storefront Items
+            var initialProducts = getMergedStorefrontProducts([]);
+            window.mdkProductsCatalog = initialProducts;
+            renderDynamicProductsCatalog(initialProducts);
+
             fetch(apiBase + '/api/products')
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data && data.success && Array.isArray(data.products) && data.products.length > 0) {
-                        window.mdkProductsCatalog = data.products;
-                        renderDynamicProductsCatalog(data.products);
+                        var merged = getMergedStorefrontProducts(data.products);
+                        window.mdkProductsCatalog = merged;
+                        renderDynamicProductsCatalog(merged);
                     }
                 })
                 .catch(function(err) {
                     console.warn('[Storefront] Remote catalog fetch fallback:', err);
                 });
+        }
+
+        function getMergedStorefrontProducts(remoteProducts) {
+            var defaultProducts = [
+                {
+                    id: 'ae-workflow-pro',
+                    name: 'MotionByDk AE Workflow Pro',
+                    category: 'plugin',
+                    price_inr: 49900,
+                    price_usd: 15,
+                    max_devices: 2,
+                    status: 'PUBLISHED',
+                    allow_coupons: 1,
+                    free_trial_enabled: 1,
+                    trial_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
+                    thumbnail_url: 'assets/plugin_hero_ui.jpg',
+                    description: '4-in-1 workflow plugin with 3D carousel, mouse dock, bezier curve and more.'
+                },
+                {
+                    id: 'creator-sfx-starter',
+                    name: 'Creator Assets & SFX Starter Pack',
+                    category: 'vault',
+                    price_inr: 0,
+                    price_usd: 0,
+                    is_free: 1,
+                    max_devices: 0,
+                    status: 'PUBLISHED',
+                    allow_coupons: 0,
+                    free_trial_enabled: 0,
+                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
+                    compatibility: 'Universal (Ae, Pr, DaVinci)',
+                    thumbnail_url: 'assets/sfx_starter_banner.png',
+                    description: 'Curated overlays, film burns, glitches, SFX, LUTs and more.'
+                },
+                {
+                    id: 'combo-creator-deal',
+                    name: 'AE Workflow Pro — Studio Creator Deal',
+                    category: 'bundle',
+                    price_inr: 39900,
+                    price_usd: 12,
+                    max_devices: 2,
+                    status: 'PUBLISHED',
+                    allow_coupons: 1,
+                    free_trial_enabled: 1,
+                    trial_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
+                    thumbnail_url: 'assets/combo_deal_banner.png',
+                    description: 'Complete toolkit: AE Workflow Pro (2-PC) + creator starter assets.'
+                },
+                {
+                    id: 'free-starter-kit',
+                    name: 'MotionByDk Free Starter Kit',
+                    category: 'free',
+                    price_inr: 0,
+                    price_usd: 0,
+                    is_free: 1,
+                    max_devices: 0,
+                    status: 'PUBLISHED',
+                    allow_coupons: 0,
+                    free_trial_enabled: 0,
+                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
+                    compatibility: 'Universal (Ae, Pr, DaVinci)',
+                    thumbnail_url: 'assets/vault_hero_mockup.png',
+                    description: 'Get 3D carousel script, scale & fade plugin, SFX pack and setup guide.'
+                }
+            ];
+
+            var list = (Array.isArray(remoteProducts) && remoteProducts.length > 0) ? remoteProducts : defaultProducts;
+            var map = {};
+            list.forEach(function(p) { map[p.id] = p; });
+
+            try {
+                var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                custom.forEach(function(p) {
+                    if (p._deleted) {
+                        delete map[p.id];
+                    } else {
+                        map[p.id] = Object.assign({}, map[p.id] || {}, p);
+                    }
+                });
+            } catch(e) {}
+
+            return Object.values(map);
         }
 
         function renderDynamicProductsCatalog(products) {
@@ -3621,7 +3712,7 @@
             var html = '';
 
             products.forEach(function(p) {
-                var isFree = p.is_free === 1 || p.price_inr === 0;
+                var isFree = (p.is_free === 1 || p.category === 'free' || p.price_inr === 0);
                 var catAttr = 'plugins';
                 var badgeText = 'AFTER EFFECTS EXTENSION';
                 var badgeBg = 'bg-brand text-black';
@@ -3654,11 +3745,13 @@
                 var subPriceText = isFree ? '(₹0)' : (isUsd ? '₹' + priceInr : '$' + priceUsd);
                 var thumb = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
 
-                var ctaAction = isFree
-                    ? "openFreeKitModal()"
-                    : ("openCashfreeModal('" + p.id + "')");
+                var modalClickAction = isFree
+                    ? "openFreeKitModal('" + p.id + "')"
+                    : "openProductDetailModal('" + p.id + "')";
 
-                var previewLink = "product.html?id=" + encodeURIComponent(p.id);
+                var ctaAction = isFree
+                    ? "openFreeKitModal('" + p.id + "')"
+                    : ("openCashfreeModal('" + p.id + "')");
 
                 var couponTag = (!isFree && p.allow_coupons !== 0)
                     ? '<span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Coupon Eligible</span>'
@@ -3670,8 +3763,8 @@
                         ${badgeText}
                     </div>
                     <div>
-                        <!-- Thumbnail -->
-                        <div class="aspect-video rounded-xl overflow-hidden bg-black mb-4 border border-white/10 relative cursor-pointer group/thumb" onclick="window.location.href='${previewLink}'">
+                        <!-- Thumbnail (Click opens Popup Modal) -->
+                        <div class="aspect-video rounded-xl overflow-hidden bg-black mb-4 border border-white/10 relative cursor-pointer group/thumb" onclick="${modalClickAction}" title="Click to view details popup">
                             <img src="${thumb}" alt="${p.name}" class="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-500" onerror="this.src='assets/plugin_hero_ui.jpg'">
                             <div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md text-[10px] font-mono text-brand border border-brand/30">
                                 ${p.category || 'plugin'}
@@ -3685,7 +3778,7 @@
                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${p.compatibility ? p.compatibility.split('•')[0] : 'All Creative Suites'}</span>
                         </div>
 
-                        <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 ${titleHover} transition-colors cursor-pointer" onclick="window.location.href='${previewLink}'">
+                        <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 ${titleHover} transition-colors cursor-pointer" onclick="${modalClickAction}">
                             ${p.name}
                         </h3>
 
@@ -3701,9 +3794,9 @@
                             ${!isFree ? `<span class="text-[10px] text-gray-500">${subPriceText}</span>` : `<span class="text-[10px] text-gray-500">(₹0)</span>`}
                         </div>
                         <div class="flex items-center gap-1.5">
-                            <a href="${previewLink}" class="px-2.5 py-1.5 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-bold text-gray-300 hover:text-white transition-all" title="View Product Page">
-                                Details ↗
-                            </a>
+                            <button onclick="${modalClickAction}" class="px-2.5 py-1.5 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-bold text-gray-300 hover:text-white transition-all cursor-pointer" title="Open Product Details Popup">
+                                Details
+                            </button>
                             <button onclick="${ctaAction}" class="px-3.5 py-1.5 rounded-xl ${isFree ? 'bg-sky-500 hover:bg-sky-400 text-black' : 'bg-brand hover:bg-brand-hover text-black'} font-extrabold text-xs transition-transform hover:scale-105 shadow-md flex items-center gap-1 cursor-pointer">
                                 <span>${isFree ? 'Download' : 'Buy Now'}</span>
                             </button>
@@ -3807,15 +3900,46 @@
         }
 
         // =========================================================================
-        // 7. FREE STARTER KIT MODAL HANDLERS
+        // 7. FREE STARTER KIT & POPUP MODAL HANDLERS (DYNAMIC)
         // =========================================================================
-        function openFreeKitModal() {
+        function openFreeKitModal(productId) {
             var modal = document.getElementById('freeKitModal');
             if (!modal) return;
+
+            var p = null;
+            if (productId && window.mdkProductsCatalog) {
+                p = window.mdkProductsCatalog.find(function(x) { return x.id === productId; });
+            }
+            if (!p && productId) {
+                try {
+                    var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                    p = custom.find(function(x) { return x.id === productId; });
+                } catch(e) {}
+            }
+
+            window.currentFreeKitProduct = p;
+
+            if (p) {
+                var titleEl = document.getElementById('freeKitTitle');
+                if (titleEl) titleEl.innerText = p.name || 'Free Starter Pack';
+                var descEl = document.getElementById('freeKitDesc');
+                if (descEl) descEl.innerText = p.description || 'Instant Access Starter Pack';
+                var driveLink = document.getElementById('freeKitDriveLink');
+                if (driveLink && (p.file_url || p.trial_url)) {
+                    driveLink.href = p.file_url || p.trial_url;
+                }
+            }
+
+            var form = document.getElementById('freeKitForm');
+            var success = document.getElementById('freeKitSuccess');
+            if (form) form.classList.remove('hidden');
+            if (success) success.classList.add('hidden');
+
             modal.classList.remove('opacity-0', 'pointer-events-none');
             var box = modal.querySelector('.modal-box');
             if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
             document.body.classList.add('overflow-hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function closeFreeKitModal() {
@@ -3840,6 +3964,21 @@
 
             document.getElementById('freeKitForm')?.classList.add('hidden');
             document.getElementById('freeKitSuccess')?.classList.remove('hidden');
+
+            var p = window.currentFreeKitProduct;
+            var targetUrl = (p && (p.file_url || p.trial_url)) ? (p.file_url || p.trial_url) : 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g';
+
+            if (targetUrl.startsWith('assets/') || targetUrl.endsWith('.zip')) {
+                var link = document.createElement('a');
+                link.href = targetUrl;
+                link.download = targetUrl.split('/').pop();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                window.open(targetUrl, '_blank');
+            }
+
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -3874,11 +4013,119 @@
         }
 
         // =========================================================================
-        // 7.5 OFFICIAL PRODUCT DETAIL & FREE TRIAL MODAL HANDLERS
+        // 7.5 OFFICIAL PRODUCT DETAIL & FREE TRIAL MODAL HANDLERS (POPUP WINDOW)
         // =========================================================================
         function openProductDetailModal(productId) {
             var modal = document.getElementById('productDetailModal');
             if (!modal) return;
+
+            var p = null;
+            if (productId && window.mdkProductsCatalog) {
+                p = window.mdkProductsCatalog.find(function(x) { return x.id === productId; });
+            }
+            if (!p && productId) {
+                try {
+                    var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                    p = custom.find(function(x) { return x.id === productId; });
+                } catch(e) {}
+            }
+            if (!p) {
+                p = {
+                    id: 'ae-workflow-pro',
+                    name: 'MotionByDk AE Workflow Pro',
+                    category: 'plugin',
+                    price_inr: 49900,
+                    price_usd: 15,
+                    allow_coupons: 1,
+                    free_trial_enabled: 1,
+                    trial_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
+                    thumbnail_url: 'assets/plugin_hero_ui.jpg',
+                    description: 'MotionByDk AE Workflow Pro is the fastest way to build 3D Carousels, spring physics mouse dock, and kinetic bezier curves in After Effects.',
+                    compatibility: 'CC 2019, 2020, 2021, 2022, 2023, 2024, 2025, and 2026+.'
+                };
+            }
+
+            window.currentDetailProductId = p.id;
+            window.currentDetailProduct = p;
+
+            var breadcrumb = document.getElementById('detailBreadcrumbTitle');
+            if (breadcrumb) breadcrumb.innerText = p.name;
+
+            var previewImg = document.getElementById('detailMainPreview');
+            if (previewImg) previewImg.src = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
+
+            var titleEl = document.getElementById('detailTitle');
+            if (titleEl) titleEl.innerText = p.name;
+
+            var descEl = document.getElementById('detailDesc');
+            if (descEl) descEl.innerText = p.description || '';
+
+            var isUsd = (window.currentCurrency || 'INR') === 'USD';
+            var priceInr = p.price_inr ? Math.round(p.price_inr / 100) : 499;
+            var priceUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : 15;
+            window.currentDetailBasePriceInr = priceInr;
+            window.currentDetailBasePriceUsd = priceUsd;
+
+            currentDetailQty = 1;
+            var qtyDisp = document.getElementById('detailQtyDisplay');
+            if (qtyDisp) qtyDisp.innerText = '1';
+
+            handleDetailLicenseChange();
+
+            var couponBadge = document.getElementById('detailCouponBadge');
+            if (couponBadge) {
+                if (p.allow_coupons !== 0) {
+                    couponBadge.className = 'text-xs text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30';
+                    couponBadge.innerText = 'Coupon FIRST100 applicable';
+                    couponBadge.style.display = 'inline-block';
+                } else {
+                    couponBadge.className = 'text-xs text-gray-400 font-medium bg-white/5 px-2 py-0.5 rounded border border-white/10';
+                    couponBadge.innerText = 'Fixed Price';
+                    couponBadge.style.display = 'inline-block';
+                }
+            }
+
+            var buyBtn = document.getElementById('detailBuyBtn');
+            if (buyBtn) {
+                buyBtn.setAttribute('onclick', "closeProductDetailModal(); openCashfreeModal('" + p.id + "')");
+            }
+
+            var trialBtn = document.getElementById('detailFreeTrialBtn');
+            if (trialBtn) {
+                var hasTrial = (p.free_trial_enabled !== 0 && (p.category === 'plugin' || p.trial_url || p.file_url));
+                if (hasTrial) {
+                    trialBtn.style.display = 'flex';
+                    trialBtn.setAttribute('onclick', "closeProductDetailModal(); openFreeTrialModal('" + p.id + "')");
+                } else {
+                    trialBtn.style.display = 'none';
+                }
+            }
+
+            var descPane = document.getElementById('tabDetailPane-desc');
+            if (descPane) {
+                var featsHtml = '';
+                if (p.features_list) {
+                    try {
+                        var feats = Array.isArray(p.features_list) ? p.features_list : JSON.parse(p.features_list);
+                        if (Array.isArray(feats) && feats.length > 0) {
+                            featsHtml = '<ul class="space-y-1.5 list-disc pl-5 text-gray-400 text-xs mt-3">' +
+                                feats.map(function(f) { return '<li><strong class="text-white">' + f + '</strong></li>'; }).join('') +
+                                '</ul>';
+                        }
+                    } catch(e) {}
+                }
+                descPane.innerHTML = '<p><strong>' + (p.name || '') + '</strong> is a specialized software tool built by MotionByDk for high productivity.</p>' +
+                    '<p class="mt-2 text-xs text-gray-400">' + (p.description || '') + '</p>' + featsHtml;
+            }
+
+            var compatPane = document.getElementById('tabDetailPane-compat');
+            if (compatPane && p.compatibility) {
+                compatPane.innerHTML = '<p><strong>Compatibility:</strong> ' + p.compatibility + '</p>' +
+                    '<p><strong>Operating Systems:</strong> Windows 10/11 (64-bit) &amp; macOS (M1/M2/M3/M4 &amp; Intel native).</p>' +
+                    '<p><strong>License Validity:</strong> ' + (p.max_devices || 2) + ' PCs simultaneous activation with online resets.</p>';
+            }
+
             modal.classList.remove('opacity-0', 'pointer-events-none');
             var box = modal.querySelector('.modal-box');
             if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
@@ -3925,14 +4172,25 @@
         }
 
         function handleDetailLicenseChange() {
+            var p = window.currentDetailProduct;
+            var baseInr = window.currentDetailBasePriceInr || 499;
+            var baseUsd = window.currentDetailBasePriceUsd || 15;
+            var isUsd = (window.currentCurrency || 'INR') === 'USD';
+
             var sel = document.getElementById('detailLicenseSelect');
             var isTeam = sel && sel.value === 'team';
-            var unitPrice = isTeam ? 1199 : 499;
-            var total = unitPrice * currentDetailQty;
+
+            var unitInr = isTeam ? Math.round(baseInr * 2.4) : baseInr;
+            var unitUsd = isTeam ? Math.round(baseUsd * 2.3) : baseUsd;
+
+            var total = isUsd ? (unitUsd * currentDetailQty) : (unitInr * currentDetailQty);
+            var symbol = isUsd ? '$' : '₹';
+
             var priceDisp = document.getElementById('detailPriceDisplay');
             var buyBtnText = document.getElementById('detailBuyBtnText');
-            if (priceDisp) priceDisp.innerText = '₹' + total.toLocaleString('en-IN') + '.00';
-            if (buyBtnText) buyBtnText.innerText = 'Buy Now — ₹' + total.toLocaleString('en-IN') + ' (Instant License)';
+
+            if (priceDisp) priceDisp.innerText = symbol + total.toLocaleString('en-IN') + '.00';
+            if (buyBtnText) buyBtnText.innerText = 'Buy Now — ' + symbol + total.toLocaleString('en-IN') + ' (Instant License)';
         }
 
         // =========================================================================
@@ -4290,6 +4548,32 @@
         function openFreeTrialModal(productId) {
             var modal = document.getElementById('freeTrialModal');
             if (!modal) return;
+
+            var p = null;
+            if (productId && window.mdkProductsCatalog) {
+                p = window.mdkProductsCatalog.find(function(x) { return x.id === productId; });
+            }
+            if (!p && productId) {
+                try {
+                    var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
+                    p = custom.find(function(x) { return x.id === productId; });
+                } catch(e) {}
+            }
+
+            window.currentTrialProduct = p;
+
+            if (p) {
+                var titleEl = modal.querySelector('h3');
+                if (titleEl) titleEl.innerText = 'Try ' + p.name + ' Free';
+                var descEl = modal.querySelector('p.text-xs');
+                if (descEl) descEl.innerHTML = 'Experience the complete power of <strong class="text-white">' + p.name + '</strong> on Windows &amp; Mac. The 7-day trial activates automatically with zero setup friction!';
+            }
+
+            var form = document.getElementById('freeTrialForm');
+            var success = document.getElementById('freeTrialSuccess');
+            if (form) form.classList.remove('hidden');
+            if (success) success.classList.add('hidden');
+
             modal.classList.remove('opacity-0', 'pointer-events-none');
             var box = modal.querySelector('.modal-box');
             if (box) { box.classList.remove('scale-95'); box.classList.add('scale-100'); }
@@ -4313,13 +4597,19 @@
             if (form) form.classList.add('hidden');
             if (success) success.classList.remove('hidden');
 
-            // Trigger verified local direct download
-            var link = document.createElement('a');
-            link.href = 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
-            link.download = 'MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            var p = window.currentTrialProduct;
+            var trialFile = (p && (p.trial_url || p.file_url)) ? (p.trial_url || p.file_url) : 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
+            if (trialFile.startsWith('http://') || trialFile.startsWith('https://')) {
+                window.open(trialFile, '_blank');
+            } else {
+                var link = document.createElement('a');
+                link.href = trialFile;
+                link.download = trialFile.split('/').pop() || 'MotionByDk_Free_Trial.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
