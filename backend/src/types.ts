@@ -29,6 +29,7 @@ export interface ProductRecord {
   is_active: number;                 // 1 | 0
   category?: string;                 // 'plugin' | 'asset' | 'bundle'
   is_free?: number;                  // 1 | 0
+  allow_coupons?: number;            // 1 | 0 (Default 1)
   status?: string;                   // 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'
   thumbnail_url?: string | null;
   screenshots?: string | null;       // JSON string array of URLs

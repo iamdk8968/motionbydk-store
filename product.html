@@ -71,6 +71,19 @@
 </head>
 <body class="flex flex-col min-h-screen relative overflow-x-hidden">
 
+    <!-- PREVIEW MODE BANNER (Shown when ?preview=true) -->
+    <div id="previewBanner" class="hidden bg-sky-950/95 border-b border-sky-400/50 text-sky-200 text-xs py-2.5 px-4 sticky top-0 z-[60] backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <span class="inline-flex items-center gap-2 font-bold">
+                <span class="px-2 py-0.5 rounded bg-sky-400 text-black font-black text-[10px] uppercase tracking-wide">ADMIN PREVIEW MODE</span>
+                <span id="previewBannerText">You are previewing this product landing page prior to live publishing.</span>
+            </span>
+            <div class="flex items-center gap-2">
+                <a href="admin.html#tab-products" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-[11px] transition-colors">← Back to Admin</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Ambient Glow Background -->
     <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand/15 rounded-full blur-3xl"></div>
@@ -284,7 +297,7 @@
                     </div>
 
                     <!-- Coupon Code Input -->
-                    <div class="mb-6 p-3.5 rounded-xl bg-dark-base border border-white/10">
+                    <div id="couponSectionBox" class="mb-6 p-3.5 rounded-xl bg-dark-base border border-white/10">
                         <label class="text-[11px] font-bold text-gray-300 block mb-1.5 uppercase font-mono">Have a coupon code?</label>
                         <div class="flex gap-2">
                             <input type="text" id="couponInput" placeholder="Enter coupon (e.g. FIRST100)" class="flex-1 px-3 py-2 bg-dark-surface border border-white/10 rounded-lg text-xs text-white font-mono uppercase focus:border-brand focus:outline-none">
@@ -381,9 +394,15 @@
     <script>
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
-        // 1. Detect Product ID from Query Param
+        // 1. Detect Product ID and Preview Mode from Query Param
         var urlParams = new URLSearchParams(window.location.search);
         var currentProductId = urlParams.get('id') || 'ae-workflow-pro';
+        var isPreviewMode = urlParams.get('preview') === 'true';
+
+        if (isPreviewMode) {
+            var pBanner = document.getElementById('previewBanner');
+            if (pBanner) pBanner.classList.remove('hidden');
+        }
 
         // 2. Multi-Currency State
         var currentCurrency = (function() {
@@ -406,11 +425,14 @@
 
         var productData = {
             id: currentProductId,
+            name: 'MotionByDk AE Workflow Pro',
             inrPrice: 499,
-            usdPrice: 15
+            usdPrice: 15,
+            allowCoupons: 1
         };
 
         var activeCoupon = '';
+        var activeCouponData = null;
 
         function updateProductPricingUI() {
             window.currentCurrency = currentCurrency;
@@ -420,8 +442,10 @@
             var rawPrice = (currentCurrency === 'INR') ? productData.inrPrice : productData.usdPrice;
             var finalPrice = rawPrice;
 
-            if (activeCoupon.toUpperCase() === 'FIRST100') {
-                finalPrice = (currentCurrency === 'INR') ? Math.max(0, rawPrice - 100) : Math.max(0, rawPrice - 3);
+            if (activeCouponData && activeCouponData.valid) {
+                finalPrice = activeCouponData.finalAmount;
+            } else if (activeCoupon.toUpperCase() === 'FIRST100' && productData.allowCoupons !== 0) {
+                finalPrice = (currentCurrency === 'INR') ? Math.max(1, rawPrice - 100) : Math.max(1, rawPrice - 3);
             }
 
             document.getElementById('navCurrSymbol').innerText = symbol;
@@ -430,7 +454,7 @@
             document.getElementById('priceValue').innerText = finalPrice;
             document.getElementById('priceCurrencyCode').innerText = currentCurrency;
             document.getElementById('otherCurrLabel').innerText = (currentCurrency === 'INR') ? 'USD ($)' : 'INR (₹)';
-            document.getElementById('headerBuyLabel').innerText = 'Buy Pro (' + symbol + finalPrice + ')';
+            document.getElementById('headerBuyLabel').innerText = 'Buy (' + symbol + finalPrice + ')';
             document.getElementById('checkoutBtnText').innerText = 'Buy Now (' + symbol + finalPrice + ') & Activate License →';
             document.getElementById('paymentMethodsDesc').innerText = (currentCurrency === 'INR')
                 ? 'Cashfree 256-bit encrypted • UPI, Cards & NetBanking'
@@ -440,25 +464,77 @@
         function toggleProductCurrency() {
             currentCurrency = (currentCurrency === 'INR') ? 'USD' : 'INR';
             try { localStorage.setItem('mdk_currency', currentCurrency); } catch(e) {}
-            updateProductPricingUI();
+            if (activeCoupon) {
+                applyCoupon();
+            } else {
+                updateProductPricingUI();
+            }
         }
 
-        function applyCoupon() {
-            var code = (document.getElementById('couponInput').value || '').trim().toUpperCase();
+        var apiBase = window.MDK_API_BASE || (function() {
+            var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
+            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
+            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+        })();
+
+        async function applyCoupon() {
+            var code = (document.getElementById('couponInput')?.value || '').trim().toUpperCase();
             var statusEl = document.getElementById('couponStatus');
+            if (!statusEl) return;
             statusEl.classList.remove('hidden');
 
-            if (code === 'FIRST100') {
-                activeCoupon = code;
-                var discountText = (currentCurrency === 'INR') ? '₹100 discount' : '$3 discount';
-                statusEl.className = 'text-[11px] mt-2 text-emerald-400 font-bold';
-                statusEl.innerText = '✓ Code FIRST100 applied! ' + discountText + ' unlocked.';
-            } else if (code === '') {
+            if (!code) {
                 activeCoupon = '';
+                activeCouponData = null;
                 statusEl.classList.add('hidden');
-            } else {
+                updateProductPricingUI();
+                return;
+            }
+
+            if (productData.allowCoupons === 0) {
+                activeCoupon = '';
+                activeCouponData = null;
                 statusEl.className = 'text-[11px] mt-2 text-rose-400 font-medium';
-                statusEl.innerText = '✕ Invalid or expired coupon code.';
+                statusEl.innerText = '✕ Coupons cannot be applied to this product.';
+                updateProductPricingUI();
+                return;
+            }
+
+            try {
+                var res = await fetch(apiBase + '/api/checkout/validate-coupon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: code,
+                        productId: currentProductId,
+                        currency: currentCurrency
+                    })
+                });
+                var data = await res.json();
+                if (data && data.valid) {
+                    activeCoupon = data.code;
+                    activeCouponData = data;
+                    statusEl.className = 'text-[11px] mt-2 text-emerald-400 font-bold';
+                    statusEl.innerText = data.message || ('✓ Code ' + data.code + ' applied!');
+                } else {
+                    activeCoupon = '';
+                    activeCouponData = null;
+                    statusEl.className = 'text-[11px] mt-2 text-rose-400 font-medium';
+                    statusEl.innerText = (data && data.message) ? data.message : '✕ Invalid or expired coupon code.';
+                }
+            } catch (err) {
+                if (code === 'FIRST100') {
+                    activeCoupon = code;
+                    activeCouponData = null;
+                    var discountText = (currentCurrency === 'INR') ? '₹100 discount' : '$3 discount';
+                    statusEl.className = 'text-[11px] mt-2 text-emerald-400 font-bold';
+                    statusEl.innerText = '✓ Code FIRST100 applied! ' + discountText + ' unlocked.';
+                } else {
+                    activeCoupon = '';
+                    activeCouponData = null;
+                    statusEl.className = 'text-[11px] mt-2 text-rose-400 font-medium';
+                    statusEl.innerText = '✕ Invalid coupon code.';
+                }
             }
             updateProductPricingUI();
         }
@@ -470,25 +546,58 @@
         }
 
         // Fetch dynamic product specs from backend
-        var apiBase = window.MDK_API_BASE || (function() {
-            var host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
-            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
-            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
-        })();
-        fetch(apiBase + '/api/products/' + currentProductId)
+        fetch(apiBase + '/api/products/' + encodeURIComponent(currentProductId))
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data && data.success && data.product) {
                     var p = data.product;
-                    if (p.name) document.getElementById('productTitle').innerText = p.name;
-                    if (p.tagline) document.getElementById('productTagline').innerText = p.tagline;
-                    if (p.inr_price_paise) productData.inrPrice = Math.round(p.inr_price_paise / 100);
-                    if (p.usd_price_cents) productData.usdPrice = Math.round(p.usd_price_cents / 100);
+                    productData.name = p.name;
+                    productData.allowCoupons = p.allow_coupons !== undefined ? p.allow_coupons : 1;
+
+                    if (p.name) {
+                        var titleEl = document.getElementById('productTitle');
+                        if (titleEl) titleEl.innerText = p.name;
+                        var breadEl = document.getElementById('breadcrumbTitle');
+                        if (breadEl) breadEl.innerText = p.name;
+                    }
+                    if (p.description) {
+                        var tagEl = document.getElementById('productTagline');
+                        if (tagEl) tagEl.innerText = p.description;
+                    }
+
+                    if (p.price_inr !== undefined && p.price_inr !== null) {
+                        productData.inrPrice = Math.round(p.price_inr / 100);
+                    } else if (p.inr_price_paise) {
+                        productData.inrPrice = Math.round(p.inr_price_paise / 100);
+                    }
+
+                    if (p.price_usd !== undefined && p.price_usd !== null) {
+                        productData.usdPrice = Math.round(p.price_usd);
+                    } else if (p.usd_price_cents) {
+                        productData.usdPrice = Math.round(p.usd_price_cents / 100);
+                    }
+
+                    // Coupon eligibility UI
+                    if (productData.allowCoupons === 0) {
+                        var couponBox = document.getElementById('couponSectionBox');
+                        if (couponBox) {
+                            couponBox.innerHTML = '<div class="text-[11px] text-amber-400/90 font-medium flex items-center gap-1.5"><i data-lucide="tag" class="w-3.5 h-3.5"></i><span>Fixed price product • Coupon codes not applicable</span></div>';
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+
+                    if (isPreviewMode) {
+                        var bannerText = document.getElementById('previewBannerText');
+                        if (bannerText) {
+                            bannerText.innerText = 'Previewing "' + p.name + '" (Status: ' + (p.status || 'PUBLISHED') + ' • Category: ' + (p.category || 'plugin') + ')';
+                        }
+                    }
+
                     updateProductPricingUI();
                 }
             })
-            .catch(function() {
-                // Static defaults stay active seamlessly
+            .catch(function(err) {
+                console.warn('[Preview/Product] Could not fetch remote specs, using built-in defaults:', err);
             });
 
         updateProductPricingUI();

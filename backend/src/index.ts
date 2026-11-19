@@ -66,6 +66,7 @@ import {
   createProduct,
   updateProduct,
   archiveProduct,
+  deleteProduct,
 } from './productManager';
 import {
   getLatestReleaseManifest,
@@ -290,8 +291,9 @@ export default {
         let discountMinor = 0;
         let appliedCouponCode: string | null = null;
 
-        // Validate Coupon if provided
-        if (couponCode && typeof couponCode === 'string' && couponCode.trim()) {
+        // Validate Coupon if provided (only if product allows coupons)
+        const productAllowsCoupons = product ? (product as any).allow_coupons !== 0 : true;
+        if (productAllowsCoupons && couponCode && typeof couponCode === 'string' && couponCode.trim()) {
           const coupon = await getCoupon(env.DB, couponCode.trim());
           if (coupon) {
             const notExpired = !coupon.expires_at || new Date(coupon.expires_at).getTime() > Date.now();
@@ -440,6 +442,9 @@ export default {
 
         // Fetch product base price
         const product = await getProduct(env.DB, productId);
+        if (product && (product as any).allow_coupons === 0) {
+          return jsonResponse({ valid: false, message: `Coupons cannot be applied to "${product.name}".` }, 200, corsHeaders);
+        }
         const baseAmountMinor = product
           ? (isUSD ? Math.round(((product.price_usd !== null && product.price_usd !== undefined) ? product.price_usd : 15.00) * 100) : product.price_inr)
           : (isUSD ? 1500 : 49900);
@@ -1244,8 +1249,14 @@ export default {
           const auth = await authenticateAdmin(request, env);
           if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
           const prodId = pathname.replace('/api/admin/products/', '').trim();
-          const archived = await archiveProduct(env.DB, prodId);
-          return jsonResponse({ success: archived }, 200, corsHeaders);
+          const action = url.searchParams.get('action');
+          let success = false;
+          if (action === 'delete') {
+            success = await deleteProduct(env.DB, prodId);
+          } else {
+            success = await archiveProduct(env.DB, prodId);
+          }
+          return jsonResponse({ success }, 200, corsHeaders);
         }
 
         // =====================================================================

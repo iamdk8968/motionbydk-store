@@ -28,6 +28,7 @@
     window.MDK_API_BASE = API_BASE;
   }
   var activeProductId = 'ae-workflow-pro';
+  var activeProductData = null;
   var appliedCoupon = '';
   var appliedCouponData = null;
   var isSubmitting = false;
@@ -195,9 +196,22 @@
     var curr = getActiveCurrency();
     var isUsd = curr === 'USD';
 
-    // Base prices for ae-workflow-pro
-    var basePrice = isUsd ? 15 : 499;
-    var origPrice = isUsd ? 30 : 999;
+    // Base prices dynamically derived from activeProductData
+    var basePrice = 499;
+    var origPrice = 999;
+
+    if (activeProductData) {
+      if (isUsd) {
+        basePrice = (activeProductData.price_usd !== undefined && activeProductData.price_usd !== null) ? Number(activeProductData.price_usd) : 15;
+      } else {
+        basePrice = activeProductData.price_inr ? Math.round(activeProductData.price_inr / 100) : 499;
+      }
+      origPrice = Math.round(basePrice * 2);
+    } else {
+      basePrice = isUsd ? 15 : 499;
+      origPrice = isUsd ? 30 : 999;
+    }
+
     var discount = 0;
 
     if (appliedCouponData && appliedCouponData.valid && appliedCouponData.code === appliedCoupon) {
@@ -208,9 +222,9 @@
       } else {
         discount = appliedCouponData.discountInr ? Math.round(appliedCouponData.discountInr / 100) : (appliedCouponData.discountAmount || 0);
       }
-    } else if (appliedCoupon === 'FIRST100') {
+    } else if (appliedCoupon === 'FIRST100' && (!activeProductData || activeProductData.allow_coupons !== 0)) {
       discount = isUsd ? 3 : 100;
-    } else if (appliedCoupon === 'SAVE20') {
+    } else if (appliedCoupon === 'SAVE20' && (!activeProductData || activeProductData.allow_coupons !== 0)) {
       discount = Math.round(basePrice * 0.20 * 100) / 100;
     }
 
@@ -255,6 +269,38 @@
     }
   }
 
+  function applyProductToModal(prod) {
+    if (!prod) return;
+    activeProductData = prod;
+    var nameEl = document.getElementById('cfModalProductName');
+    var descEl = document.getElementById('cfModalProductDesc');
+    var couponInput = document.getElementById('cfModalCouponInput');
+    var couponMsg = document.getElementById('cfModalCouponMsg');
+
+    if (nameEl) nameEl.innerText = prod.name || ('MotionByDk ' + prod.id);
+    if (descEl) descEl.innerText = prod.description || ('Commercial License (' + (prod.max_devices || 2) + '-PC)');
+
+    if (prod.allow_coupons === 0) {
+      if (couponInput) {
+        couponInput.disabled = true;
+        couponInput.placeholder = 'Coupons not applicable';
+        couponInput.value = '';
+      }
+      appliedCoupon = '';
+      appliedCouponData = null;
+      if (couponMsg) {
+        couponMsg.className = 'text-[11px] text-amber-400 font-semibold block';
+        couponMsg.innerText = 'Fixed-price product: coupons disabled.';
+      }
+    } else {
+      if (couponInput) {
+        couponInput.disabled = false;
+        couponInput.placeholder = 'Coupon Code (e.g. FIRST100)';
+      }
+    }
+    updateModalPricingDisplay();
+  }
+
   // Switch modal currency
   window.setModalCurrency = function (curr) {
     if (curr !== 'INR' && curr !== 'USD') return;
@@ -287,13 +333,23 @@
     var modal = document.getElementById('cashfreeCheckoutModal');
     if (!modal) return;
 
-    var nameEl = document.getElementById('cfModalProductName');
-    var descEl = document.getElementById('cfModalProductDesc');
     var errEl = document.getElementById('cfCheckoutError');
     if (errEl) errEl.classList.add('hidden');
 
-    if (nameEl) nameEl.innerText = 'MotionByDk AE Workflow Pro';
-    if (descEl) descEl.innerText = 'Valid on up to 2 Personal Computers (PC + Laptop)';
+    // Look up product in catalog cache or fetch from API
+    var found = (window.mdkProductsCatalog || []).find(function (p) { return p.id === productId; });
+    if (found) {
+      applyProductToModal(found);
+    } else {
+      fetch(API_BASE + '/api/products/' + encodeURIComponent(productId))
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.success && data.product) {
+            applyProductToModal(data.product);
+          }
+        })
+        .catch(function () {});
+    }
 
     if (initialCoupon) {
       var couponInput = document.getElementById('cfModalCouponInput');

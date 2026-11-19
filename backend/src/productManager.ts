@@ -8,9 +8,7 @@ import { ProductRecord } from './types';
 export async function listPublicProducts(db: D1Database): Promise<ProductRecord[]> {
   const result = await db
     .prepare(
-      `SELECT id, name, description, price_inr, price_usd, category, is_free, status,
-              thumbnail_url, screenshots, compatibility, installation_guide, features_list,
-              update_policy, has_license, max_devices, created_at, updated_at
+      `SELECT *
        FROM products
        WHERE is_active = 1 AND (status = 'PUBLISHED' OR status IS NULL)
        ORDER BY is_free ASC, price_inr DESC`
@@ -23,9 +21,7 @@ export async function listPublicProducts(db: D1Database): Promise<ProductRecord[
 export async function getPublicProduct(db: D1Database, id: string): Promise<ProductRecord | null> {
   const product = await db
     .prepare(
-      `SELECT id, name, description, price_inr, price_usd, category, is_free, status,
-              thumbnail_url, screenshots, compatibility, installation_guide, features_list,
-              update_policy, has_license, max_devices, created_at, updated_at
+      `SELECT *
        FROM products
        WHERE id = ? AND is_active = 1 AND (status = 'PUBLISHED' OR status IS NULL)`
     )
@@ -58,6 +54,7 @@ export async function createProduct(
     max_devices?: number;
     category?: string;
     is_free?: number;
+    allow_coupons?: number;
     status?: string;
     thumbnail_url?: string;
     screenshots?: string;
@@ -74,10 +71,10 @@ export async function createProduct(
     .prepare(
       `INSERT INTO products (
         id, name, description, price_inr, price_usd, r2_object_key,
-        has_license, max_devices, is_active, category, is_free, status,
+        has_license, max_devices, is_active, category, is_free, allow_coupons, status,
         thumbnail_url, screenshots, compatibility, installation_guide,
         features_list, update_policy, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .bind(
       cleanId,
@@ -90,6 +87,7 @@ export async function createProduct(
       data.max_devices !== undefined ? data.max_devices : 2,
       data.category || 'plugin',
       data.is_free !== undefined ? data.is_free : 0,
+      data.allow_coupons !== undefined ? data.allow_coupons : 1,
       data.status || 'PUBLISHED',
       data.thumbnail_url || null,
       data.screenshots || null,
@@ -130,6 +128,7 @@ export async function updateProduct(
         is_active = COALESCE(?, is_active),
         category = COALESCE(?, category),
         is_free = COALESCE(?, is_free),
+        allow_coupons = COALESCE(?, allow_coupons),
         status = COALESCE(?, status),
         thumbnail_url = COALESCE(?, thumbnail_url),
         screenshots = COALESCE(?, screenshots),
@@ -151,6 +150,7 @@ export async function updateProduct(
       data.is_active !== undefined ? data.is_active : null,
       data.category !== undefined ? data.category : null,
       data.is_free !== undefined ? data.is_free : null,
+      data.allow_coupons !== undefined ? data.allow_coupons : null,
       data.status !== undefined ? data.status : null,
       data.thumbnail_url !== undefined ? data.thumbnail_url : null,
       data.screenshots !== undefined ? data.screenshots : null,
@@ -175,4 +175,17 @@ export async function archiveProduct(db: D1Database, id: string): Promise<boolea
     .run();
 
   return (result.meta.changes || 0) > 0;
+}
+
+export async function deleteProduct(db: D1Database, id: string): Promise<boolean> {
+  try {
+    const result = await db
+      .prepare('DELETE FROM products WHERE id = ?')
+      .bind(id)
+      .run();
+    return (result.meta.changes || 0) > 0;
+  } catch (err) {
+    // Fallback to archive if referenced by foreign keys (e.g. historical orders)
+    return await archiveProduct(db, id);
+  }
 }

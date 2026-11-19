@@ -3439,6 +3439,10 @@
             document.querySelectorAll('.product-card-buy-label').forEach(function(el) {
                 el.innerText = 'Buy AE Workflow Pro (' + priceFormatted + ') — Instant Access';
             });
+
+            if (window.mdkProductsCatalog && typeof renderDynamicProductsCatalog === 'function') {
+                renderDynamicProductsCatalog(window.mdkProductsCatalog);
+            }
         }
 
         function toggleCurrency() {
@@ -3570,21 +3574,147 @@
                 })
                 .catch(function() {});
 
-            // 2. Fetch Catalog Pricing
+            // 2. Fetch Catalog Pricing for Flagship
             fetch(apiBase + '/api/products/ae-workflow-pro')
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data && data.success && data.product) {
-                        if (data.product.inr_price_paise) {
-                            mdkProductPrices.INR = Math.round(data.product.inr_price_paise / 100);
+                        var p = data.product;
+                        if (p.price_inr !== undefined && p.price_inr !== null) {
+                            mdkProductPrices.INR = Math.round(p.price_inr / 100);
+                        } else if (p.inr_price_paise) {
+                            mdkProductPrices.INR = Math.round(p.inr_price_paise / 100);
                         }
-                        if (data.product.usd_price_cents) {
-                            mdkProductPrices.USD = Math.round(data.product.usd_price_cents / 100);
+
+                        if (p.price_usd !== undefined && p.price_usd !== null) {
+                            mdkProductPrices.USD = Math.round(p.price_usd);
+                        } else if (p.usd_price_cents) {
+                            mdkProductPrices.USD = Math.round(p.usd_price_cents / 100);
                         }
                         applyCurrencyUI();
                     }
                 })
                 .catch(function() {});
+
+            // 3. Fetch Full Public Catalog Dynamically
+            fetch(apiBase + '/api/products')
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data && data.success && Array.isArray(data.products) && data.products.length > 0) {
+                        window.mdkProductsCatalog = data.products;
+                        renderDynamicProductsCatalog(data.products);
+                    }
+                })
+                .catch(function(err) {
+                    console.warn('[Storefront] Remote catalog fetch fallback:', err);
+                });
+        }
+
+        function renderDynamicProductsCatalog(products) {
+            var grid = document.getElementById('productsGrid');
+            if (!grid || !Array.isArray(products) || products.length === 0) return;
+
+            var tabAll = document.getElementById('filter-all');
+            if (tabAll) tabAll.textContent = 'All Products (' + products.length + ')';
+
+            var isUsd = (window.currentCurrency || 'INR') === 'USD';
+            var html = '';
+
+            products.forEach(function(p) {
+                var isFree = p.is_free === 1 || p.price_inr === 0;
+                var catAttr = 'plugins';
+                var badgeText = 'AFTER EFFECTS EXTENSION';
+                var badgeBg = 'bg-brand text-black';
+                var borderColor = 'border-brand/40 hover:border-brand';
+                var titleHover = 'group-hover:text-brand';
+
+                if (isFree) {
+                    catAttr = 'free';
+                    badgeText = '100% FREE STARTER';
+                    badgeBg = 'bg-emerald-500 text-black';
+                    borderColor = 'border-emerald-500/40 hover:border-emerald-400';
+                    titleHover = 'group-hover:text-emerald-400';
+                } else if (p.category === 'bundle' || p.category === 'combo') {
+                    catAttr = 'combos';
+                    badgeText = 'SPECIAL CREATOR DEAL';
+                    badgeBg = 'bg-gradient-to-r from-amber-400 to-yellow-400 text-black';
+                    borderColor = 'border-amber-400/50 hover:border-amber-300';
+                    titleHover = 'group-hover:text-amber-400';
+                } else if (p.category === 'asset' || p.category === 'vault' || p.category === 'preset') {
+                    catAttr = 'vaults';
+                    badgeText = 'CREATOR ASSET PACK';
+                    badgeBg = 'bg-sky-500 text-black';
+                    borderColor = 'border-sky-500/40 hover:border-sky-400';
+                    titleHover = 'group-hover:text-sky-400';
+                }
+
+                var priceInr = p.price_inr ? Math.round(p.price_inr / 100) : 0;
+                var priceUsd = (p.price_usd !== undefined && p.price_usd !== null) ? Number(p.price_usd) : 15;
+                var displayPrice = isFree ? 'FREE' : (isUsd ? '$' + priceUsd : '₹' + priceInr);
+                var subPriceText = isFree ? '(₹0)' : (isUsd ? '₹' + priceInr : '$' + priceUsd);
+                var thumb = p.thumbnail_url || 'assets/plugin_hero_ui.jpg';
+
+                var ctaAction = isFree
+                    ? "openFreeKitModal()"
+                    : ("openCashfreeModal('" + p.id + "')");
+
+                var previewLink = "product.html?id=" + encodeURIComponent(p.id);
+
+                var couponTag = (!isFree && p.allow_coupons !== 0)
+                    ? '<span class="text-[9px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Coupon Eligible</span>'
+                    : '';
+
+                html += `
+                <div class="product-item studio-card p-5 sm:p-6 flex flex-col justify-between relative group border ${borderColor} shadow-brand-sm transition-all rounded-2xl bg-[#0e111a]" data-category="${catAttr}">
+                    <div class="absolute -top-3 left-6 ${badgeBg} font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md">
+                        ${badgeText}
+                    </div>
+                    <div>
+                        <!-- Thumbnail -->
+                        <div class="aspect-video rounded-xl overflow-hidden bg-black mb-4 border border-white/10 relative cursor-pointer group/thumb" onclick="window.location.href='${previewLink}'">
+                            <img src="${thumb}" alt="${p.name}" class="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-500" onerror="this.src='assets/plugin_hero_ui.jpg'">
+                            <div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/85 backdrop-blur-md text-[10px] font-mono text-brand border border-brand/30">
+                                ${p.category || 'plugin'}
+                            </div>
+                            <div class="absolute top-2 right-2 flex gap-1">
+                                ${couponTag}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${p.compatibility ? p.compatibility.split('•')[0] : 'All Creative Suites'}</span>
+                        </div>
+
+                        <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 ${titleHover} transition-colors cursor-pointer" onclick="window.location.href='${previewLink}'">
+                            ${p.name}
+                        </h3>
+
+                        <p class="text-xs text-gray-400 mb-4 leading-relaxed line-clamp-2">
+                            ${p.description || 'Professional motion graphics and creator assets built for high productivity.'}
+                        </p>
+                    </div>
+
+                    <!-- Pricing & CTA Row -->
+                    <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-heading font-black text-xl text-white pricing-card-price-value">${displayPrice}</span>
+                            ${!isFree ? `<span class="text-[10px] text-gray-500">${subPriceText}</span>` : `<span class="text-[10px] text-gray-500">(₹0)</span>`}
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <a href="${previewLink}" class="px-2.5 py-1.5 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-bold text-gray-300 hover:text-white transition-all" title="View Product Page">
+                                Details ↗
+                            </a>
+                            <button onclick="${ctaAction}" class="px-3.5 py-1.5 rounded-xl ${isFree ? 'bg-sky-500 hover:bg-sky-400 text-black' : 'bg-brand hover:bg-brand-hover text-black'} font-extrabold text-xs transition-transform hover:scale-105 shadow-md flex items-center gap-1 cursor-pointer">
+                                <span>${isFree ? 'Download' : 'Buy Now'}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         // Execute on load
