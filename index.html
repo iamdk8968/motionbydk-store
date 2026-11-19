@@ -4222,8 +4222,21 @@
             var priceDisp = document.getElementById('detailPriceDisplay');
             var buyBtnText = document.getElementById('detailBuyBtnText');
 
-            if (priceDisp) priceDisp.innerText = symbol + total.toLocaleString('en-IN') + '.00';
-            if (buyBtnText) buyBtnText.innerText = 'Buy Now — ' + symbol + total.toLocaleString('en-IN') + ' (Instant License)';
+            var p = window.currentDetailProduct;
+            var isLicensed = p && (p.category === 'plugin' || p.has_license === 1 || p.max_devices > 0);
+            var isFree = p && (p.is_free === 1 || p.category === 'free' || total === 0);
+
+            var actionLabel = '';
+            if (isFree) {
+                actionLabel = 'Download Free (Direct Access)';
+            } else if (isLicensed) {
+                actionLabel = 'Buy Now — ' + symbol + total.toLocaleString('en-IN') + ' (Instant License)';
+            } else {
+                actionLabel = 'Buy Now — ' + symbol + total.toLocaleString('en-IN') + ' (Instant Access)';
+            }
+
+            if (priceDisp) priceDisp.innerText = isFree ? 'FREE' : (symbol + total.toLocaleString('en-IN') + '.00');
+            if (buyBtnText) buyBtnText.innerText = actionLabel;
         }
 
         // =========================================================================

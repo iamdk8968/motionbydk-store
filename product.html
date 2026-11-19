@@ -471,7 +471,16 @@
             document.getElementById('priceCurrencyCode').innerText = currentCurrency;
             document.getElementById('otherCurrLabel').innerText = (currentCurrency === 'INR') ? 'USD ($)' : 'INR (₹)';
             document.getElementById('headerBuyLabel').innerText = 'Buy (' + symbol + finalPrice + ')';
-            document.getElementById('checkoutBtnText').innerText = 'Buy Now (' + symbol + finalPrice + ') & Activate License →';
+
+            var isLicensed = (productData.category === 'plugin' || (window.currentLoadedProduct && window.currentLoadedProduct.has_license === 1) || (window.currentLoadedProduct && window.currentLoadedProduct.max_devices > 0));
+            var isFree = (productData.isFree || finalPrice === 0);
+            var checkoutLabel = isFree
+                ? 'Download Free Assets →'
+                : (isLicensed
+                    ? 'Buy Now (' + symbol + finalPrice + ') & Activate License →'
+                    : 'Buy Now (' + symbol + finalPrice + ') & Get Instant Access →');
+
+            document.getElementById('checkoutBtnText').innerText = checkoutLabel;
             document.getElementById('paymentMethodsDesc').innerText = (currentCurrency === 'INR')
                 ? 'Cashfree 256-bit encrypted • UPI, Cards & NetBanking'
                 : 'Cashfree 256-bit encrypted • All International Cards';
@@ -572,6 +581,8 @@
 
         function applyProductDataToUI(p) {
             if (!p) return;
+            window.currentLoadedProduct = p;
+            productData.category = p.category || 'plugin';
             productData.name = p.name || productData.name;
             productData.allowCoupons = (p.allow_coupons !== undefined) ? p.allow_coupons : (p.allowCoupons !== undefined ? (p.allowCoupons ? 1 : 0) : 1);
             productData.freeTrialEnabled = (p.free_trial_enabled !== undefined) ? (p.free_trial_enabled !== 0) : (p.hasTrial !== undefined ? !!p.hasTrial : true);
