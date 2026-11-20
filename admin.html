@@ -3228,7 +3228,15 @@
 
         function getLocalCustomProducts() {
             try {
-                return JSON.parse(localStorage.getItem(CUSTOM_PRODUCTS_KEY) || '[]');
+                let custom = JSON.parse(localStorage.getItem(CUSTOM_PRODUCTS_KEY) || '[]');
+                if (Array.isArray(custom)) {
+                    const filtered = custom.filter(p => p && p.id !== 'free-starter-kit' && p.id !== 'studio-combo-legacy');
+                    if (filtered.length !== custom.length) {
+                        saveLocalCustomProducts(filtered);
+                        custom = filtered;
+                    }
+                }
+                return custom;
             } catch (e) {
                 return [];
             }
@@ -3452,7 +3460,7 @@
                     id: 'ae-workflow-pro',
                     name: 'MotionByDk AE Workflow Pro Extension v3.8.0',
                     category: 'plugin',
-                    price_inr: 49900,
+                    price_inr: 29900,
                     price_usd: 15,
                     max_devices: 2,
                     status: 'PUBLISHED',
@@ -3462,7 +3470,7 @@
                     file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
                     compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
                     thumbnail_url: 'assets/plugin_hero_ui.jpg',
-                    description: '4-in-1 workflow plugin with 3D carousel, mouse dock, bezier curve and more.'
+                    description: 'Professional After Effects animation suite with 3D carousel, macOS mouse dock, bezier curve and more.'
                 },
                 {
                     id: 'creator-sfx-starter',
@@ -3482,7 +3490,7 @@
                 },
                 {
                     id: 'combo-creator-deal',
-                    name: 'AE Workflow Pro — Studio Creator Deal',
+                    name: 'AE Workflow Pro+50GB Vault',
                     category: 'bundle',
                     price_inr: 39900,
                     price_usd: 12,
@@ -3495,22 +3503,6 @@
                     compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
                     thumbnail_url: 'assets/combo_deal_banner.png',
                     description: 'Complete toolkit: AE Workflow Pro (2-PC) + creator starter assets.'
-                },
-                {
-                    id: 'free-starter-kit',
-                    name: 'MotionByDk Free Starter Pack',
-                    category: 'free',
-                    price_inr: 0,
-                    price_usd: 0,
-                    is_free: 1,
-                    max_devices: 0,
-                    status: 'PUBLISHED',
-                    allow_coupons: 0,
-                    free_trial_enabled: 0,
-                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
-                    compatibility: 'Universal (Ae, Pr, DaVinci)',
-                    thumbnail_url: 'assets/vault_hero_mockup.png',
-                    description: 'Get 3D carousel script, scale & fade plugin, SFX pack and setup guide.'
                 }
             ];
 

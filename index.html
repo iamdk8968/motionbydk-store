@@ -796,7 +796,7 @@
                                         <!-- Interactive Category Filter Tabs -->
                     <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-8" id="categoryTabContainer">
                         <button onclick="filterProducts('all')" id="filter-all" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-brand text-black shadow-brand-sm transition-all cursor-pointer">
-                            All Products (4)
+                            All Products (3)
                         </button>
                         <button onclick="filterProducts('plugins')" id="filter-plugins" class="category-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-dark-card border border-white/10 text-gray-300 hover:text-white transition-all flex items-center gap-1.5 cursor-pointer">
                             <i data-lucide="zap" class="w-3.5 h-3.5 text-brand"></i>
@@ -818,8 +818,8 @@
                 </div>
 
                 <!-- Products Grid -->
-                                <!-- Products Grid (4 Products) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch" id="productsGrid">
+                <!-- Products Grid (3 Products) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch" id="productsGrid">
                     
                     <!-- PRODUCT CARD 1: AE WORKFLOW PRO PLUGIN -->
                     <div class="product-item studio-card p-5 sm:p-6 flex flex-col justify-between relative group border-2 border-brand/50 shadow-brand-sm hover:border-brand transition-all rounded-2xl bg-[#0e111a]" data-category="plugins">
@@ -846,18 +846,18 @@
                             </div>
 
                             <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 group-hover:text-brand transition-colors cursor-pointer" onclick="openProductDetailModal('ae-workflow-pro')">
-                                MotionByDk AE Workflow Pro
+                                MotionByDk AE Workflow Pro Extension v3.8.0
                             </h3>
 
                             <p class="text-xs text-gray-400 mb-4 leading-relaxed">
-                                4-in-1 workflow plugin with 3D carousel, mouse dock, bezier curve and more.
+                                Professional After Effects animation suite with 3D carousel, macOS mouse dock, bezier curve and more.
                             </p>
                         </div>
 
                         <!-- Pricing & CTA Row matching demo -->
                         <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-heading font-black text-xl text-white">₹499</span>
+                                <span class="font-heading font-black text-xl text-white">₹299</span>
                                 <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">Lifetime License</span>
                                 <button onclick="openFreeTrialModal('ae-workflow-pro')" class="text-[10px] font-bold text-cyan-300 hover:text-white bg-cyan-950/60 hover:bg-cyan-900/80 px-2 py-0.5 rounded border border-cyan-400/40 transition-colors inline-flex items-center gap-1 cursor-pointer" title="Download 7-Day Free Trial">
                                     <span>☁ Free Trial</span>
@@ -931,7 +931,7 @@
                             </div>
 
                             <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 group-hover:text-amber-400 transition-colors cursor-pointer" onclick="openProductDetailModal('ae-workflow-pro')">
-                                AE Workflow Pro — Studio Creator Deal
+                                AE Workflow Pro+50GB Vault
                             </h3>
 
                             <p class="text-xs text-gray-400 mb-4 leading-relaxed">
@@ -947,46 +947,6 @@
                             </div>
                             <button onclick="openCashfreeModal('ae-workflow-pro', 'FIRST100')" class="w-9 h-9 rounded-xl bg-amber-400 hover:bg-amber-300 text-black flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105 shadow-md cursor-pointer" title="Claim Deal with Coupon FIRST100">
                                 <i data-lucide="arrow-right" class="w-4 h-4 text-black"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- PRODUCT CARD 4: FREE STARTER KIT -->
-                    <div class="product-item studio-card p-5 sm:p-6 flex flex-col justify-between relative group border border-emerald-500/40 shadow-sm hover:border-emerald-400 transition-all rounded-2xl bg-[#0e111a]" data-category="free">
-                        <div class="absolute -top-3 left-6 bg-emerald-500 text-black font-black text-[10px] uppercase px-3 py-0.5 rounded-full tracking-wider shadow-md">
-                            100% FREE
-                        </div>
-                        <div>
-                            <!-- Icon Graphic Box -->
-                            <div class="aspect-video rounded-xl overflow-hidden bg-[#0c1017] mb-4 border border-white/10 flex flex-col items-center justify-center text-center p-3 relative cursor-pointer group/thumb" onclick="openFreeKitModal()">
-                                <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-1 group-hover/thumb:scale-110 transition-transform">
-                                    <i data-lucide="gift" class="w-6 h-6"></i>
-                                </div>
-                                <span class="text-[11px] font-mono font-bold text-white">Community Starter Pack</span>
-                                <span class="text-[9px] text-gray-400">Instant Free Download</span>
-                            </div>
-
-                            <div class="flex items-center gap-2 mb-1.5">
-                                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Free Creator Kit</span>
-                            </div>
-
-                            <h3 class="font-heading font-black text-lg sm:text-xl text-white mb-2 group-hover:text-emerald-400 transition-colors cursor-pointer" onclick="openFreeKitModal()">
-                                MotionByDk Free Starter Kit
-                            </h3>
-
-                            <p class="text-xs text-gray-400 mb-4 leading-relaxed">
-                                Get 3D carousel script, scale &amp; fade plugin, SFX pack and setup guide.
-                            </p>
-                        </div>
-
-                        <!-- Pricing & CTA Row matching demo -->
-                        <div class="pt-3 border-t border-white/10 flex items-center justify-between">
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="font-heading font-black text-xl text-emerald-400">FREE</span>
-                                <span class="text-xs text-gray-400">(₹0)</span>
-                            </div>
-                            <button onclick="openFreeKitModal()" class="w-9 h-9 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black flex items-center justify-center flex-shrink-0 transition-transform hover:scale-105 shadow-md cursor-pointer" title="Get Free Starter Kit">
-                                <i data-lucide="download" class="w-4 h-4 text-black"></i>
                             </button>
                         </div>
                     </div>
@@ -3714,9 +3674,9 @@
             var defaultProducts = [
                 {
                     id: 'ae-workflow-pro',
-                    name: 'MotionByDk AE Workflow Pro',
+                    name: 'MotionByDk AE Workflow Pro Extension v3.8.0',
                     category: 'plugin',
-                    price_inr: 49900,
+                    price_inr: 29900,
                     price_usd: 15,
                     max_devices: 2,
                     status: 'PUBLISHED',
@@ -3726,7 +3686,7 @@
                     file_url: 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip',
                     compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
                     thumbnail_url: 'assets/plugin_hero_ui.jpg',
-                    description: '4-in-1 workflow plugin with 3D carousel, mouse dock, bezier curve and more.'
+                    description: 'Professional After Effects animation suite with 3D carousel, macOS mouse dock, bezier curve and more.'
                 },
                 {
                     id: 'creator-sfx-starter',
@@ -3746,7 +3706,7 @@
                 },
                 {
                     id: 'combo-creator-deal',
-                    name: 'AE Workflow Pro — Studio Creator Deal',
+                    name: 'AE Workflow Pro+50GB Vault',
                     category: 'bundle',
                     price_inr: 39900,
                     price_usd: 12,
@@ -3759,50 +3719,43 @@
                     compatibility: 'After Effects CC 2018 - 2026, Win/Mac',
                     thumbnail_url: 'assets/combo_deal_banner.png',
                     description: 'Complete toolkit: AE Workflow Pro (2-PC) + creator starter assets.'
-                },
-                {
-                    id: 'free-starter-kit',
-                    name: 'MotionByDk Free Starter Kit',
-                    category: 'free',
-                    price_inr: 0,
-                    price_usd: 0,
-                    is_free: 1,
-                    max_devices: 0,
-                    status: 'PUBLISHED',
-                    allow_coupons: 0,
-                    free_trial_enabled: 0,
-                    file_url: 'https://drive.google.com/drive/folders/1GsXSr4IGoRM1XPJlrJ_AhMQpzrINGI2g',
-                    compatibility: 'Universal (Ae, Pr, DaVinci)',
-                    thumbnail_url: 'assets/vault_hero_mockup.png',
-                    description: 'Get 3D carousel script, scale & fade plugin, SFX pack and setup guide.'
                 }
             ];
 
-            // Always start with all 4 default baseline products
+            // Always start with exact 3 approved default baseline products
             var map = {};
             defaultProducts.forEach(function(p) { map[p.id] = p; });
 
             // Merge remote products without discarding default products
             if (Array.isArray(remoteProducts) && remoteProducts.length > 0) {
                 remoteProducts.forEach(function(p) {
-                    if (p && p.id) {
+                    if (p && p.id && p.id !== 'free-starter-kit' && p.id !== 'studio-combo-legacy') {
                         map[p.id] = Object.assign({}, map[p.id] || {}, p);
                     }
                 });
             }
 
-            // Merge custom products created/edited via admin in localStorage
+            // Merge custom products created/edited via admin in localStorage & purge deprecated items
             try {
                 var custom = JSON.parse(localStorage.getItem('mdk_custom_products') || '[]');
-                custom.forEach(function(p) {
-                    if (p && p.id) {
-                        if (p._deleted || p.status === 'DELETED' || p.status === 'ARCHIVED' || p.status === 'DRAFT') {
-                            delete map[p.id];
-                        } else {
-                            map[p.id] = Object.assign({}, map[p.id] || {}, p);
-                        }
+                if (Array.isArray(custom)) {
+                    var filteredCustom = custom.filter(function(p) {
+                        return p && p.id !== 'free-starter-kit' && p.id !== 'studio-combo-legacy';
+                    });
+                    if (filteredCustom.length !== custom.length) {
+                        localStorage.setItem('mdk_custom_products', JSON.stringify(filteredCustom));
+                        custom = filteredCustom;
                     }
-                });
+                    custom.forEach(function(p) {
+                        if (p && p.id) {
+                            if (p._deleted || p.status === 'DELETED' || p.status === 'ARCHIVED' || p.status === 'DRAFT') {
+                                delete map[p.id];
+                            } else {
+                                map[p.id] = Object.assign({}, map[p.id] || {}, p);
+                            }
+                        }
+                    });
+                }
             } catch(e) {}
 
             return Object.values(map).filter(function(p) {
