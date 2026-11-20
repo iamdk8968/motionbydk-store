@@ -3452,6 +3452,95 @@
                 }
             }
 
+            // Helper to apply promotional popup from CMS block
+            function applyPromoPopupUI(popupBlock) {
+                if (window._promoPopupTimer) {
+                    clearTimeout(window._promoPopupTimer);
+                    window._promoPopupTimer = null;
+                }
+
+                var isActive = popupBlock && (popupBlock.is_active === 1 || popupBlock.isActive === 1 || popupBlock.is_active === true || popupBlock.isActive === true);
+                if (!isActive) {
+                    // Popup is disabled in CMS: close if open and do not schedule
+                    closeWelcomeOfferModal();
+                    return;
+                }
+
+                var pTitle = popupBlock.title || '';
+                var pBadge = popupBlock.badge_text || popupBlock.badgeText || 'SPECIAL OFFER';
+                var pCtaText = popupBlock.cta_text || popupBlock.ctaText || 'Claim Offer →';
+                var pCtaUrl = popupBlock.cta_url || popupBlock.ctaUrl || '#plugin';
+
+                var popupObj = {};
+                try {
+                    popupObj = typeof popupBlock.content === 'string' ? JSON.parse(popupBlock.content) : (popupBlock.content || {});
+                } catch(e) {
+                    popupObj = { message: popupBlock.content || '' };
+                }
+
+                if (pTitle) {
+                    var titleEl = document.getElementById('welcomeOfferTitle');
+                    if (titleEl) titleEl.innerHTML = pTitle;
+                }
+                if (pBadge) {
+                    var badgeEl = document.getElementById('welcomeOfferBadge');
+                    if (badgeEl) badgeEl.textContent = pBadge;
+                }
+                if (popupObj.message) {
+                    var descEl = document.getElementById('welcomeOfferDesc');
+                    if (descEl) descEl.innerHTML = popupObj.message;
+                }
+                if (popupObj.coupon_code) {
+                    var codeEl = document.getElementById('couponCodeText');
+                    if (codeEl) codeEl.textContent = popupObj.coupon_code;
+                }
+                if (pCtaText) {
+                    var ctaTextEl = document.getElementById('welcomeOfferCtaText');
+                    if (ctaTextEl) ctaTextEl.textContent = pCtaText;
+                }
+                if (popupObj.dismiss_text) {
+                    var disEl = document.getElementById('welcomeOfferDismissBtn');
+                    if (disEl) disEl.textContent = popupObj.dismiss_text + ' →';
+                }
+                if (popupObj.urgency_text) {
+                    var urgEl = document.getElementById('welcomeOfferUrgencySub');
+                    if (urgEl) urgEl.textContent = popupObj.urgency_text;
+                }
+
+                // PNG Image handling
+                var imgWrapper = document.getElementById('welcomeOfferImageWrapper');
+                var imgEl = document.getElementById('welcomeOfferImage');
+                if (popupObj.image_url && imgWrapper && imgEl) {
+                    imgEl.src = popupObj.image_url;
+                    imgWrapper.classList.remove('hidden');
+                    if (popupObj.image_layout === 'center') {
+                        imgEl.className = 'max-h-28 w-28 object-contain rounded-2xl mx-auto shadow-xl border border-white/10 mb-3';
+                    } else {
+                        imgEl.className = 'max-h-48 w-full object-contain rounded-xl mx-auto shadow-lg border border-white/5';
+                    }
+                } else if (imgWrapper && !popupObj.image_url) {
+                    imgWrapper.classList.add('hidden');
+                }
+
+                window._currentPromoPopupConfig = {
+                    ctaUrl: pCtaUrl,
+                    couponCode: popupObj.coupon_code || 'FIRST100'
+                };
+
+                var delaySec = 3;
+                if (popupObj.delay_seconds !== undefined && !isNaN(parseInt(popupObj.delay_seconds))) {
+                    delaySec = Math.max(1, parseInt(popupObj.delay_seconds));
+                }
+
+                window._promoPopupTimer = setTimeout(function() {
+                    var hasDismissed = false;
+                    try { hasDismissed = sessionStorage.getItem('motionbydk_welcome_shown') === 'true'; } catch(e) {}
+                    if (!hasDismissed) {
+                        openWelcomeOfferModal();
+                    }
+                }, delaySec * 1000);
+            }
+
             // Immediately apply stored banner & hero deal if available in localStorage
             try {
                 var storedBanner = JSON.parse(localStorage.getItem('mdk_cms_top_banner') || localStorage.getItem('mdk_cms_announcement') || 'null');
@@ -3461,6 +3550,11 @@
             try {
                 var storedHero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null');
                 applyHeroPromoUI(storedHero);
+            } catch(e) {}
+
+            try {
+                var storedPopup = JSON.parse(localStorage.getItem('mdk_cms_promo_popup') || 'null');
+                applyPromoPopupUI(storedPopup);
             } catch(e) {}
 
             // 1. Fetch CMS blocks
@@ -3480,77 +3574,9 @@
 
                         // Check Promotional Popup from CMS
                         var popupBlock = data.blocks.promo_popup || (Array.isArray(data.blocks) ? data.blocks.find(function(b) { return b.block_key === 'promo_popup' || b.key === 'promo_popup'; }) : null);
-                        if (popupBlock && (popupBlock.is_active === 1 || popupBlock.isActive === 1)) {
-                            var pTitle = popupBlock.title || '';
-                            var pBadge = popupBlock.badge_text || popupBlock.badgeText || 'SPECIAL OFFER';
-                            var pCtaText = popupBlock.cta_text || popupBlock.ctaText || 'Claim Offer →';
-                            var pCtaUrl = popupBlock.cta_url || popupBlock.ctaUrl || '#plugin';
-
-                            var popupObj = {};
-                            try {
-                                popupObj = JSON.parse(popupBlock.content);
-                            } catch(e) {
-                                popupObj = { message: popupBlock.content || '' };
-                            }
-
-                            if (pTitle) {
-                                var titleEl = document.getElementById('welcomeOfferTitle');
-                                if (titleEl) titleEl.innerHTML = pTitle;
-                            }
-                            if (pBadge) {
-                                var badgeEl = document.getElementById('welcomeOfferBadge');
-                                if (badgeEl) badgeEl.textContent = pBadge;
-                            }
-                            if (popupObj.message) {
-                                var descEl = document.getElementById('welcomeOfferDesc');
-                                if (descEl) descEl.innerHTML = popupObj.message;
-                            }
-                            if (popupObj.coupon_code) {
-                                var codeEl = document.getElementById('couponCodeText');
-                                if (codeEl) codeEl.textContent = popupObj.coupon_code;
-                            }
-                            if (pCtaText) {
-                                var ctaTextEl = document.getElementById('welcomeOfferCtaText');
-                                if (ctaTextEl) ctaTextEl.textContent = pCtaText;
-                            }
-                            if (popupObj.dismiss_text) {
-                                var disEl = document.getElementById('welcomeOfferDismissBtn');
-                                if (disEl) disEl.textContent = popupObj.dismiss_text + ' →';
-                            }
-                            if (popupObj.urgency_text) {
-                                var urgEl = document.getElementById('welcomeOfferUrgencySub');
-                                if (urgEl) urgEl.textContent = popupObj.urgency_text;
-                            }
-
-                            // PNG Image handling
-                            var imgWrapper = document.getElementById('welcomeOfferImageWrapper');
-                            var imgEl = document.getElementById('welcomeOfferImage');
-                            if (popupObj.image_url && imgWrapper && imgEl) {
-                                imgEl.src = popupObj.image_url;
-                                imgWrapper.classList.remove('hidden');
-                                if (popupObj.image_layout === 'center') {
-                                    imgEl.className = 'max-h-28 w-28 object-contain rounded-2xl mx-auto shadow-xl border border-white/10 mb-3';
-                                } else {
-                                    imgEl.className = 'max-h-48 w-full object-contain rounded-xl mx-auto shadow-lg border border-white/5';
-                                }
-                            } else if (imgWrapper && !popupObj.image_url) {
-                                imgWrapper.classList.add('hidden');
-                            }
-
-                            window._currentPromoPopupConfig = {
-                                ctaUrl: pCtaUrl,
-                                couponCode: popupObj.coupon_code || 'FIRST100'
-                            };
-
-                            var delaySec = popupObj.delay_seconds !== undefined ? parseInt(popupObj.delay_seconds) : 3;
-                            setTimeout(function() {
-                                var hasDismissed = false;
-                                try { hasDismissed = sessionStorage.getItem('motionbydk_welcome_shown') === 'true'; } catch(e) {}
-                                if (!hasDismissed) {
-                                    openWelcomeOfferModal();
-                                }
-                            }, delaySec * 1000);
-                        }
+                        var localPopup = null;
+                        try { localPopup = JSON.parse(localStorage.getItem('mdk_cms_promo_popup') || 'null'); } catch(e) {}
+                        applyPromoPopupUI(localPopup !== null ? localPopup : popupBlock);
                     }
                 })
                 .catch(function() {});
@@ -3637,6 +3663,12 @@
                     try {
                         var hero = JSON.parse(localStorage.getItem('mdk_cms_hero_cta') || 'null');
                         applyHeroPromoUI(hero);
+                    } catch(err) {}
+                }
+                if (!e.key || e.key === 'mdk_cms_promo_popup') {
+                    try {
+                        var popup = JSON.parse(localStorage.getItem('mdk_cms_promo_popup') || 'null');
+                        applyPromoPopupUI(popup);
                     } catch(err) {}
                 }
             });
@@ -3922,19 +3954,6 @@
             try { document.execCommand('copy'); if (cb) cb(); } catch(e) {}
             document.body.removeChild(ta);
         }
-
-        // Auto popup on visit after 1.2s delay if not already shown in session
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                try {
-                    if (!sessionStorage.getItem('motionbydk_welcome_shown')) {
-                        openWelcomeOfferModal();
-                    }
-                } catch(e) {
-                    openWelcomeOfferModal();
-                }
-            }, 1200);
-        });
 
         function closeUpiModal() {
             // No-op compatibility stub

@@ -5169,6 +5169,27 @@
                     }
                 } catch(e) {}
 
+                try {
+                    const localPopup = JSON.parse(localStorage.getItem('mdk_cms_promo_popup') || 'null');
+                    if (localPopup) {
+                        const actEl = document.getElementById('cms-popup-active');
+                        if (actEl) actEl.checked = localPopup.is_active === 1 || localPopup.isActive === 1;
+                        if (localPopup.title !== undefined) document.getElementById('cms-popup-title').value = localPopup.title;
+                        if (localPopup.badge_text || localPopup.badgeText) document.getElementById('cms-popup-badge').value = localPopup.badge_text || localPopup.badgeText;
+                        if (localPopup.cta_text || localPopup.ctaText) document.getElementById('cms-popup-cta-text').value = localPopup.cta_text || localPopup.ctaText;
+                        if (localPopup.cta_url || localPopup.ctaUrl) document.getElementById('cms-popup-cta-url').value = localPopup.cta_url || localPopup.ctaUrl;
+                        let popupObj = {};
+                        try {
+                            popupObj = typeof localPopup.content === 'string' ? JSON.parse(localPopup.content) : (localPopup.content || {});
+                        } catch(e) {}
+                        if (popupObj.message !== undefined) document.getElementById('cms-popup-content').value = popupObj.message;
+                        if (popupObj.coupon_code !== undefined) document.getElementById('cms-popup-coupon').value = popupObj.coupon_code;
+                        if (popupObj.dismiss_text !== undefined) document.getElementById('cms-popup-dismiss-text').value = popupObj.dismiss_text;
+                        if (popupObj.urgency_text !== undefined) document.getElementById('cms-popup-urgency').value = popupObj.urgency_text;
+                        if (popupObj.delay_seconds !== undefined) document.getElementById('cms-popup-delay').value = popupObj.delay_seconds;
+                    }
+                } catch(e) {}
+
                 const data = await adminFetch('/api/admin/cms/homepage');
                 if (!data.success || !data.blocks) return;
 
