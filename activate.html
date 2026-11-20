@@ -260,11 +260,15 @@
                             </p>
                         </div>
 
-                        <!-- Direct Cloudflare R2 Download Button -->
+                        <!-- Direct Download Button -->
                         <div class="space-y-2">
                             <a id="claimDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md">
                                 <i data-lucide="download" class="w-4 h-4 text-black"></i>
-                                <span id="claimDownloadLabel">Download Extension Package (Cloudflare R2 Direct)</span>
+                                <span id="claimDownloadLabel">Download Package</span>
+                            </a>
+                            <a id="claimDownloadBackupBtn" href="assets/Ae_Plugin+50GB_Vault.zip" download class="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                                <i data-lucide="download-cloud" class="w-3.5 h-3.5 text-brand"></i>
+                                <span>Mirror Download (Direct CDN Backup)</span>
                             </a>
                             <a href="https://wa.me/919217282296?text=Hi%20Dhananjay%2C%20I%20have%20claimed%20my%20key%20on%20the%20portal.%20Need%20quick%20assistance%3A" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
                                 <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -550,9 +554,16 @@
                     document.getElementById('displayCustomerName').innerText = data.customerName || 'Customer';
                     document.getElementById('displayProductName').innerText = data.productName || 'AE Workflow Pro';
 
-                    if (data.downloadUrl) {
-                        const dlBtn = document.getElementById('claimDownloadBtn');
-                        dlBtn.href = data.downloadUrl;
+                    const dlBtn = document.getElementById('claimDownloadBtn');
+                    const backupDlBtn = document.getElementById('claimDownloadBackupBtn');
+                    const isCombo = (data.productId === 'combo-creator-deal') || (data.productName && data.productName.toLowerCase().includes('50gb'));
+                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
+                    if (dlBtn) {
+                        dlBtn.href = data.downloadUrl || fallbackPath;
+                    }
+                    if (backupDlBtn) {
+                        backupDlBtn.href = fallbackPath;
                     }
 
                     // Save verified receipt to localStorage
@@ -756,8 +767,16 @@
                     document.getElementById('displayGeneratedKey').innerText = prev.key;
                     document.getElementById('displayCustomerName').innerText = prev.customerName || 'Customer';
                     document.getElementById('displayProductName').innerText = prev.productName || 'AE Workflow Pro';
-                    if (prev.downloadUrl) {
-                        document.getElementById('claimDownloadBtn').href = prev.downloadUrl;
+                    const isCombo = (prev.productId === 'combo-creator-deal') || (prev.productName && prev.productName.toLowerCase().includes('50gb'));
+                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+
+                    const dlBtn = document.getElementById('claimDownloadBtn');
+                    const backupDlBtn = document.getElementById('claimDownloadBackupBtn');
+                    if (dlBtn) {
+                        dlBtn.href = prev.downloadUrl || fallbackPath;
+                    }
+                    if (backupDlBtn) {
+                        backupDlBtn.href = fallbackPath;
                     }
                     document.getElementById('claimKeyForm').classList.add('hidden');
                     document.getElementById('claimSuccessBox').classList.remove('hidden');
