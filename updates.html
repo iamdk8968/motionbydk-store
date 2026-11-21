@@ -314,17 +314,17 @@
         }
 
         // Fetch latest release manifest dynamically from backend, fallback to updates/version.json
-        fetch(apiBase + '/api/releases/latest?product=ae-workflow-pro')
+        fetch(apiBase + '/api/releases/latest?product=ae-workflow-pro&t=' + Date.now())
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data && (data.version || data.latestVersion)) {
                     applyReleaseData(data);
                 } else {
-                    return fetch('updates/version.json').then(r => r.json()).then(applyReleaseData);
+                    return fetch('updates/version.json?t=' + Date.now()).then(r => r.json()).then(applyReleaseData);
                 }
             })
             .catch(function() {
-                fetch('updates/version.json').then(r => r.json()).then(applyReleaseData).catch(function() {});
+                fetch('updates/version.json?t=' + Date.now()).then(r => r.json()).then(applyReleaseData).catch(function() {});
             });
 
         function openLicenseDownloadModal() {
