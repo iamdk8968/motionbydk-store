@@ -271,8 +271,8 @@
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
         var currentRelease = {
-            id: 'rel-00000000-0000-4000-8000-000000000003',
-            version: '3.8.0'
+            id: 'ae-workflow-pro-v3.9.0',
+            version: '3.9.0'
         };
 
         var apiBase = window.MDK_API_BASE || (function() {
@@ -281,42 +281,51 @@
             return 'https://motionbydk-api.motionbydk-api.workers.dev';
         })();
 
-        // Fetch latest release manifest dynamically from backend
+        function applyReleaseData(data) {
+            var ver = data.latestVersion || data.version;
+            if (!data || !ver) return;
+            currentRelease.id = data.id || ('ae-workflow-pro-v' + ver);
+            currentRelease.version = ver;
+
+            var pill = document.getElementById('versionPill');
+            var title = document.getElementById('versionTitle');
+            var date = document.getElementById('releaseDate');
+            var minAe = document.getElementById('minAeVersion');
+            var notes = document.getElementById('changelogContainer');
+            var btnText = document.getElementById('downloadBtnText');
+
+            if (pill) pill.innerText = 'v' + ver + ' Stable (Latest)';
+            if (title) title.innerText = data.title || ('MotionByDk AE Workflow Pro v' + ver);
+            if (date && data.releaseDate) date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
+            if (minAe && (data.minAEVersion || data.minAeVersion)) minAe.innerText = 'After Effects CC ' + (data.minAEVersion || data.minAeVersion) + '+';
+            if (btnText) btnText.innerText = 'Download Latest Release (v' + ver + ') →';
+
+            var rawChangelog = data.changelog || (data.releaseNotes ? data.releaseNotes.split('\n') : []);
+            if (notes && rawChangelog && rawChangelog.length > 0) {
+                notes.innerHTML = rawChangelog.map(function(line) {
+                    var clean = line.replace(/^[•\-\*]\s*/, '').trim();
+                    return `<div class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
+                        <span>${clean}</span>
+                    </div>`;
+                }).join('');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        // Fetch latest release manifest dynamically from backend, fallback to updates/version.json
         fetch(apiBase + '/api/releases/latest?product=ae-workflow-pro')
             .then(function(res) { return res.json(); })
             .then(function(data) {
-                var ver = data.latestVersion || data.version;
-                if (data && ver) {
-                    currentRelease.id = data.id || ('ae-workflow-pro-v' + ver);
-                    currentRelease.version = ver;
-
-                    var pill = document.getElementById('versionPill');
-                    var title = document.getElementById('versionTitle');
-                    var date = document.getElementById('releaseDate');
-                    var minAe = document.getElementById('minAeVersion');
-                    var notes = document.getElementById('changelogContainer');
-                    var btnText = document.getElementById('downloadBtnText');
-
-                    if (pill) pill.innerText = 'v' + ver + ' Stable (Latest)';
-                    if (title) title.innerText = data.title || ('MotionByDk AE Workflow Pro v' + ver);
-                    if (date && data.releaseDate) date.innerText = 'Released: ' + data.releaseDate + ' • Windows & macOS Intel/Apple Silicon';
-                    if (minAe && (data.minAEVersion || data.minAeVersion)) minAe.innerText = 'After Effects CC ' + (data.minAEVersion || data.minAeVersion) + '+';
-                    if (btnText) btnText.innerText = 'Download Latest Release (v' + ver + ') →';
-
-                    var rawChangelog = data.changelog || (data.releaseNotes ? data.releaseNotes.split('\n') : []);
-                    if (notes && rawChangelog && rawChangelog.length > 0) {
-                        notes.innerHTML = rawChangelog.map(function(line) {
-                            var clean = line.replace(/^[•\-\*]\s*/, '').trim();
-                            return `<div class="flex items-start gap-2.5">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-brand flex-shrink-0 mt-0.5"></i>
-                                <span>${clean}</span>
-                            </div>`;
-                        }).join('');
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
-                    }
+                if (data && (data.version || data.latestVersion)) {
+                    applyReleaseData(data);
+                } else {
+                    return fetch('updates/version.json').then(r => r.json()).then(applyReleaseData);
                 }
             })
-            .catch(function() {});
+            .catch(function() {
+                fetch('updates/version.json').then(r => r.json()).then(applyReleaseData).catch(function() {});
+            });
 
         function openLicenseDownloadModal() {
             var modal = document.getElementById('licenseDownloadModal');

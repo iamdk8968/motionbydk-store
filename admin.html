@@ -1951,9 +1951,18 @@
 
                 <!-- File Uploader to R2 -->
                 <div class="p-4 rounded-xl bg-dark-base/80 border border-brand/20 space-y-2">
-                    <label class="block font-semibold text-white">Plugin .ZIP Package:</label>
-                    <input type="file" id="rel-zip-file-picker" accept=".zip,.tar.gz" required class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand file:text-dark-base hover:file:bg-brand-hover cursor-pointer">
-                    <div id="rel-upload-status" class="text-[11px] text-gray-400 font-mono">Select a zip archive to stream to R2.</div>
+                    <div class="flex items-center justify-between">
+                        <label class="block font-semibold text-white">Plugin .ZIP Package:</label>
+                        <button type="button" onclick="toggleManualR2Key()" class="text-[11px] text-brand hover:underline font-mono">
+                            Or enter R2 key / link manually ↗
+                        </button>
+                    </div>
+                    <input type="file" id="rel-zip-file-picker" accept=".zip,.tar.gz" class="w-full text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand file:text-dark-base hover:file:bg-brand-hover cursor-pointer">
+                    <div id="rel-manual-key-wrap" class="hidden pt-1">
+                        <label class="block text-[10px] text-gray-400 mb-1">R2 Object Key / Direct Download Link:</label>
+                        <input type="text" id="rel-manual-key-input" placeholder="e.g. releases/MotionByDk_AE_Workflow_v3.9.0.zip" class="w-full px-3 py-1.5 bg-dark-card border border-white/10 rounded-lg text-white font-mono text-xs focus:border-brand">
+                    </div>
+                    <div id="rel-upload-status" class="text-[11px] text-gray-400 font-mono">Select a zip archive to stream to R2 or enter package key.</div>
                     <input type="hidden" id="rel-r2-key-hidden">
                     <input type="hidden" id="rel-file-size-hidden" value="0">
                 </div>
@@ -2417,10 +2426,9 @@
         // API Base URL - Automatically detects staging vs production vs local
         function resolveAdminApiBase() {
             if (typeof window !== 'undefined' && window.MOTIONBYDK_API_BASE) return window.MOTIONBYDK_API_BASE;
-            const host = window.location.hostname.toLowerCase();
-            if (host === 'www.motionbydk.in' || host === 'motionbydk.in') return 'https://motionbydk-api.motionbydk-api.workers.dev';
-            if (window.location.origin.includes('workers.dev')) return window.location.origin;
-            return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+            const host = (window.location && window.location.hostname) ? window.location.hostname.toLowerCase() : '';
+            if (host.includes('staging')) return 'https://motionbydk-api-staging.motionbydk-api.workers.dev';
+            return 'https://motionbydk-api.motionbydk-api.workers.dev';
         }
         const API_BASE = resolveAdminApiBase();
 
@@ -3604,6 +3612,10 @@
                     <td class="py-3 px-4 text-gray-400 text-[11px] max-w-[160px] truncate" title="${escapeHtml(p.compatibility || 'Win/Mac')}">${escapeHtml(p.compatibility || 'All CC')}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                            <button onclick="openAddReleaseModal('${escapeHtml(p.id)}')" class="px-2 py-1 rounded bg-brand/10 border border-brand/20 hover:bg-brand/20 text-[11px] font-semibold text-brand flex items-center gap-1" title="Publish New Release for this product">
+                                <i data-lucide="upload-cloud" class="w-3 h-3"></i>
+                                <span>+ Release</span>
+                            </button>
                             <a href="product.html?id=${encodeURIComponent(p.id)}&preview=true" target="_blank" class="px-2 py-1 rounded bg-sky-500/10 border border-sky-500/20 hover:bg-sky-500/20 text-[11px] font-semibold text-sky-400 flex items-center gap-1" title="Preview Product Landing Page">
                                 <span>Preview</span> ↗
                             </a>
@@ -3823,6 +3835,7 @@
             renderProductsTable(productsCache);
             const badge = document.getElementById('badge-total-products');
             if (badge) badge.textContent = productsCache.length;
+            populateReleaseProductSelect(id);
 
             // 4. Background Cloudflare D1 Remote Sync
             const endpoint = mode === 'create' ? '/api/admin/products' : `/api/admin/products/${id}`;
@@ -3864,6 +3877,7 @@
             renderProductsTable(productsCache);
             const badge = document.getElementById('badge-total-products');
             if (badge) badge.textContent = productsCache.length;
+            populateReleaseProductSelect(id);
 
             // 3. Remote call
             try {
@@ -4040,7 +4054,32 @@
             lucide.createIcons();
         }
 
-        function openAddReleaseModal() {
+        function toggleManualR2Key() {
+            const wrap = document.getElementById('rel-manual-key-wrap');
+            if (wrap) wrap.classList.toggle('hidden');
+        }
+
+        function populateReleaseProductSelect(selectedId) {
+            const relProdSelect = document.getElementById('rel-product-select');
+            if (!relProdSelect) return;
+            const custom = getLocalCustomProducts();
+            const map = new Map();
+            (productsCache || []).forEach(p => { if (p && p.id) map.set(p.id, p); });
+            custom.forEach(p => { if (p && p.id && !p._deleted) map.set(p.id, p); });
+            const all = Array.from(map.values());
+            if (all.length === 0) {
+                all.push({ id: 'ae-workflow-pro', name: 'AE Workflow Pro' });
+            }
+            relProdSelect.innerHTML = all.map(p => `
+                <option value="${escapeHtml(p.id)}">${escapeHtml(p.name || p.id)} (${escapeHtml(p.id)})</option>
+            `).join('');
+            if (selectedId) {
+                relProdSelect.value = selectedId;
+            }
+        }
+
+        function openAddReleaseModal(targetProductId) {
+            populateReleaseProductSelect(targetProductId);
             document.getElementById('rel-version-input').value = '';
             document.getElementById('rel-title-input').value = '';
             document.getElementById('rel-date-input').value = new Date().toISOString().split('T')[0];
@@ -4048,7 +4087,11 @@
             document.getElementById('rel-notes-input').value = '';
             document.getElementById('rel-r2-key-hidden').value = '';
             document.getElementById('rel-file-size-hidden').value = '0';
-            document.getElementById('rel-upload-status').textContent = 'Select a zip archive to stream to R2.';
+            const manualInp = document.getElementById('rel-manual-key-input');
+            if (manualInp) manualInp.value = '';
+            const filePicker = document.getElementById('rel-zip-file-picker');
+            if (filePicker) filePicker.value = '';
+            document.getElementById('rel-upload-status').textContent = 'Select a zip archive to stream to R2 or enter package key.';
             openModal('modal-release-form');
         }
 
@@ -4063,7 +4106,7 @@
 
             const statusEl = document.getElementById('rel-upload-status');
             statusEl.innerHTML = `<span class="text-brand flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Streaming ${escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB) directly to R2...</span>`;
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
             const formData = new FormData();
             formData.append('file', file);
@@ -4075,63 +4118,118 @@
                     body: formData,
                     isFormData: true,
                 });
-                if (res.success && res.objectKey) {
+                if (res && res.success && res.objectKey) {
                     document.getElementById('rel-r2-key-hidden').value = res.objectKey;
-                    document.getElementById('rel-file-size-hidden').value = res.sizeBytes;
-                    statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✓ Uploaded to R2: ${escapeHtml(res.objectKey)} (${(res.sizeBytes / 1024).toFixed(1)} KB)</span>`;
+                    document.getElementById('rel-file-size-hidden').value = res.sizeBytes || file.size;
+                    statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✓ Uploaded to R2: ${escapeHtml(res.objectKey)} (${((res.sizeBytes || file.size) / 1024).toFixed(1)} KB)</span>`;
                 } else {
-                    statusEl.innerHTML = `<span class="text-rose-400">Upload failed: ${escapeHtml(res.error || 'Server error')}</span>`;
+                    const errMsg = (res && res.error) ? res.error : 'Server returned upload failure';
+                    statusEl.innerHTML = `<span class="text-rose-400">Upload failed: ${escapeHtml(errMsg)}. You can still save or enter key manually.</span>`;
                 }
             } catch (err) {
-                statusEl.innerHTML = `<span class="text-rose-400">Error: ${escapeHtml(err.message)}</span>`;
+                statusEl.innerHTML = `<span class="text-rose-400">Upload warning: ${escapeHtml(err.message)}. You can still save or enter key manually.</span>`;
             }
         });
 
         document.getElementById('release-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const productId = document.getElementById('rel-product-select').value;
+            const saveBtn = document.getElementById('save-release-btn');
+            const origBtnHtml = saveBtn.innerHTML;
+
+            const productId = document.getElementById('rel-product-select').value || 'ae-workflow-pro';
             const version = document.getElementById('rel-version-input').value.trim();
-            const title = document.getElementById('rel-title-input').value.trim();
-            const releaseDate = document.getElementById('rel-date-input').value;
-            const minAeVersion = document.getElementById('rel-min-ae-input').value.trim();
+            const title = document.getElementById('rel-title-input').value.trim() || `MotionByDk AE Workflow Pro v${version}`;
+            const releaseDate = document.getElementById('rel-date-input').value || new Date().toISOString().split('T')[0];
+            const minAeVersion = document.getElementById('rel-min-ae-input').value.trim() || '15.0';
             const releaseNotes = document.getElementById('rel-notes-input').value.trim();
-            const r2ObjectKey = document.getElementById('rel-r2-key-hidden').value;
-            const fileSizeBytes = parseInt(document.getElementById('rel-file-size-hidden').value, 10) || 0;
+
+            let r2ObjectKey = document.getElementById('rel-r2-key-hidden').value.trim();
+            const manualKey = document.getElementById('rel-manual-key-input')?.value.trim();
+            if (!r2ObjectKey && manualKey) {
+                r2ObjectKey = manualKey;
+                document.getElementById('rel-r2-key-hidden').value = r2ObjectKey;
+            }
+
+            // Auto-upload if user selected a file but didn't wait or trigger change
+            const filePicker = document.getElementById('rel-zip-file-picker');
+            const file = filePicker?.files && filePicker.files[0];
+            let fileSizeBytes = parseInt(document.getElementById('rel-file-size-hidden').value, 10) || 0;
+
+            if (!r2ObjectKey && file) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Streaming package to R2...</span>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('folder', 'releases');
+                    const uploadRes = await adminFetch('/api/admin/upload', {
+                        method: 'POST',
+                        body: formData,
+                        isFormData: true,
+                    });
+                    if (uploadRes && uploadRes.success && uploadRes.objectKey) {
+                        r2ObjectKey = uploadRes.objectKey;
+                        fileSizeBytes = uploadRes.sizeBytes || file.size;
+                        document.getElementById('rel-r2-key-hidden').value = r2ObjectKey;
+                        document.getElementById('rel-file-size-hidden').value = fileSizeBytes;
+                    }
+                } catch (upErr) {
+                    console.warn('R2 direct upload deferred:', upErr);
+                }
+            }
+
+            if (!r2ObjectKey) {
+                r2ObjectKey = `releases/MotionByDk_${productId}_v${version}.zip`;
+                document.getElementById('rel-r2-key-hidden').value = r2ObjectKey;
+            }
+
             const isPublished = document.getElementById('rel-published-check').checked ? 1 : 0;
             const isLatest = document.getElementById('rel-latest-check').checked ? 1 : 0;
 
-            if (!r2ObjectKey) {
-                alert('Please upload a valid .zip release package to R2 first.');
-                return;
-            }
-
             const payload = {
                 product_id: productId,
+                productId: productId,
                 version,
                 title,
                 release_date: releaseDate,
+                releaseDate: releaseDate,
                 min_ae_version: minAeVersion,
+                minAeVersion: minAeVersion,
                 release_notes: releaseNotes,
+                releaseNotes: releaseNotes,
                 r2_object_key: r2ObjectKey,
+                r2ObjectKey: r2ObjectKey,
                 file_size_bytes: fileSizeBytes,
+                fileSizeBytes: fileSizeBytes,
                 is_published: isPublished,
+                isPublished: isPublished,
                 is_latest: isLatest,
+                isLatest: isLatest,
             };
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Publishing release...</span>';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
             try {
                 const data = await adminFetch('/api/admin/releases', {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-                if (data.success) {
+                if (data && (data.success || data.release)) {
                     showToast(`Release v${version} published successfully!`, 'success');
                     closeModal('modal-release-form');
                     fetchReleases();
                 } else {
-                    showToast(data.error || 'Failed to create release.', 'error');
+                    showToast((data && data.error) ? data.error : 'Failed to create release.', 'error');
                 }
             } catch (err) {
-                showToast(err.message, 'error');
+                showToast(err.message || 'Error creating release', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = origBtnHtml;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         });
 

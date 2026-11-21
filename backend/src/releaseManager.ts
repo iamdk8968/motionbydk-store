@@ -174,28 +174,26 @@ export async function listAdminReleases(db: D1Database): Promise<PluginReleaseRe
 
 export async function createRelease(
   db: D1Database,
-  data: {
-    productId: string;
-    version: string;
-    title: string;
-    releaseNotes?: string;
-    releaseDate: string;
-    minAeVersion?: string;
-    r2ObjectKey: string;
-    fileSizeBytes?: number;
-    isPublished?: number;
-    isLatest?: number;
-  }
+  data: any
 ): Promise<PluginReleaseRecord> {
   const id = `rel-${crypto.randomUUID()}`;
   const now = new Date().toISOString();
-  const isLatest = data.isLatest !== undefined ? data.isLatest : 1;
+  const productId = data.productId || data.product_id || 'ae-workflow-pro';
+  const version = (data.version || '').trim();
+  const title = (data.title || `MotionByDk AE Workflow Pro v${version}`).trim();
+  const releaseNotes = data.releaseNotes !== undefined ? data.releaseNotes : (data.release_notes !== undefined ? data.release_notes : null);
+  const releaseDate = data.releaseDate || data.release_date || now.split('T')[0];
+  const minAeVersion = data.minAeVersion || data.min_ae_version || '15.0';
+  const r2ObjectKey = (data.r2ObjectKey || data.r2_object_key || '').trim();
+  const fileSizeBytes = Number(data.fileSizeBytes !== undefined ? data.fileSizeBytes : (data.file_size_bytes !== undefined ? data.file_size_bytes : 0)) || 0;
+  const isPublished = data.isPublished !== undefined ? Number(data.isPublished) : (data.is_published !== undefined ? Number(data.is_published) : 1);
+  const isLatest = data.isLatest !== undefined ? Number(data.isLatest) : (data.is_latest !== undefined ? Number(data.is_latest) : 1);
 
   if (isLatest === 1) {
     // Unset other releases as latest for this product
     await db
       .prepare('UPDATE plugin_releases SET is_latest = 0, updated_at = ? WHERE product_id = ?')
-      .bind(now, data.productId)
+      .bind(now, productId)
       .run();
   }
 
@@ -209,15 +207,15 @@ export async function createRelease(
     )
     .bind(
       id,
-      data.productId,
-      data.version.trim(),
-      data.title.trim(),
-      data.releaseNotes || null,
-      data.releaseDate,
-      data.minAeVersion || '15.0',
-      data.r2ObjectKey.trim(),
-      data.fileSizeBytes || 0,
-      data.isPublished !== undefined ? data.isPublished : 1,
+      productId,
+      version,
+      title,
+      releaseNotes,
+      releaseDate,
+      minAeVersion,
+      r2ObjectKey,
+      fileSizeBytes,
+      isPublished,
       isLatest,
       now,
       now
@@ -266,14 +264,19 @@ export async function rollbackRelease(
 export async function updateRelease(
   db: D1Database,
   id: string,
-  data: Partial<PluginReleaseRecord>
+  data: any
 ): Promise<PluginReleaseRecord> {
   const existing = await db.prepare('SELECT * FROM plugin_releases WHERE id = ?').bind(id).first<PluginReleaseRecord>();
   if (!existing) throw new Error('Release not found.');
 
   const now = new Date().toISOString();
+  const isLatest = data.is_latest !== undefined ? Number(data.is_latest) : (data.isLatest !== undefined ? Number(data.isLatest) : undefined);
+  const isPublished = data.is_published !== undefined ? Number(data.is_published) : (data.isPublished !== undefined ? Number(data.isPublished) : undefined);
+  const title = data.title !== undefined ? String(data.title).trim() : null;
+  const releaseNotes = data.release_notes !== undefined ? data.release_notes : (data.releaseNotes !== undefined ? data.releaseNotes : null);
+  const minAeVersion = data.min_ae_version !== undefined ? data.min_ae_version : (data.minAeVersion !== undefined ? data.minAeVersion : null);
 
-  if (data.is_latest === 1) {
+  if (isLatest === 1) {
     await db
       .prepare('UPDATE plugin_releases SET is_latest = 0, updated_at = ? WHERE product_id = ? AND id != ?')
       .bind(now, existing.product_id, id)
@@ -292,11 +295,11 @@ export async function updateRelease(
       WHERE id = ?`
     )
     .bind(
-      data.title !== undefined ? data.title : null,
-      data.release_notes !== undefined ? data.release_notes : null,
-      data.min_ae_version !== undefined ? data.min_ae_version : null,
-      data.is_published !== undefined ? data.is_published : null,
-      data.is_latest !== undefined ? data.is_latest : null,
+      title,
+      releaseNotes,
+      minAeVersion,
+      isPublished !== undefined ? isPublished : null,
+      isLatest !== undefined ? isLatest : null,
       now,
       id
     )
