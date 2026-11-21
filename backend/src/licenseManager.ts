@@ -410,10 +410,19 @@ export async function claimLicenseByOrder(
     licenseKey = lic.license_key;
   }
 
-  // Retrieve or create download token
+  // Retrieve or create download token (always prioritize latest active release package)
   let downloadUrl = `https://${host}/updates.html`;
-  if (record.r2_object_key) {
-    const tok = await createDownloadTokenForOrder(db, record.order_id, record.r2_object_key);
+  let deliverKey = record.r2_object_key;
+  try {
+    const rel = await db
+      .prepare('SELECT r2_object_key FROM plugin_releases WHERE product_id = ? AND is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1')
+      .bind(record.product_id)
+      .first<{ r2_object_key: string }>();
+    if (rel && rel.r2_object_key) deliverKey = rel.r2_object_key;
+  } catch (e) {}
+
+  if (deliverKey) {
+    const tok = await createDownloadTokenForOrder(db, record.order_id, deliverKey);
     downloadUrl = `https://${host}/api/download/${tok.token}`;
   }
 
@@ -782,10 +791,19 @@ export async function confirmClaimVerification(
     licenseKey = lic.license_key;
   }
 
-  // Retrieve or create download token
+  // Retrieve or create download token (always prioritize latest active release package)
   let downloadUrl = `https://${host}/updates.html`;
-  if (record.r2_object_key) {
-    const tok = await createDownloadTokenForOrder(db, record.order_id, record.r2_object_key);
+  let deliverKey = record.r2_object_key;
+  try {
+    const rel = await db
+      .prepare('SELECT r2_object_key FROM plugin_releases WHERE product_id = ? AND is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1')
+      .bind(record.product_id)
+      .first<{ r2_object_key: string }>();
+    if (rel && rel.r2_object_key) deliverKey = rel.r2_object_key;
+  } catch (e) {}
+
+  if (deliverKey) {
+    const tok = await createDownloadTokenForOrder(db, record.order_id, deliverKey);
     downloadUrl = `https://${host}/api/download/${tok.token}`;
   }
 

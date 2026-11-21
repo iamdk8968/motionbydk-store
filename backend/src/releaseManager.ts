@@ -195,6 +195,14 @@ export async function createRelease(
       .prepare('UPDATE plugin_releases SET is_latest = 0, updated_at = ? WHERE product_id = ?')
       .bind(now, productId)
       .run();
+
+    // Auto-update products catalog R2 delivery key so new buyers get the latest release
+    if (r2ObjectKey) {
+      await db
+        .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
+        .bind(r2ObjectKey, now, productId)
+        .run();
+    }
   }
 
   await db
@@ -252,6 +260,14 @@ export async function rollbackRelease(
     .bind(now, targetReleaseId)
     .run();
 
+  // 3. Auto-update products catalog R2 delivery key
+  if (target.r2_object_key) {
+    await db
+      .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
+      .bind(target.r2_object_key, now, target.product_id)
+      .run();
+  }
+
   const updated = await db
     .prepare('SELECT * FROM plugin_releases WHERE id = ?')
     .bind(targetReleaseId)
@@ -281,6 +297,13 @@ export async function updateRelease(
       .prepare('UPDATE plugin_releases SET is_latest = 0, updated_at = ? WHERE product_id = ? AND id != ?')
       .bind(now, existing.product_id, id)
       .run();
+
+    if (existing.r2_object_key) {
+      await db
+        .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
+        .bind(existing.r2_object_key, now, existing.product_id)
+        .run();
+    }
   }
 
   await db

@@ -523,8 +523,17 @@ export default {
                 if (product && product.has_license) {
                   await issueLicenseForOrder(env.DB, order.order_id, order.customer_id, product.id);
                 }
-                if (product && product.r2_object_key) {
-                  await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
+                let deliverKey = product.r2_object_key;
+                try {
+                  const rel = await env.DB
+                    .prepare('SELECT r2_object_key FROM plugin_releases WHERE product_id = ? AND is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1')
+                    .bind(product.id)
+                    .first<{ r2_object_key: string }>();
+                  if (rel && rel.r2_object_key) deliverKey = rel.r2_object_key;
+                } catch (e) {}
+
+                if (deliverKey) {
+                  await createDownloadTokenForOrder(env.DB, order.order_id, deliverKey);
                 }
                 if (order.coupon_code) {
                   await incrementCouponUsage(env.DB, order.coupon_code);
@@ -746,9 +755,20 @@ export default {
 
           // Create Secure Download Token
           let downloadToken: string | null = null;
-          if (product && product.r2_object_key) {
-            const tok = await createDownloadTokenForOrder(env.DB, order.order_id, product.r2_object_key);
-            downloadToken = tok.token;
+          if (product) {
+            let deliverKey = product.r2_object_key;
+            try {
+              const rel = await env.DB
+                .prepare('SELECT r2_object_key FROM plugin_releases WHERE product_id = ? AND is_published = 1 ORDER BY is_latest DESC, release_date DESC LIMIT 1')
+                .bind(product.id)
+                .first<{ r2_object_key: string }>();
+              if (rel && rel.r2_object_key) deliverKey = rel.r2_object_key;
+            } catch (e) {}
+
+            if (deliverKey) {
+              const tok = await createDownloadTokenForOrder(env.DB, order.order_id, deliverKey);
+              downloadToken = tok.token;
+            }
           }
 
           // Increment coupon usage
