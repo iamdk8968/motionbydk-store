@@ -1,16 +1,14 @@
 {
-  "latestVersion": "3.9.0",
-  "releaseDate": "2026-11-21",
-  "title": "MotionByDk AE Workflow Pro v3.9.0 Suite Released!",
-  "message": "Major update with 1-Click Pop-Out Independent Floating Panels, Liquid Glass branded under MotionByDk, and streamlined Pro UI.",
-  "downloadUrl": "https://motionbydk.in/updates.html?v=3.9.0",
+  "latestVersion": "3.8.0",
+  "releaseDate": "2026-11-15",
+  "title": "MotionByDk AE Workflow Pro v3.8.0 Suite",
+  "message": "Official Adobe Signed ZXP Package for AE CC 2019-2026+ with native Liquid Glass plugin.",
+  "downloadUrl": "https://motionbydk.in/updates.html?v=3.8.0",
   "minAEVersion": "15.0",
   "changelog": [
-    "Native Liquid Glass plugin fully rebranded under MotionByDk (Effects & Presets > MotionByDk > Liquid Glass)",
-    "1-Click Pop-Out Independent AE Panels for Bezier Speed Graph, 3D Carousel, Shapes, and Mouse Dock",
-    "Streamlined Pro UI: removed redundant Quick Search, Color Swatches, and Kinetic Typography for maximum screen real estate",
-    "Universal macOS Apple Silicon (arm64) & Intel (x86_64) native Liquid Glass plugin binary support",
-    "Universal Windows 64-bit native LiquidGlass.aex plugin support with 1-click in-panel auto-installer",
-    "Real-time Cloudflare D1 Dynamic Activation Engine with 2-PC hardware locking and instant Admin sync"
+    "Official Adobe Signed ZXP Package compatible with aescripts + aeplugins ZXP Installer",
+    "Smart in-app auto-cleaner: Automatically detects and wipes old duplicate versions from CEP extensions",
+    "Native Liquid Glass plugin (ToolsForMotion) auto-placed into After Effects Plug-ins directory",
+    "Cloudflare D1 Dynamic Activation Engine with real-time 2-PC device locker & Admin Panel sync"
   ]
 }
