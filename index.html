@@ -36,10 +36,15 @@
     <!-- Preconnect to CDNs for Fastest Handshake & Subresource Fetch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://sdk.cashfree.com" crossorigin>
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap">
+
+    <!-- Precompiled Production Tailwind CSS (Zero Runtime Overhead) -->
+    <link rel="stylesheet" href="assets/tailwind-built.css">
 
     <!-- Preload Critical LCP Hero Image (Next-Gen WebP) -->
     <link rel="preload" as="image" href="assets/plugin_hero_ui.webp" type="image/webp" fetchpriority="high">
@@ -294,65 +299,11 @@
     }
     </script>
     
-    <!-- Google Fonts (Non-Render-Blocking Asynchronous Load) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"></noscript>
-    
     <!-- Cashfree JS SDK v3 -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js" defer></script>
-
-    <!-- Precompiled Production Tailwind CSS (Instant Zero-JS Rendering) -->
-    <link rel="stylesheet" href="assets/tailwind-built.css">
-
-    <!-- Tailwind CSS CDN (Deferred for dynamic runtime overrides) -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script>
-        window.tailwind = window.tailwind || {};
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            200: '#fed7aa',
-                            300: '#fdba74',
-                            400: '#fb923c',
-                            DEFAULT: '#ff7a00',
-                            hover: '#ff8c1a',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            dark: '#9a3412'
-                        },
-                        dark: {
-                            base: '#07080b',
-                            surface: '#0d0f17',
-                            card: '#121522',
-                            elevated: '#181b2c',
-                            border: '#1f2438',
-                            hover: '#1a1f32'
-                        }
-                    },
-                    boxShadow: {
-                        'brand': '0 0 25px -4px rgba(255, 122, 0, 0.35)',
-                        'brand-sm': '0 0 15px -2px rgba(255, 122, 0, 0.25)',
-                        'clean-card': '0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05)',
-                    }
-                }
-            }
-        };
-    </script>
     
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- Lucide Icons CDN (Pinned Version with Zero Redirects) -->
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
 
     <!-- Clean Studio Styles -->
     <style>
@@ -705,8 +656,8 @@
                         
                         <!-- Tagline Pill Badge (Managed by Store CMS: hero_cta) -->
                         <div id="dynamicHeroPromoPill" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-card border border-brand/35 text-brand text-xs font-medium mb-6 shadow-brand-sm backdrop-blur-md">
-                            <span id="heroPromoBadge" class="px-2.5 py-0.5 rounded-full bg-brand text-black text-[10px] font-black uppercase tracking-wider">MOTIONBYDK 2026</span>
-                            <span id="heroPromoTitle" class="text-gray-300 text-[11px] sm:text-xs">Curated After Effects Tools &amp; Creator Assets</span>
+                            <span id="heroPromoBadge" class="px-2.5 py-0.5 rounded-full bg-brand text-black text-[10px] font-black uppercase tracking-wider">v3.7.0 STABLE</span>
+                            <span id="heroPromoTitle" class="text-gray-300 text-[11px] sm:text-xs">Supercharge Your After Effects Workflow &mdash; <span class="text-gray-300">Create stunning 3D carousels, macOS dock physics &amp; smooth easing curves in seconds.</span> <a href="#checkout" class="underline hover:text-white font-bold ml-1 text-brand">Get AE Workflow Pro &rarr;</a></span>
                         </div>
 
                         <!-- Main Headline -->
@@ -789,7 +740,7 @@
                             <div class="relative overflow-hidden bg-black aspect-[1024/986] cursor-pointer" onclick="openProductDetailModal('ae-workflow-pro')" title="Click to view details &amp; Free Trial">
                                 <picture>
                                     <source srcset="assets/plugin_hero_ui.webp" type="image/webp">
-                                    <img src="assets/plugin_hero_ui.jpg" alt="MotionByDk AE Workflow Pro UI" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" width="1024" height="986" fetchpriority="high" loading="eager" decoding="async">
+                                    <img src="assets/plugin_hero_ui.webp" alt="MotionByDk AE Workflow Pro UI" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" width="1024" height="986" fetchpriority="high" loading="eager" decoding="async">
                                 </picture>
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
                                 <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
@@ -916,7 +867,7 @@
                             <div class="aspect-video rounded-xl overflow-hidden bg-black mb-4 border border-white/10 relative cursor-pointer group/thumb" onclick="openProductDetailModal('ae-workflow-pro')">
                                 <picture>
                                     <source srcset="assets/plugin_hero_ui.webp" type="image/webp">
-                                    <img src="assets/plugin_hero_ui.jpg" alt="MotionByDk AE Workflow Pro Preview" class="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-500" width="600" height="338" loading="lazy" decoding="async">
+                                    <img src="assets/plugin_hero_ui.webp" alt="MotionByDk AE Workflow Pro Preview" class="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-500" width="600" height="338" loading="lazy" decoding="async">
                                 </picture>
                                 <div class="absolute top-2 left-2 w-7 h-7 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-brand border border-white/10">
                                     <i data-lucide="play" class="w-3.5 h-3.5 fill-brand ml-0.5"></i>
@@ -2700,7 +2651,7 @@
                     
                     <!-- Main Preview Media Frame -->
                     <div class="relative rounded-2xl overflow-hidden border border-brand/40 bg-black aspect-video shadow-2xl mb-4 group">
-                        <img id="detailMainPreview" src="assets/plugin_hero_ui.jpg" alt="MotionByDk AE Workflow Pro" class="w-full h-full object-cover">
+                        <img id="detailMainPreview" src="assets/plugin_hero_ui.webp" alt="MotionByDk AE Workflow Pro" class="w-full h-full object-cover" loading="lazy" decoding="async">
                         
                         <!-- Floating Overlay Badges matching Aescripts screenshot -->
                         <div class="absolute top-3 left-3 flex items-center gap-2">
@@ -3057,7 +3008,7 @@
             <div id="wishlistItemsContainer" class="hidden space-y-3 mb-5">
                 <div class="p-3.5 rounded-2xl bg-dark-card border border-white/10 flex items-center gap-3.5">
                     <div class="w-16 h-14 rounded-xl overflow-hidden bg-black flex-shrink-0 border border-white/10">
-                        <img src="assets/plugin_hero_ui.jpg" alt="MotionByDk AE Workflow Pro" class="w-full h-full object-cover">
+                        <img src="assets/plugin_hero_ui.webp" alt="MotionByDk AE Workflow Pro" class="w-full h-full object-cover" loading="lazy" decoding="async">
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5">
@@ -3797,9 +3748,9 @@
                     couponCode: popupObj.coupon_code || 'FIRST100'
                 };
 
-                var delaySec = 3;
+                var delaySec = 10;
                 if (popupObj.delay_seconds !== undefined && !isNaN(parseInt(popupObj.delay_seconds))) {
-                    delaySec = Math.max(1, parseInt(popupObj.delay_seconds));
+                    delaySec = Math.max(8, parseInt(popupObj.delay_seconds));
                 }
 
                 window._promoPopupTimer = setTimeout(function() {
