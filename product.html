@@ -8,9 +8,13 @@
     <link rel="canonical" href="https://motionbydk.in/product.html">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 
-    <!-- Fonts -->
+    <!-- Preconnect to CDNs & Preload Critical Image -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://sdk.cashfree.com" crossorigin>
+    <link rel="preload" as="image" href="assets/plugin_hero_ui.webp" type="image/webp" fetchpriority="high">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
@@ -45,11 +49,11 @@
     </script>
 
     <!-- Cashfree JS SDK v3 & Checkout Script -->
-    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
-    <script src="assets/cashfree-checkout.js"></script>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js" defer></script>
+    <script src="assets/cashfree-checkout.js" defer></script>
 
     <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
 
     <!-- Schema.org Rich Structured Data (JSON-LD) for Google SEO Ranking -->
     <script type="application/ld+json" id="mdk-product-schema">
@@ -261,7 +265,7 @@
 
                     <!-- Main Product Visual Preview Banner -->
                     <div class="aspect-video rounded-2xl overflow-hidden border border-brand/40 bg-black shadow-2xl relative mt-5 mb-2 group">
-                        <img id="productHeroImage" src="assets/plugin_hero_ui.jpg" alt="Product Preview" class="w-full h-full object-cover">
+                        <img id="productHeroImage" src="assets/plugin_hero_ui.webp" alt="Product Preview" class="w-full h-full object-cover" width="1024" height="986" fetchpriority="high" loading="eager" decoding="async" onerror="this.src='assets/plugin_hero_ui.jpg'">
                         <div class="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-black/85 backdrop-blur-md text-xs font-mono text-brand border border-brand/30" id="productCategoryBadge">
                             EXTENSION SUITE
                         </div>

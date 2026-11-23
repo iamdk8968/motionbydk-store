@@ -1,4 +1,4 @@
-# robots.txt for https://motionbydk.in/
+# robots.txt for https://www.motionbydk.in/
 User-agent: *
 Allow: /
 Disallow: /admin.html
@@ -6,4 +6,5 @@ Disallow: /api/
 Disallow: /backend/
 
 # Sitemaps
+Sitemap: https://www.motionbydk.in/sitemap.xml
 Sitemap: https://motionbydk.in/sitemap.xml
