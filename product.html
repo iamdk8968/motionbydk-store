@@ -51,6 +51,105 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
+    <!-- Schema.org Rich Structured Data (JSON-LD) for Google SEO Ranking -->
+    <script type="application/ld+json" id="mdk-product-schema">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://www.motionbydk.in/product.html#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Store",
+              "item": "https://www.motionbydk.in/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "After Effects Plugins",
+              "item": "https://www.motionbydk.in/#plugin"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "MotionByDk AE Workflow Pro",
+              "item": "https://www.motionbydk.in/product.html"
+            }
+          ]
+        },
+        {
+          "@type": ["Product", "SoftwareApplication"],
+          "@id": "https://www.motionbydk.in/product.html#product",
+          "name": "MotionByDk AE Workflow Pro",
+          "url": "https://www.motionbydk.in/product.html",
+          "operatingSystem": "Windows 10, Windows 11, macOS (Intel & Apple Silicon)",
+          "applicationCategory": "MultimediaApplication",
+          "softwareVersion": "3.8.0",
+          "description": "Supercharge After Effects animation speed by 10x. 3D Carousel Studio, Mouse Dock Magnifier, Kinetic Bezier Suite, and Precision Shape Tools in one unified docked panel.",
+          "image": [
+            "https://www.motionbydk.in/assets/plugin_hero_ui.jpg",
+            "https://www.motionbydk.in/assets/ae_workflow_preview.png"
+          ],
+          "sku": "MDK-AEW-PRO",
+          "mpn": "MDK-AEW-PRO-V38",
+          "brand": {
+            "@type": "Brand",
+            "name": "Motion By DK"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "299",
+            "priceCurrency": "INR",
+            "priceValidUntil": "2027-12-31",
+            "validFrom": "2024-01-01",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition",
+            "url": "https://www.motionbydk.in/product.html",
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "IN",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 7,
+              "returnMethod": "https://schema.org/ReturnByMail",
+              "returnFees": "https://schema.org/FreeReturn",
+              "merchantReturnLink": "https://www.motionbydk.in/refund.html"
+            },
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "0",
+                "currency": "INR"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "IN"
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                },
+                "transitTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 0,
+                  "unitCode": "DAY"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+    </script>
+
     <style>
         body {
             background-color: #07090e;
@@ -119,7 +218,7 @@
                 </a>
                 <button onclick="openProductCheckout()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/20 cursor-pointer">
                     <i data-lucide="zap" class="w-3.5 h-3.5 fill-black"></i>
-                    <span id="headerBuyLabel">Buy Pro (₹499)</span>
+                    <span id="headerBuyLabel">Buy Pro (₹299)</span>
                 </button>
             </div>
         </div>
@@ -298,7 +397,7 @@
                     <div class="mb-6">
                         <div class="flex items-baseline gap-2">
                             <span id="priceCurrencySymbol" class="font-heading font-black text-4xl text-brand">₹</span>
-                            <span id="priceValue" class="font-heading font-black text-5xl text-white">499</span>
+                            <span id="priceValue" class="font-heading font-black text-5xl text-white">299</span>
                             <span id="priceCurrencyCode" class="text-xs text-gray-400 font-mono">INR</span>
                         </div>
                         <span class="text-xs text-gray-400 block mt-1">One-time payment • Lifetime 2-PC Commercial License</span>
@@ -442,7 +541,7 @@
         var productData = {
             id: currentProductId,
             name: 'MotionByDk AE Workflow Pro',
-            inrPrice: 499,
+            inrPrice: 299,
             usdPrice: 15,
             allowCoupons: 1
         };
@@ -654,6 +753,110 @@
             }
 
             updateProductPricingUI();
+
+            // Real-time synchronization of standalone Product JSON-LD schema
+            try {
+                syncProductPageJsonLd(p);
+            } catch(e) {
+                console.warn('[SEO] Product JSON-LD sync warning:', e);
+            }
+        }
+
+        function syncProductPageJsonLd(p) {
+            if (!p) return;
+            var scriptEl = document.getElementById('mdk-product-schema') || document.querySelector('script[type="application/ld+json"]');
+            if (!scriptEl) return;
+
+            var rawInr = 299;
+            if (p.price_inr !== undefined && p.price_inr !== null) {
+                rawInr = p.price_inr > 1000 ? Math.round(p.price_inr / 100) : p.price_inr;
+            } else if (p.priceInr !== undefined && p.priceInr !== null) {
+                rawInr = p.priceInr > 1000 ? Math.round(p.priceInr / 100) : p.priceInr;
+            } else if (productData.inrPrice) {
+                rawInr = productData.inrPrice;
+            }
+
+            var thumb = p.thumbnail_url || p.thumbnail || 'assets/plugin_hero_ui.jpg';
+            var fullImg = thumb.indexOf('http') === 0 ? thumb : ('https://www.motionbydk.in/' + thumb.replace(/^\/+/, ''));
+            var imgList = [fullImg];
+            if (fullImg.indexOf('ae_workflow_preview.png') === -1) {
+                imgList.push('https://www.motionbydk.in/assets/ae_workflow_preview.png');
+            }
+
+            var isPlugin = (p.category === 'plugin' || p.id === 'ae-workflow-pro');
+            var pageUrl = 'https://www.motionbydk.in/product.html' + (p.id ? ('?id=' + encodeURIComponent(p.id)) : '');
+
+            var breadcrumbNode = {
+                "@type": "BreadcrumbList",
+                "@id": pageUrl + "#breadcrumb",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Store", "item": "https://www.motionbydk.in/" },
+                    { "@type": "ListItem", "position": 2, "name": isPlugin ? "After Effects Plugins" : "Creator Assets", "item": "https://www.motionbydk.in/#" + (isPlugin ? "plugin" : "vault") },
+                    { "@type": "ListItem", "position": 3, "name": p.name || 'MotionByDk AE Workflow Pro', "item": pageUrl }
+                ]
+            };
+
+            var productNode = {
+                "@type": isPlugin ? ["Product", "SoftwareApplication"] : "Product",
+                "@id": pageUrl + "#product",
+                "name": p.name || 'MotionByDk AE Workflow Pro',
+                "url": pageUrl,
+                "description": p.description || 'Supercharge After Effects animation speed by 10x. 3D Carousel Studio, Mouse Dock Magnifier, Kinetic Bezier Suite, and Precision Shape Tools in one unified docked panel.',
+                "image": imgList,
+                "sku": p.sku || ('MDK-' + (p.id || 'PROD').toUpperCase().replace(/[^A-Z0-9]/g, '-')),
+                "mpn": p.mpn || ('MDK-' + (p.id || 'PROD').toUpperCase().replace(/[^A-Z0-9]/g, '-') + '-V1'),
+                "brand": {
+                    "@type": "Brand",
+                    "name": "Motion By DK"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "price": String(rawInr),
+                    "priceCurrency": "INR",
+                    "priceValidUntil": "2027-12-31",
+                    "validFrom": "2024-01-01",
+                    "availability": "https://schema.org/InStock",
+                    "itemCondition": "https://schema.org/NewCondition",
+                    "url": pageUrl,
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "IN",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        "merchantReturnDays": 7,
+                        "returnMethod": "https://schema.org/ReturnByMail",
+                        "returnFees": "https://schema.org/FreeReturn",
+                        "merchantReturnLink": "https://www.motionbydk.in/refund.html"
+                    },
+                    "shippingDetails": {
+                        "@type": "OfferShippingDetails",
+                        "shippingRate": {
+                            "@type": "MonetaryAmount",
+                            "value": "0",
+                            "currency": "INR"
+                        },
+                        "shippingDestination": {
+                            "@type": "DefinedRegion",
+                            "addressCountry": "IN"
+                        },
+                        "deliveryTime": {
+                            "@type": "ShippingDeliveryTime",
+                            "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+                            "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+                        }
+                    }
+                }
+            };
+
+            if (isPlugin) {
+                productNode.operatingSystem = 'Windows 10, Windows 11, macOS (Intel & Apple Silicon)';
+                productNode.applicationCategory = 'MultimediaApplication';
+                productNode.softwareVersion = p.software_version || '3.8.0';
+            }
+
+            scriptEl.textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@graph": [breadcrumbNode, productNode]
+            }, null, 2);
         }
 
         function downloadProductFreeTrial() {
