@@ -46,8 +46,9 @@
     <!-- Precompiled Production Tailwind CSS (Zero Runtime Overhead) -->
     <link rel="stylesheet" href="assets/tailwind-built.css">
 
-    <!-- Preload Critical LCP Hero Image (Next-Gen WebP) -->
-    <link rel="preload" as="image" href="assets/plugin_hero_ui.webp" type="image/webp" fetchpriority="high">
+    <!-- Preload Critical LCP Hero Image (Next-Gen Responsive WebP) -->
+    <link rel="preload" as="image" href="assets/plugin_hero_ui-mobile.webp" type="image/webp" media="(max-width: 640px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/plugin_hero_ui.webp" type="image/webp" media="(min-width: 641px)" fetchpriority="high">
 
     <!-- GSAP for Ultra-Smooth Animations & Originkit Click Effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -739,6 +740,7 @@
                             <!-- Real Plugin Screenshot -->
                             <div class="relative overflow-hidden bg-black aspect-[1024/986] cursor-pointer" onclick="openProductDetailModal('ae-workflow-pro')" title="Click to view details &amp; Free Trial">
                                 <picture>
+                                    <source media="(max-width: 640px)" srcset="assets/plugin_hero_ui-mobile.webp" type="image/webp">
                                     <source srcset="assets/plugin_hero_ui.webp" type="image/webp">
                                     <img src="assets/plugin_hero_ui.webp" alt="MotionByDk AE Workflow Pro UI" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" width="1024" height="986" fetchpriority="high" loading="eager" decoding="async">
                                 </picture>
