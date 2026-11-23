@@ -7,4 +7,3 @@ Disallow: /backend/
 
 # Sitemaps
 Sitemap: https://www.motionbydk.in/sitemap.xml
-Sitemap: https://motionbydk.in/sitemap.xml

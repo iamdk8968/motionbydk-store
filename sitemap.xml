@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://motionbydk.in/</loc>
+    <loc>https://www.motionbydk.in/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/combo.html</loc>
+    <loc>https://www.motionbydk.in/combo.html</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/vault.html</loc>
+    <loc>https://www.motionbydk.in/vault.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/plugin.html</loc>
+    <loc>https://www.motionbydk.in/plugin.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/product.html</loc>
+    <loc>https://www.motionbydk.in/product.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/refund.html</loc>
+    <loc>https://www.motionbydk.in/refund.html</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/updates.html</loc>
+    <loc>https://www.motionbydk.in/updates.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://motionbydk.in/activate.html</loc>
+    <loc>https://www.motionbydk.in/activate.html</loc>
     <priority>0.7</priority>
   </url>
 </urlset>
