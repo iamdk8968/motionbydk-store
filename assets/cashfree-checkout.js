@@ -133,8 +133,8 @@
                 <!-- Coupon Row -->
                 <div class="pt-2 border-t border-white/5 space-y-1.5">
                     <div class="flex items-center gap-2">
-                        <input type="text" id="cfModalCouponInput" placeholder="Coupon Code (e.g. FIRST100)" class="flex-1 px-3 py-2 rounded-lg bg-[#131822] border border-white/15 text-white text-xs font-mono uppercase focus:border-[#00F0FF] focus:outline-none">
-                        <button type="button" onclick="window.applyModalCoupon()" class="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer">Apply</button>
+                        <input type="text" id="cfModalCouponInput" name="cfModalCouponInput" aria-label="Coupon code" placeholder="Coupon Code (e.g. FIRST100)" class="flex-1 px-3 py-2 rounded-lg bg-[#131822] border border-white/15 text-white text-xs font-mono uppercase focus:border-[#00F0FF] focus:outline-none">
+                        <button type="button" onclick="window.applyModalCoupon()" class="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer" aria-label="Apply coupon">Apply</button>
                     </div>
                     <div id="cfModalCouponMsg" class="hidden text-[11px]"></div>
                 </div>
@@ -143,21 +143,21 @@
             <!-- Customer Details Form -->
             <form id="cashfreeCheckoutForm" onsubmit="window.handleCashfreeSubmit(event)" class="space-y-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Your Full Name:</label>
-                    <input type="text" id="cfCustomerName" required placeholder="e.g. Dhananjay Kumar" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm focus:border-[#00F0FF] focus:outline-none">
+                    <label for="cfCustomerName" class="block text-xs font-semibold text-gray-300 mb-1">Your Full Name:</label>
+                    <input type="text" id="cfCustomerName" name="cfCustomerName" aria-label="Your Full Name" required placeholder="e.g. Dhananjay Kumar" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm focus:border-[#00F0FF] focus:outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address (For Key &amp; Download Delivery):</label>
-                    <input type="email" id="cfCustomerEmail" required placeholder="e.g. editor@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm focus:border-[#00F0FF] focus:outline-none">
-                    <span class="block text-[10px] text-gray-500 mt-1">Your official activation key will be delivered to this verified email.</span>
+                    <label for="cfCustomerEmail" class="block text-xs font-semibold text-gray-300 mb-1">Email Address (For Key &amp; Download Delivery):</label>
+                    <input type="email" id="cfCustomerEmail" name="cfCustomerEmail" aria-label="Email Address" required placeholder="e.g. editor@gmail.com" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm focus:border-[#00F0FF] focus:outline-none">
+                    <span class="block text-[10px] text-gray-400 mt-1">Your official activation key will be delivered to this verified email.</span>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-300 mb-1">Mobile Number (For order confirmation):</label>
+                    <label for="cfCustomerPhone" class="block text-xs font-semibold text-gray-300 mb-1">Mobile Number (For order confirmation):</label>
                     <div class="flex items-center gap-2">
                         <span id="cfPhonePrefix" class="px-3 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-gray-400 text-xs sm:text-sm font-mono">+91</span>
-                        <input type="tel" id="cfCustomerPhone" required maxlength="15" placeholder="9876543210" class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-[#00F0FF] focus:outline-none">
+                        <input type="tel" id="cfCustomerPhone" name="cfCustomerPhone" aria-label="Mobile Number" required maxlength="15" placeholder="9876543210" class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0a0d14] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-[#00F0FF] focus:outline-none">
                     </div>
                 </div>
 

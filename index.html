@@ -294,17 +294,23 @@
     }
     </script>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Non-Render-Blocking Asynchronous Load) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"></noscript>
     
     <!-- Cashfree JS SDK v3 -->
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js" defer></script>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Precompiled Production Tailwind CSS (Instant Zero-JS Rendering) -->
+    <link rel="stylesheet" href="assets/tailwind-built.css">
+
+    <!-- Tailwind CSS CDN (Deferred for dynamic runtime overrides) -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <script>
+        window.tailwind = window.tailwind || {};
         tailwind.config = {
             darkMode: 'class',
             theme: {
@@ -342,7 +348,7 @@
                     }
                 }
             }
-        }
+        };
     </script>
     
     <!-- Lucide Icons CDN -->
@@ -485,10 +491,10 @@
             <span class="text-gray-400 hidden sm:inline">&mdash;</span>
             <span class="text-gray-300 hidden sm:inline">Use coupon code <strong class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-amber-300">FIRST100</strong> for ₹100 instant discount on AE Workflow Pro!</span>
         </span>
-        <button onclick="openProductDetailModal('ae-workflow-pro')" class="text-amber-400 hover:text-amber-300 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer ml-1">
+        <button onclick="openProductDetailModal('ae-workflow-pro')" class="text-amber-400 hover:text-amber-300 font-bold underline transition-colors inline-flex items-center gap-1 cursor-pointer ml-1 py-1 px-2" aria-label="Claim discount on AE Workflow Pro">
             <span>Claim Discount &rarr;</span>
         </button>
-        <button onclick="document.getElementById('dynamicCmsTopBanner').style.display='none'" class="absolute right-3 text-gray-500 hover:text-gray-300 p-1 text-xs" title="Dismiss">✕</button>
+        <button onclick="document.getElementById('dynamicCmsTopBanner').style.display='none'" class="absolute right-3 text-gray-400 hover:text-white w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white/10 cursor-pointer text-sm" title="Dismiss banner" aria-label="Dismiss banner">✕</button>
     </div>
 
     <!-- 1. ENHANCED RESPONSIVE NAVBAR -->
@@ -816,7 +822,7 @@
                             <i data-lucide="zap" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h4 class="font-heading font-black text-xs sm:text-sm text-white">Save 15&ndash;30 Min</h4>
+                            <div class="font-heading font-black text-xs sm:text-sm text-white">Save 15&ndash;30 Min</div>
                             <p class="text-[11px] text-gray-400">On repetitive animation tasks</p>
                         </div>
                     </div>
@@ -826,7 +832,7 @@
                             <i data-lucide="box" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h4 class="font-heading font-black text-xs sm:text-sm text-white">Pro-Grade Tools</h4>
+                            <div class="font-heading font-black text-xs sm:text-sm text-white">Pro-Grade Tools</div>
                             <p class="text-[11px] text-gray-400">Plugins, scripts &amp; ready assets</p>
                         </div>
                     </div>
@@ -836,7 +842,7 @@
                             <i data-lucide="infinity" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h4 class="font-heading font-black text-xs sm:text-sm text-white">Lifetime Access</h4>
+                            <div class="font-heading font-black text-xs sm:text-sm text-white">Lifetime Access</div>
                             <p class="text-[11px] text-gray-400">One-time purchase, no subscription</p>
                         </div>
                     </div>
@@ -846,7 +852,7 @@
                             <i data-lucide="headphones" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h4 class="font-heading font-black text-xs sm:text-sm text-white">Direct Support</h4>
+                            <div class="font-heading font-black text-xs sm:text-sm text-white">Direct Support</div>
                             <p class="text-[11px] text-gray-400">Get help directly from Dhananjay</p>
                         </div>
                     </div>
@@ -1162,16 +1168,16 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2.5">
-                                <a href="https://www.instagram.com/motionbydk/" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-pink-500/50 text-gray-400 hover:text-pink-400 transition-all cursor-pointer flex items-center justify-center group" title="Follow on Instagram (@motionbydk)">
+                                <a href="https://www.instagram.com/motionbydk/" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-pink-500/50 text-gray-400 hover:text-pink-400 transition-all cursor-pointer flex items-center justify-center group" title="Follow on Instagram (@motionbydk)" aria-label="Follow Motion by DK on Instagram">
                                     <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                                 </a>
-                                <a href="https://www.facebook.com/motionbydk" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-blue-500/50 text-gray-400 hover:text-blue-400 transition-all cursor-pointer flex items-center justify-center group" title="Follow on Facebook (@motionbydk)">
+                                <a href="https://www.facebook.com/motionbydk" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-blue-500/50 text-gray-400 hover:text-blue-400 transition-all cursor-pointer flex items-center justify-center group" title="Follow on Facebook (@motionbydk)" aria-label="Follow Motion by DK on Facebook">
                                     <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                                 </a>
-                                <a href="https://x.com/motionbydk" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/50 text-gray-400 hover:text-white transition-all cursor-pointer flex items-center justify-center group" title="Follow on Twitter / X (@motionbydk)">
+                                <a href="https://x.com/motionbydk" target="_blank" rel="noopener noreferrer" class="p-2.5 rounded-xl bg-dark-card border border-white/10 hover:border-white/50 text-gray-400 hover:text-white transition-all cursor-pointer flex items-center justify-center group" title="Follow on Twitter / X (@motionbydk)" aria-label="Follow Motion by DK on Twitter">
                                     <svg class="w-3.5 h-3.5 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
-                                <a href="https://portfolio.motionbydk.in/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-brand/15 border border-brand/35 text-brand hover:bg-brand hover:text-black text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm" title="View Video Editing Works"><span>Portfolio</span><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i></a>
+                                <a href="https://portfolio.motionbydk.in/" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-brand/15 border border-brand/35 text-brand hover:bg-brand hover:text-black text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm" title="View Video Editing Works" aria-label="View Dhananjay's Video Editing Portfolio"><span>Portfolio</span><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i></a>
                             </div>
                         </div>
 
@@ -1181,7 +1187,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-brand/15 text-brand flex items-center justify-center mb-2">
                                     <i data-lucide="zap" class="w-4 h-4"></i>
                                 </div>
-                                <h4 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Zero Bloat</h4>
+                                <h3 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Zero Bloat</h3>
                                 <p class="text-[11px] text-gray-400 leading-snug">Native JSX scripts. Lightweight &amp; fast.</p>
                             </div>
 
@@ -1189,7 +1195,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-amber-400/15 text-amber-400 flex items-center justify-center mb-2">
                                     <i data-lucide="target" class="w-4 h-4"></i>
                                 </div>
-                                <h4 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Battle Tested</h4>
+                                <h3 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Battle Tested</h3>
                                 <p class="text-[11px] text-gray-400 leading-snug">Used in real client &amp; YouTube productions.</p>
                             </div>
 
@@ -1197,7 +1203,7 @@
                                 <div class="w-8 h-8 rounded-lg bg-emerald-400/15 text-emerald-400 flex items-center justify-center mb-2">
                                     <i data-lucide="headphones" class="w-4 h-4"></i>
                                 </div>
-                                <h4 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Direct Support</h4>
+                                <h3 class="font-heading font-black text-xs sm:text-sm text-white mb-1">Direct Support</h3>
                                 <p class="text-[11px] text-gray-400 leading-snug">Talk directly with me &mdash; not a bot.</p>
                             </div>
                         </div>
@@ -1225,10 +1231,10 @@
                     </div>
                     <!-- Navigation Arrows matching demo -->
                     <div class="flex items-center gap-2">
-                        <button class="w-9 h-9 rounded-full bg-dark-card border border-white/10 hover:border-brand/40 text-gray-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Previous Review">
+                        <button class="w-9 h-9 rounded-full bg-dark-card border border-white/10 hover:border-brand/40 text-gray-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer" title="Previous Review" aria-label="Previous Review">
                             <i data-lucide="arrow-left" class="w-4 h-4"></i>
                         </button>
-                        <button class="w-9 h-9 rounded-full bg-brand hover:bg-brand-hover text-black flex items-center justify-center transition-colors cursor-pointer" title="Next Review">
+                        <button class="w-9 h-9 rounded-full bg-brand hover:bg-brand-hover text-black flex items-center justify-center transition-colors cursor-pointer" title="Next Review" aria-label="Next Review">
                             <i data-lucide="arrow-right" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -2367,13 +2373,13 @@
                         </div>
                         <div>
                             <span class="font-heading font-black text-xl text-white">MOTION<span class="text-brand">BY DK</span></span>
-                            <span class="text-[10px] text-gray-500 uppercase tracking-widest block font-medium">Official Studio &amp; Tools Store</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest block font-medium">Official Studio &amp; Tools Store</span>
                         </div>
                     </div>
                     <p class="text-xs text-gray-400 leading-relaxed pr-4">
                         Speed, precision &amp; procedural animation engines built for motion designers and video editors worldwide.
                     </p>
-                    <div class="text-[11px] text-gray-500 pt-2">
+                    <div class="text-[11px] text-gray-400 pt-2">
                         &copy; 2026 MotionByDK. All rights reserved.
                     </div>
                 </div>
@@ -2419,19 +2425,19 @@
                         Get updates on new tools, assets and offers.
                     </p>
                     <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to MotionByDk updates!');" class="flex items-center gap-1.5">
-                        <input type="email" required placeholder="Enter your email" class="w-full px-3 py-2 bg-dark-card border border-white/10 rounded-xl text-white text-xs placeholder:text-gray-500 focus:border-brand focus:outline-none">
-                        <button type="submit" class="w-9 h-9 rounded-xl bg-brand hover:bg-brand-hover text-black flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer" title="Subscribe">
+                        <input type="email" id="newsletterEmail" name="newsletterEmail" aria-label="Email address for updates" required placeholder="Enter your email" class="w-full px-3 py-2 bg-dark-card border border-white/10 rounded-xl text-white text-xs placeholder:text-gray-400 focus:border-brand focus:outline-none">
+                        <button type="submit" class="w-9 h-9 rounded-xl bg-brand hover:bg-brand-hover text-black flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer" title="Subscribe" aria-label="Subscribe to updates">
                             <i data-lucide="arrow-right" class="w-4 h-4 text-black"></i>
                         </button>
                     </form>
                     <div class="flex items-center gap-3 pt-2 text-gray-400">
-                        <a href="https://www.instagram.com/motionbydk/" target="_blank" rel="noopener noreferrer" class="hover:text-pink-400 transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Instagram Profile (@motionbydk)">
+                        <a href="https://www.instagram.com/motionbydk/" target="_blank" rel="noopener noreferrer" class="hover:text-pink-400 transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Instagram Profile (@motionbydk)" aria-label="Follow Motion by DK on Instagram">
                             <svg class="w-4 h-4 fill-current text-pink-500" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                         </a>
-                        <a href="https://www.facebook.com/motionbydk" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Facebook Page (@motionbydk)">
+                        <a href="https://www.facebook.com/motionbydk" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Facebook Page (@motionbydk)" aria-label="Follow Motion by DK on Facebook">
                             <svg class="w-4 h-4 fill-current text-blue-500" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                         </a>
-                        <a href="https://x.com/motionbydk" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Twitter / X Profile (@motionbydk)">
+                        <a href="https://x.com/motionbydk" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5" title="Twitter / X Profile (@motionbydk)" aria-label="Follow Motion by DK on Twitter">
                             <svg class="w-3.5 h-3.5 fill-current text-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         </a>
                     </div>
@@ -2439,7 +2445,7 @@
 
             </div>
 
-            <div class="border-t border-white/5 pt-6 text-[11px] text-gray-500 text-center">
+            <div class="border-t border-white/5 pt-6 text-[11px] text-gray-400 text-center">
                 Disclaimer: Adobe, Adobe After Effects, and Premiere Pro are registered trademarks of Adobe Inc. MotionByDk is an independent creator studio and is not affiliated with Adobe Inc.
             </div>
         </div>
@@ -2467,7 +2473,10 @@
 
             <!-- PNG Promotional Image Wrapper -->
             <div id="welcomeOfferImageWrapper" class="mb-4">
-                <img id="welcomeOfferImage" src="assets/plugin_hero_ui.jpg" alt="Special Offer" class="max-h-48 w-full object-contain rounded-xl mx-auto shadow-lg border border-white/5">
+                <picture>
+                    <source srcset="assets/promo_popup_banner.webp" type="image/webp">
+                    <img id="welcomeOfferImage" src="assets/promo_popup_banner.webp" alt="Special Offer" width="800" height="450" loading="lazy" decoding="async" class="max-h-48 w-full object-contain rounded-xl mx-auto shadow-lg border border-white/5">
+                </picture>
             </div>
 
             <h3 id="welcomeOfferTitle" class="font-heading font-black text-2xl sm:text-3xl text-white tracking-tight mb-2">
@@ -2555,12 +2564,12 @@
             <!-- Frictionless Instant Access Form -->
             <form id="freeKitForm" onsubmit="handleFreeKitSubmit(event)" class="space-y-3">
                 <div class="text-left">
-                    <label class="text-[11px] font-bold text-gray-300 block mb-1">Your Name</label>
-                    <input type="text" id="freeKitName" required placeholder="e.g. Aman Roy" class="w-full px-3 py-2 rounded-xl bg-dark-base border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none">
+                    <label for="freeKitName" class="text-[11px] font-bold text-gray-300 block mb-1">Your Name</label>
+                    <input type="text" id="freeKitName" name="freeKitName" aria-label="Your Name" required placeholder="e.g. Aman Roy" class="w-full px-3 py-2 rounded-xl bg-dark-base border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none">
                 </div>
                 <div class="text-left">
-                    <label class="text-[11px] font-bold text-gray-300 block mb-1">Your Email Address</label>
-                    <input type="email" id="freeKitEmail" required placeholder="e.g. rahul@example.com" class="w-full px-3 py-2 rounded-xl bg-dark-base border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none">
+                    <label for="freeKitEmail" class="text-[11px] font-bold text-gray-300 block mb-1">Your Email Address</label>
+                    <input type="email" id="freeKitEmail" name="freeKitEmail" aria-label="Your Email Address" required placeholder="e.g. rahul@example.com" class="w-full px-3 py-2 rounded-xl bg-dark-base border border-white/10 text-white text-xs focus:border-emerald-400 focus:outline-none">
                 </div>
                 <button type="submit" class="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md">
                     <span>Get Instant Free Download Link</span>
@@ -2607,7 +2616,7 @@
                 <div>
                     <span class="text-gray-400 block text-[11px]">Official Support Email:</span>
                     <a href="mailto:support@motionbydk.in" class="text-sm font-mono font-bold text-brand hover:underline select-all">support@motionbydk.in</a>
-                    <span class="text-[10px] text-gray-500 block font-mono">(Fallback: motionbydk@gmail.com)</span>
+                    <span class="text-[10px] text-gray-400 block font-mono">(Fallback: motionbydk@gmail.com)</span>
                 </div>
                 <div class="pt-2 border-t border-white/5 text-gray-400">
                     <span class="font-bold text-white">Typical Response Time:</span> Within 12–24 business hours (Monday to Saturday).
@@ -2679,7 +2688,7 @@
                     <span>/</span>
                     <span id="detailBreadcrumbTitle" class="text-white font-semibold">MotionByDk AE Workflow Pro</span>
                 </div>
-                <button onclick="closeProductDetailModal()" class="text-gray-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" title="Close Modal">
+                <button onclick="closeProductDetailModal()" class="text-gray-400 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" title="Close Modal" aria-label="Close product details modal">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -2796,10 +2805,10 @@
 
                         <!-- License Type Selector Form -->
                         <div class="p-4 rounded-2xl bg-[#121524] border border-white/10 space-y-3 mb-4">
-                            <label class="text-[11px] font-bold text-gray-300 block">
+                            <label for="detailLicenseSelect" class="text-[11px] font-bold text-gray-300 block">
                                 License Type <span class="text-brand">*</span>
                             </label>
-                            <select id="detailLicenseSelect" onchange="handleDetailLicenseChange()" class="w-full px-3 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs font-semibold focus:border-brand focus:outline-none cursor-pointer">
+                            <select id="detailLicenseSelect" name="detailLicenseSelect" aria-label="Select License Type" onchange="handleDetailLicenseChange()" class="w-full px-3 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs font-semibold focus:border-brand focus:outline-none cursor-pointer">
                                 <option value="single" selected>Single User License (2 PCs) &mdash; ₹499 / $15 USD</option>
                                 <option value="team">Studio Team License (5 PCs) &mdash; ₹1,199 / $35 USD</option>
                             </select>
@@ -2933,12 +2942,12 @@
             <!-- Download Form -->
             <form id="freeTrialForm" onsubmit="handleFreeTrialSubmit(event)" class="space-y-3">
                 <div class="text-left">
-                    <label class="text-[11px] font-bold text-gray-300 block mb-1">Your Name</label>
-                    <input type="text" id="freeTrialName" required placeholder="e.g. Rahul Sharma" class="w-full px-3.5 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs focus:border-emerald-400 focus:outline-none">
+                    <label for="freeTrialName" class="text-[11px] font-bold text-gray-300 block mb-1">Your Name</label>
+                    <input type="text" id="freeTrialName" name="freeTrialName" aria-label="Your Name" required placeholder="e.g. Rahul Sharma" class="w-full px-3.5 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs focus:border-emerald-400 focus:outline-none">
                 </div>
                 <div class="text-left">
-                    <label class="text-[11px] font-bold text-gray-300 block mb-1">Your Email Address</label>
-                    <input type="email" id="freeTrialEmail" required placeholder="e.g. rahul@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs focus:border-emerald-400 focus:outline-none">
+                    <label for="freeTrialEmail" class="text-[11px] font-bold text-gray-300 block mb-1">Your Email Address</label>
+                    <input type="email" id="freeTrialEmail" name="freeTrialEmail" aria-label="Your Email Address" required placeholder="e.g. rahul@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-dark-base border border-white/15 text-white text-xs focus:border-emerald-400 focus:outline-none">
                 </div>
                 <button type="submit" id="freeTrialSubmitBtn" class="w-full py-3.5 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-heading font-black text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20">
                     <span class="text-base">☁</span>
@@ -3061,7 +3070,7 @@
                             <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/30">FIRST100 applicable</span>
                         </div>
                     </div>
-                    <button onclick="removeFromWishlist('ae-workflow-pro')" class="p-2 text-gray-500 hover:text-red-400 transition-colors cursor-pointer" title="Remove Item">
+                    <button onclick="removeFromWishlist('ae-workflow-pro')" class="p-2 text-gray-500 hover:text-red-400 transition-colors cursor-pointer" title="Remove Item" aria-label="Remove item from wishlist">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -3680,8 +3689,8 @@
                         <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
                         <span>${badge}: <strong class="text-white">${title}</strong> ${desc ? '— ' + desc : ''}</span>
                     </span>
-                    ${ctaText && ctaUrl ? `<a href="${ctaUrl}" class="underline hover:text-white font-bold ml-2">${ctaText} &rarr;</a>` : ''}
-                    <button onclick="document.getElementById('dynamicCmsTopBanner').style.display='none'" class="absolute right-3 text-gray-500 hover:text-gray-300 p-1 text-xs cursor-pointer" title="Dismiss">✕</button>
+                    ${ctaText && ctaUrl ? `<a href="${ctaUrl}" class="underline hover:text-white font-bold ml-2 inline-block py-1 px-2">${ctaText} &rarr;</a>` : ''}
+                    <button onclick="document.getElementById('dynamicCmsTopBanner').style.display='none'" class="absolute right-3 text-gray-400 hover:text-white w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white/10 cursor-pointer text-sm" title="Dismiss banner" aria-label="Dismiss banner">✕</button>
                 `;
             }
 
@@ -3768,7 +3777,11 @@
                 var imgWrapper = document.getElementById('welcomeOfferImageWrapper');
                 var imgEl = document.getElementById('welcomeOfferImage');
                 if (popupObj.image_url && imgWrapper && imgEl) {
-                    imgEl.src = popupObj.image_url;
+                    var finalPopupImg = popupObj.image_url;
+                    if (typeof finalPopupImg === 'string' && finalPopupImg.indexOf('data:image') === 0) {
+                        finalPopupImg = 'assets/promo_popup_banner.webp';
+                    }
+                    imgEl.src = finalPopupImg;
                     imgWrapper.classList.remove('hidden');
                     if (popupObj.image_layout === 'center') {
                         imgEl.className = 'max-h-28 w-28 object-contain rounded-2xl mx-auto shadow-xl border border-white/10 mb-3';
@@ -4128,7 +4141,7 @@
                     <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
                         <div class="flex items-baseline gap-2">
                             <span class="font-heading font-black text-xl text-white pricing-card-price-value">${displayPrice}</span>
-                            ${!isFree ? `<span class="text-[10px] text-gray-500">${subPriceText}</span>` : `<span class="text-[10px] text-gray-500">(₹0)</span>`}
+                            ${!isFree ? `<span class="text-[10px] text-gray-400">${subPriceText}</span>` : `<span class="text-[10px] text-gray-400">(₹0)</span>`}
                         </div>
                         <div class="flex items-center gap-1.5">
                             <button onclick="${modalClickAction}" class="px-2.5 py-1.5 rounded-xl bg-dark-card border border-white/10 hover:border-brand/40 text-[11px] font-bold text-gray-300 hover:text-white transition-all cursor-pointer" title="Open Product Details Popup">
@@ -5400,6 +5413,6 @@
     </script>
 
     <!-- MotionByDk Cashfree Checkout Engine -->
-    <script src="assets/cashfree-checkout.js"></script>
+    <script src="assets/cashfree-checkout.js" defer></script>
 </body>
 </html>

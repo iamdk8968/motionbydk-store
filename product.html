@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>MotionByDk AE Workflow Pro — Flagship After Effects Suite</title>
     <meta name="description" content="Supercharge After Effects animation speed by 10x. 3D Carousel Studio, Mouse Dock Magnifier, Kinetic Bezier Suite, and Precision Shape Tools in one unified docked panel.">
-    <link rel="canonical" href="https://motionbydk.in/product.html">
+    <link rel="canonical" href="https://www.motionbydk.in/product.html">
     <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
 
     <!-- Preconnect to CDNs & Preload Critical Image -->
@@ -15,7 +15,9 @@
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://sdk.cashfree.com" crossorigin>
     <link rel="preload" as="image" href="assets/plugin_hero_ui.webp" type="image/webp" fetchpriority="high">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -411,7 +413,7 @@
                     <div id="couponSectionBox" class="mb-6 p-3.5 rounded-xl bg-dark-base border border-white/10">
                         <label class="text-[11px] font-bold text-gray-300 block mb-1.5 uppercase font-mono">Have a coupon code?</label>
                         <div class="flex gap-2">
-                            <input type="text" id="couponInput" placeholder="Enter coupon (e.g. FIRST100)" class="flex-1 px-3 py-2 bg-dark-surface border border-white/10 rounded-lg text-xs text-white font-mono uppercase focus:border-brand focus:outline-none">
+                            <input type="text" id="couponInput" name="couponInput" aria-label="Enter coupon code" placeholder="Enter coupon (e.g. FIRST100)" class="flex-1 px-3 py-2 bg-dark-surface border border-white/10 rounded-lg text-xs text-white font-mono uppercase focus:border-brand focus:outline-none">
                             <button onclick="applyCoupon()" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-bold transition-all cursor-pointer">
                                 Apply
                             </button>
