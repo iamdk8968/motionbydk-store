@@ -1,14 +1,15 @@
 {
-  "latestVersion": "3.8.0",
-  "releaseDate": "2026-11-15",
-  "title": "MotionByDk AE Workflow Pro v3.8.0 Suite",
-  "message": "Official Adobe Signed ZXP Package for AE CC 2019-2026+ with native Liquid Glass plugin.",
-  "downloadUrl": "https://motionbydk.in/updates.html?v=3.8.0",
+  "latestVersion": "3.9.0",
+  "releaseDate": "2026-11-25",
+  "title": "MotionByDk AE Workflow Pro v3.9.0 — Major Update",
+  "message": "Shape Tools Suite Redesign, 1-Click Quick Shapes, Gradient Studio & Presets Dropdown, and 3D Carousel X/Y/Z Axis & Sphere Upgrades.",
+  "downloadUrl": "https://www.motionbydk.in/updates.html?v=3.9.0",
   "minAEVersion": "15.0",
   "changelog": [
-    "Official Adobe Signed ZXP Package compatible with aescripts + aeplugins ZXP Installer",
-    "Smart in-app auto-cleaner: Automatically detects and wipes old duplicate versions from CEP extensions",
-    "Native Liquid Glass plugin (ToolsForMotion) auto-placed into After Effects Plug-ins directory",
-    "Cloudflare D1 Dynamic Activation Engine with real-time 2-PC device locker & Admin Panel sync"
+    "Shape Tools Suite Redesign: Compact, collapsible, and fully responsive UI for docked & pop-out panels",
+    "1-Click Quick Shapes: Instantly create Square, Rounded, Circle, Star, Triangle, and Line shape layers with auto Fill & Stroke",
+    "Gradient Studio & Presets: New Presets dropdown, custom saved presets, live Start/End color swatches, Hex & Eyedropper",
+    "3D Carousel Upgrades: Single-select X, Y, Z Auto-Rotate axis, fixed 3D Sphere top/bottom rotation & 3D Ring Auto-Rotate",
+    "Bug Fixes: Fixed Star/Triangle Fill & Stroke, Gradient/Solid switching, slider sensitivity, and pop-out responsiveness"
   ]
 }
