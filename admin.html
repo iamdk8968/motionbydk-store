@@ -926,7 +926,11 @@
                     <div class="text-xs text-gray-400">
                         Showing all published and draft version packages.
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="syncLegacyVersionJson(true)" id="btn-sync-gh-json" class="px-3 py-2 rounded-lg bg-dark-card border border-white/10 text-gray-300 text-xs font-semibold hover:text-white hover:border-brand/40 transition-colors flex items-center gap-1.5" title="Auto-sync updates/version.json on GitHub for legacy v3.8.0 users">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-brand"></i>
+                            <span>Sync GitHub JSON</span>
+                        </button>
                         <button onclick="openRollbackModal()" class="px-3.5 py-2 rounded-lg bg-dark-card border border-amber-500/30 text-amber-400 text-xs font-semibold hover:bg-amber-500/10 transition-colors flex items-center gap-1.5">
                             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                             <span>Rollback Version</span>
@@ -4140,6 +4144,77 @@
             openModal('modal-release-form');
         }
 
+        async function syncLegacyVersionJson(interactive = false) {
+            let pat = '';
+            try { pat = localStorage.getItem('mdk_gh_sync_pat') || ''; } catch(e) {}
+            if (!pat && interactive) {
+                const entered = prompt('Enter GitHub Personal Access Token (repo scope) once to auto-sync updates/version.json for legacy v3.8.0 users:');
+                if (!entered || !entered.trim()) return;
+                pat = entered.trim();
+                try { localStorage.setItem('mdk_gh_sync_pat', pat); } catch(e) {}
+            }
+            if (!pat) return;
+
+            const latest = (releasesCache || []).find(r => r.is_latest === 1 && r.is_published === 1)
+                || (releasesCache || []).find(r => r.is_published === 1);
+            if (!latest) return;
+
+            const notesLines = String(latest.release_notes || '')
+                .split('\n')
+                .map(s => s.replace(/^[•\-\*]\s*/, '').trim())
+                .filter(Boolean)
+                .slice(0, 12);
+
+            const jsonObj = {
+                latestVersion: latest.version,
+                releaseDate: (latest.release_date || '').split('T')[0],
+                title: latest.title || `MotionByDk AE Workflow Pro v${latest.version}`,
+                message: (notesLines[0] || latest.title || '').slice(0, 220),
+                downloadUrl: `https://www.motionbydk.in/updates.html?v=${latest.version}`,
+                minAEVersion: latest.min_ae_version || '15.0',
+                changelog: notesLines
+            };
+
+            const apiUrl = 'https://api.github.com/repos/iamdk8968/motionbydk-store/contents/updates/version.json';
+            try {
+                const getRes = await fetch(apiUrl, {
+                    headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                let sha = undefined;
+                if (getRes.ok) {
+                    const meta = await getRes.json();
+                    sha = meta.sha;
+                } else if (getRes.status === 401 || getRes.status === 403) {
+                    try { localStorage.removeItem('mdk_gh_sync_pat'); } catch(e) {}
+                    if (interactive) showToast('Invalid GitHub token. Please try again.', 'error');
+                    return;
+                }
+
+                const contentStr = JSON.stringify(jsonObj, null, 2) + '\n';
+                const encoded = btoa(unescape(encodeURIComponent(contentStr)));
+                const putRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${pat}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Auto-sync updates/version.json to v${latest.version} from Admin Panel`,
+                        content: encoded,
+                        sha: sha
+                    })
+                });
+                if (putRes.ok) {
+                    showToast(`Synced updates/version.json (v${latest.version}) to GitHub!`, 'success');
+                } else if (interactive) {
+                    showToast('Failed to sync updates/version.json to GitHub.', 'error');
+                }
+            } catch (err) {
+                if (interactive) showToast(err.message || 'GitHub sync error', 'error');
+            }
+        }
+
         async function deleteReleaseRecord(releaseId, versionLabel) {
             if (!confirm(`Are you sure you want to permanently delete release v${versionLabel}?`)) return;
             try {
@@ -4148,7 +4223,8 @@
                 });
                 if (data && data.success) {
                     showToast(`Release v${versionLabel} deleted.`, 'success');
-                    fetchReleases();
+                    await fetchReleases();
+                    syncLegacyVersionJson(false);
                 } else {
                     showToast((data && data.error) ? data.error : 'Failed to delete release.', 'error');
                 }
@@ -4287,7 +4363,8 @@
                 if (data && (data.success || data.release)) {
                     showToast(isEdit ? `Release v${version} updated successfully!` : `Release v${version} published successfully!`, 'success');
                     closeModal('modal-release-form');
-                    fetchReleases();
+                    await fetchReleases();
+                    syncLegacyVersionJson(false);
                 } else {
                     showToast((data && data.error) ? data.error : `Failed to ${isEdit ? 'update' : 'create'} release.`, 'error');
                 }
@@ -4309,7 +4386,8 @@
                 });
                 if (data.success) {
                     showToast('Version set as latest active release!', 'success');
-                    fetchReleases();
+                    await fetchReleases();
+                    syncLegacyVersionJson(false);
                 }
             } catch (err) {
                 showToast(err.message, 'error');
@@ -4325,7 +4403,8 @@
                 });
                 if (data.success) {
                     showToast(`Release ${newPub === 1 ? 'published' : 'unpublished'}.`, 'success');
-                    fetchReleases();
+                    await fetchReleases();
+                    syncLegacyVersionJson(false);
                 }
             } catch (err) {
                 showToast(err.message, 'error');
@@ -4344,7 +4423,8 @@
                 if (data.success) {
                     showToast('Updater successfully rolled back to chosen release!', 'success');
                     closeModal('modal-release-rollback');
-                    fetchReleases();
+                    await fetchReleases();
+                    syncLegacyVersionJson(false);
                 } else {
                     showToast(data.error || 'Rollback failed.', 'error');
                 }
