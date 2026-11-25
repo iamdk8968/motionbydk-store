@@ -1,15 +1,22 @@
 {
   "latestVersion": "3.9.0",
-  "releaseDate": "2026-11-25",
-  "title": "MotionByDk AE Workflow Pro v3.9.0 — Major Update",
-  "message": "Shape Tools Suite Redesign, 1-Click Quick Shapes, Gradient Studio & Presets Dropdown, and 3D Carousel X/Y/Z Axis & Sphere Upgrades.",
+  "releaseDate": "2026-11-21",
+  "title": "MotionByDk AE Workflow Pro v3.9.0 Suite Released!",
+  "message": "MotionByDk AE Workflow Pro v3.9.0 — Major Update",
   "downloadUrl": "https://www.motionbydk.in/updates.html?v=3.9.0",
   "minAEVersion": "15.0",
   "changelog": [
-    "Shape Tools Suite Redesign: Compact, collapsible, and fully responsive UI for docked & pop-out panels",
-    "1-Click Quick Shapes: Instantly create Square, Rounded, Circle, Star, Triangle, and Line shape layers with auto Fill & Stroke",
-    "Gradient Studio & Presets: New Presets dropdown, custom saved presets, live Start/End color swatches, Hex & Eyedropper",
-    "3D Carousel Upgrades: Single-select X, Y, Z Auto-Rotate axis, fixed 3D Sphere top/bottom rotation & 3D Ring Auto-Rotate",
-    "Bug Fixes: Fixed Star/Triangle Fill & Stroke, Gradient/Solid switching, slider sensitivity, and pop-out responsiveness"
+    "MotionByDk AE Workflow Pro v3.9.0 — Major Update",
+    "NEW FEATURES & IMPROVEMENTS:",
+    "Shape Tools Suite Redesign: Compact, collapsible, and fully responsive UI for docked & pop-out panels.",
+    "1-Click Quick Shapes: Instantly create Square, Rounded Rectangle, Circle, Star, Triangle, and Line shape layers with auto Fill & Stroke.",
+    "Gradient Studio & Presets:",
+    "- New Presets dropdown with 1-click built-in gradients and custom saved gradient presets.",
+    "- Live Start & End color swatches, Hex code inputs, Eyedropper pickers, Linear/Radial toggle, Angle, and Spread controls.",
+    "- Independent Solid Fill, Gradient Fill, Solid Stroke, and Gradient Stroke controls with active state highlights.",
+    "Compact Trim Paths, Taper & Dashes: Side-by-side Taper and Dashes cards with streamlined Trim Paths, Round Cap, and Round Join controls.",
+    "3D Carousel Enhancements:",
+    "- Added single-select X, Y, and Z rotation axis options for Auto-Rotate.",
+    "- Fixed 3D Sphere top/bottom layer rotation when using many icons."
   ]
 }
