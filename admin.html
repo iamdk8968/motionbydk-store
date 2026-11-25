@@ -1906,7 +1906,7 @@
                         <i data-lucide="upload-cloud" class="w-4 h-4"></i>
                     </div>
                     <div>
-                        <h3 class="font-heading font-extrabold text-base text-white">Upload New Release Package</h3>
+                        <h3 id="rel-modal-title" class="font-heading font-extrabold text-base text-white">Upload New Release Package</h3>
                         <span class="text-[11px] text-gray-400">Direct binary upload to Cloudflare R2 bucket</span>
                     </div>
                 </div>
@@ -1916,6 +1916,7 @@
             </div>
 
             <form id="release-form" class="space-y-4 text-xs">
+                <input type="hidden" id="rel-edit-id-hidden" value="">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block font-semibold text-gray-300 mb-1">Target Product:</label>
@@ -4046,6 +4047,12 @@
                             <button onclick="togglePublishRelease('${escapeHtml(r.id)}', ${r.is_published})" class="px-2 py-1 rounded bg-dark-card border border-white/10 text-gray-300 text-[11px] font-semibold hover:text-white">
                                 ${isPub ? 'Unpublish' : 'Publish'}
                             </button>
+                            <button onclick="openEditReleaseModal('${escapeHtml(r.id)}')" class="px-2 py-1 rounded bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[11px] font-semibold hover:bg-sky-500/20" title="Edit Release / Replace File / Update Changelog">
+                                Edit
+                            </button>
+                            <button onclick="deleteReleaseRecord('${escapeHtml(r.id)}', '${escapeHtml(r.version)}')" class="px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[11px] font-semibold hover:bg-rose-500/20" title="Delete Release">
+                                Delete
+                            </button>
                         </div>
                     </td>
                 `;
@@ -4080,6 +4087,11 @@
 
         function openAddReleaseModal(targetProductId) {
             populateReleaseProductSelect(targetProductId);
+            document.getElementById('rel-edit-id-hidden').value = '';
+            const modalTitle = document.getElementById('rel-modal-title');
+            if (modalTitle) modalTitle.textContent = 'Upload New Release Package';
+            const saveBtn = document.getElementById('save-release-btn');
+            if (saveBtn) saveBtn.textContent = 'Upload & Save Release';
             document.getElementById('rel-version-input').value = '';
             document.getElementById('rel-title-input').value = '';
             document.getElementById('rel-date-input').value = new Date().toISOString().split('T')[0];
@@ -4087,12 +4099,62 @@
             document.getElementById('rel-notes-input').value = '';
             document.getElementById('rel-r2-key-hidden').value = '';
             document.getElementById('rel-file-size-hidden').value = '0';
+            document.getElementById('rel-published-check').checked = true;
+            document.getElementById('rel-latest-check').checked = true;
             const manualInp = document.getElementById('rel-manual-key-input');
             if (manualInp) manualInp.value = '';
             const filePicker = document.getElementById('rel-zip-file-picker');
             if (filePicker) filePicker.value = '';
             document.getElementById('rel-upload-status').textContent = 'Select a zip archive to stream to R2 or enter package key.';
             openModal('modal-release-form');
+        }
+
+        function openEditReleaseModal(releaseId) {
+            const rel = (releasesCache || []).find(r => String(r.id) === String(releaseId));
+            if (!rel) {
+                showToast('Release not found in cache.', 'error');
+                return;
+            }
+            populateReleaseProductSelect(rel.product_id);
+            document.getElementById('rel-edit-id-hidden').value = rel.id;
+            const modalTitle = document.getElementById('rel-modal-title');
+            if (modalTitle) modalTitle.textContent = `Edit Release v${rel.version}`;
+            const saveBtn = document.getElementById('save-release-btn');
+            if (saveBtn) saveBtn.textContent = 'Update & Save Release';
+
+            document.getElementById('rel-version-input').value = rel.version || '';
+            document.getElementById('rel-title-input').value = rel.title || '';
+            document.getElementById('rel-date-input').value = (rel.release_date || '').split('T')[0] || new Date().toISOString().split('T')[0];
+            document.getElementById('rel-min-ae-input').value = rel.min_ae_version || '15.0';
+            document.getElementById('rel-notes-input').value = rel.release_notes || '';
+            document.getElementById('rel-r2-key-hidden').value = rel.r2_object_key || '';
+            document.getElementById('rel-file-size-hidden').value = rel.file_size_bytes || '0';
+            document.getElementById('rel-published-check').checked = rel.is_published === 1;
+            document.getElementById('rel-latest-check').checked = rel.is_latest === 1;
+
+            const manualInp = document.getElementById('rel-manual-key-input');
+            if (manualInp) manualInp.value = rel.r2_object_key || '';
+            const filePicker = document.getElementById('rel-zip-file-picker');
+            if (filePicker) filePicker.value = '';
+            document.getElementById('rel-upload-status').innerHTML = `<span class="text-sky-400">Current file: <code class="font-mono">${escapeHtml(rel.r2_object_key || 'none')}</code> — Upload new .zip above to replace, or leave empty to keep existing.</span>`;
+            openModal('modal-release-form');
+        }
+
+        async function deleteReleaseRecord(releaseId, versionLabel) {
+            if (!confirm(`Are you sure you want to permanently delete release v${versionLabel}?`)) return;
+            try {
+                const data = await adminFetch(`/api/admin/releases/${encodeURIComponent(releaseId)}`, {
+                    method: 'DELETE'
+                });
+                if (data && data.success) {
+                    showToast(`Release v${versionLabel} deleted.`, 'success');
+                    fetchReleases();
+                } else {
+                    showToast((data && data.error) ? data.error : 'Failed to delete release.', 'error');
+                }
+            } catch (err) {
+                showToast(err.message || 'Error deleting release', 'error');
+            }
         }
 
         function openRollbackModal() {
@@ -4208,24 +4270,29 @@
                 isLatest: isLatest,
             };
 
+            const editId = document.getElementById('rel-edit-id-hidden').value.trim();
+            const isEdit = !!editId;
+
             saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> Publishing release...</span>';
+            saveBtn.innerHTML = `<span class="flex items-center gap-1.5"><i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> ${isEdit ? 'Updating release...' : 'Publishing release...'}</span>`;
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             try {
-                const data = await adminFetch('/api/admin/releases', {
-                    method: 'POST',
+                const endpoint = isEdit ? `/api/admin/releases/${encodeURIComponent(editId)}` : '/api/admin/releases';
+                const method = isEdit ? 'PUT' : 'POST';
+                const data = await adminFetch(endpoint, {
+                    method,
                     body: JSON.stringify(payload)
                 });
                 if (data && (data.success || data.release)) {
-                    showToast(`Release v${version} published successfully!`, 'success');
+                    showToast(isEdit ? `Release v${version} updated successfully!` : `Release v${version} published successfully!`, 'success');
                     closeModal('modal-release-form');
                     fetchReleases();
                 } else {
-                    showToast((data && data.error) ? data.error : 'Failed to create release.', 'error');
+                    showToast((data && data.error) ? data.error : `Failed to ${isEdit ? 'update' : 'create'} release.`, 'error');
                 }
             } catch (err) {
-                showToast(err.message || 'Error creating release', 'error');
+                showToast(err.message || `Error ${isEdit ? 'updating' : 'creating'} release`, 'error');
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = origBtnHtml;

@@ -75,6 +75,7 @@ import {
   listAdminReleases,
   createRelease,
   updateRelease,
+  deleteRelease,
   rollbackRelease,
 } from './releaseManager';
 import {
@@ -1306,6 +1307,14 @@ export default {
           try { body = await request.json(); } catch {}
           const release = await updateRelease(env.DB, relId, body);
           return jsonResponse({ success: true, release }, 200, corsHeaders);
+        }
+
+        if (pathname.startsWith('/api/admin/releases/') && request.method === 'DELETE') {
+          const auth = await authenticateAdmin(request, env);
+          if (!auth.valid || !auth.user) return jsonResponse({ success: false, error: auth.error || 'Unauthorized' }, 401, corsHeaders);
+          const relId = pathname.replace('/api/admin/releases/', '').trim();
+          const result = await deleteRelease(env.DB, relId);
+          return jsonResponse({ success: true, ...result }, 200, corsHeaders);
         }
 
         if (pathname === '/api/admin/releases/rollback' && request.method === 'POST') {

@@ -288,39 +288,58 @@ export async function updateRelease(
   const now = new Date().toISOString();
   const isLatest = data.is_latest !== undefined ? Number(data.is_latest) : (data.isLatest !== undefined ? Number(data.isLatest) : undefined);
   const isPublished = data.is_published !== undefined ? Number(data.is_published) : (data.isPublished !== undefined ? Number(data.isPublished) : undefined);
+  const version = data.version !== undefined ? String(data.version).trim() : null;
   const title = data.title !== undefined ? String(data.title).trim() : null;
+  const releaseDate = data.release_date !== undefined ? String(data.release_date).trim() : (data.releaseDate !== undefined ? String(data.releaseDate).trim() : null);
   const releaseNotes = data.release_notes !== undefined ? data.release_notes : (data.releaseNotes !== undefined ? data.releaseNotes : null);
   const minAeVersion = data.min_ae_version !== undefined ? data.min_ae_version : (data.minAeVersion !== undefined ? data.minAeVersion : null);
+  const r2ObjectKey = data.r2_object_key !== undefined ? String(data.r2_object_key).trim() : (data.r2ObjectKey !== undefined ? String(data.r2ObjectKey).trim() : null);
+  const fileSizeBytes = data.file_size_bytes !== undefined ? Number(data.file_size_bytes) : (data.fileSizeBytes !== undefined ? Number(data.fileSizeBytes) : null);
+  const productId = data.product_id !== undefined ? String(data.product_id).trim() : (data.productId !== undefined ? String(data.productId).trim() : null);
+
+  const effectiveProductId = productId || existing.product_id;
+  const effectiveR2Key = r2ObjectKey || existing.r2_object_key;
+  const becomingOrStayingLatest = isLatest === 1 || (isLatest === undefined && existing.is_latest === 1);
 
   if (isLatest === 1) {
     await db
       .prepare('UPDATE plugin_releases SET is_latest = 0, updated_at = ? WHERE product_id = ? AND id != ?')
-      .bind(now, existing.product_id, id)
+      .bind(now, effectiveProductId, id)
       .run();
+  }
 
-    if (existing.r2_object_key) {
-      await db
-        .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
-        .bind(existing.r2_object_key, now, existing.product_id)
-        .run();
-    }
+  if (becomingOrStayingLatest && effectiveR2Key) {
+    await db
+      .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
+      .bind(effectiveR2Key, now, effectiveProductId)
+      .run();
   }
 
   await db
     .prepare(
       `UPDATE plugin_releases SET
+        product_id = COALESCE(?, product_id),
+        version = COALESCE(?, version),
         title = COALESCE(?, title),
+        release_date = COALESCE(?, release_date),
         release_notes = COALESCE(?, release_notes),
         min_ae_version = COALESCE(?, min_ae_version),
+        r2_object_key = COALESCE(?, r2_object_key),
+        file_size_bytes = COALESCE(?, file_size_bytes),
         is_published = COALESCE(?, is_published),
         is_latest = COALESCE(?, is_latest),
         updated_at = ?
       WHERE id = ?`
     )
     .bind(
+      productId,
+      version,
       title,
+      releaseDate,
       releaseNotes,
       minAeVersion,
+      r2ObjectKey,
+      fileSizeBytes !== null && !Number.isNaN(fileSizeBytes) ? fileSizeBytes : null,
       isPublished !== undefined ? isPublished : null,
       isLatest !== undefined ? isLatest : null,
       now,
@@ -331,4 +350,39 @@ export async function updateRelease(
   const updated = await db.prepare('SELECT * FROM plugin_releases WHERE id = ?').bind(id).first<PluginReleaseRecord>();
   if (!updated) throw new Error('Failed to retrieve updated release.');
   return updated;
+}
+
+export async function deleteRelease(
+  db: D1Database,
+  id: string
+): Promise<{ deleted: boolean; promotedId?: string | null }> {
+  const existing = await db.prepare('SELECT * FROM plugin_releases WHERE id = ?').bind(id).first<PluginReleaseRecord>();
+  if (!existing) throw new Error('Release not found.');
+
+  await db.prepare('DELETE FROM plugin_releases WHERE id = ?').bind(id).run();
+
+  let promotedId: string | null = null;
+  if (existing.is_latest === 1) {
+    const now = new Date().toISOString();
+    const fallback = await db
+      .prepare('SELECT id, r2_object_key FROM plugin_releases WHERE product_id = ? AND is_published = 1 ORDER BY release_date DESC, created_at DESC LIMIT 1')
+      .bind(existing.product_id)
+      .first<{ id: string; r2_object_key: string }>();
+
+    if (fallback) {
+      promotedId = fallback.id;
+      await db
+        .prepare('UPDATE plugin_releases SET is_latest = 1, updated_at = ? WHERE id = ?')
+        .bind(now, fallback.id)
+        .run();
+      if (fallback.r2_object_key) {
+        await db
+          .prepare('UPDATE products SET r2_object_key = ?, updated_at = ? WHERE id = ?')
+          .bind(fallback.r2_object_key, now, existing.product_id)
+          .run();
+      }
+    }
+  }
+
+  return { deleted: true, promotedId };
 }
