@@ -93,7 +93,7 @@
           "url": "https://www.motionbydk.in/product.html",
           "operatingSystem": "Windows 10, Windows 11, macOS (Intel & Apple Silicon)",
           "applicationCategory": "MultimediaApplication",
-          "softwareVersion": "3.8.0",
+          "softwareVersion": "3.9.0",
           "description": "Supercharge After Effects animation speed by 10x. 3D Carousel Studio, Mouse Dock Magnifier, Kinetic Bezier Suite, and Precision Shape Tools in one unified docked panel.",
           "image": [
             "https://www.motionbydk.in/assets/plugin_hero_ui.jpg",
@@ -250,7 +250,7 @@
                 <div>
                     <div class="flex flex-wrap items-center gap-2.5 mb-3">
                         <span id="productBadge" class="text-xs font-mono font-bold text-black bg-brand px-3 py-1 rounded-full uppercase tracking-wider">
-                            FLAGSHIP EXTENSION • v3.8.0
+                            FLAGSHIP EXTENSION • v3.9.0
                         </span>
                         <span class="text-xs text-amber-400 font-bold flex items-center gap-1">
                             ★★★★★ <span class="text-gray-300 font-normal">(5.0 • Verified Motion Designers)</span>
@@ -691,8 +691,8 @@
             productData.name = p.name || productData.name;
             productData.allowCoupons = (p.allow_coupons !== undefined) ? p.allow_coupons : (p.allowCoupons !== undefined ? (p.allowCoupons ? 1 : 0) : 1);
             productData.freeTrialEnabled = (p.free_trial_enabled !== undefined) ? (p.free_trial_enabled !== 0) : (p.hasTrial !== undefined ? !!p.hasTrial : true);
-            productData.trialUrl = p.trial_url || p.trialPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
-            productData.fileUrl = p.file_url || p.download_url || p.downloadPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            productData.trialUrl = p.trial_url || p.trialPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.9.0.zip';
+            productData.fileUrl = p.file_url || p.download_url || p.downloadPkg || 'assets/MotionByDk_AE_Workflow_Pro_v3.9.0.zip';
 
             if (p.name) {
                 var titleEl = document.getElementById('productTitle');
@@ -856,7 +856,7 @@
             if (isPlugin) {
                 productNode.operatingSystem = 'Windows 10, Windows 11, macOS (Intel & Apple Silicon)';
                 productNode.applicationCategory = 'MultimediaApplication';
-                productNode.softwareVersion = p.software_version || '3.8.0';
+                productNode.softwareVersion = p.software_version || '3.9.0';
             }
 
             scriptEl.textContent = JSON.stringify({
@@ -866,7 +866,7 @@
         }
 
         function downloadProductFreeTrial() {
-            var trialFile = productData.trialUrl || 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+            var trialFile = productData.trialUrl || 'assets/MotionByDk_AE_Workflow_Pro_v3.9.0.zip';
             if (trialFile.startsWith('http://') || trialFile.startsWith('https://')) {
                 window.open(trialFile, '_blank');
             } else {

@@ -557,7 +557,7 @@
                     const dlBtn = document.getElementById('claimDownloadBtn');
                     const backupDlBtn = document.getElementById('claimDownloadBackupBtn');
                     const isCombo = (data.productId === 'combo-creator-deal') || (data.productName && data.productName.toLowerCase().includes('50gb'));
-                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.9.0.zip';
 
                     if (dlBtn) {
                         dlBtn.href = data.downloadUrl || fallbackPath;
@@ -768,7 +768,7 @@
                     document.getElementById('displayCustomerName').innerText = prev.customerName || 'Customer';
                     document.getElementById('displayProductName').innerText = prev.productName || 'AE Workflow Pro';
                     const isCombo = (prev.productId === 'combo-creator-deal') || (prev.productName && prev.productName.toLowerCase().includes('50gb'));
-                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.8.0.zip';
+                    const fallbackPath = isCombo ? 'assets/Ae_Plugin+50GB_Vault.zip' : 'assets/MotionByDk_AE_Workflow_Pro_v3.9.0.zip';
 
                     const dlBtn = document.getElementById('claimDownloadBtn');
                     const backupDlBtn = document.getElementById('claimDownloadBackupBtn');
